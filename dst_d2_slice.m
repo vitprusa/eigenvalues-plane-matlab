@@ -1,7 +1,7 @@
 function d2valsvec = dst_d2_slice(valsvec, h)
     % d2valsvec = dst_d2_slice(valsvec, h)
     %
-    % Computes the second derivative of a 1-D slice using the discrete sine
+    % Computes the second derivative on a 1-D slice using the discrete sine
     % transform (DST). The slice values are provided in valsvec and are
     % assumed to correspond to interior grid points (no ghost/end points).
     %
@@ -14,7 +14,7 @@ function d2valsvec = dst_d2_slice(valsvec, h)
     %
     % Output:
     %   d2valsvec - vector of second derivatives at the same interior grid
-    %               points, computed with spectral accuracy using the DST
+    %               points, computed using the DST
     %               (homogeneous Dirichlet boundary conditions are assumed).
     %
     % Notes:

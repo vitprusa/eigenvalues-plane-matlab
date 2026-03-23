@@ -78,6 +78,9 @@ end
 masked_lapu_grid;
 laplace_vals_grid = valsgridD2XX + valsgridD2YY;
 
+laplace_vals_grid_alt = dst_laplace_grid(masked_uvals_grid, global_mask, h);
+
+
 residual = masked_lapu_grid - laplace_vals_grid
 % Calculate the norm of the residual for convergence check
 normResidual = norm(residual(global_mask));
