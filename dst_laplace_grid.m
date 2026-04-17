@@ -13,7 +13,7 @@ parfor j = 1:n
         % Do nothing, the slice is empty.
     else
         % NaN vector
-        d2_vals_slice = NaN(size(slice_mask))
+        d2_vals_slice = NaN(size(slice_mask));
         % Compute the derivative on the slice, NaN elements only
         d2_vals_slice(slice_mask) = dst_d2_slice(vals_slice, h);
         % Copy computed derivative values to the j-th column of the global
@@ -33,7 +33,7 @@ parfor j = 1:m
         % Do nothing, the slice is empty.
     else
         % NaN vector
-        d2_vals_slice = NaN(size(slice_mask))
+        d2_vals_slice = NaN(size(slice_mask));
         % Compute the derivative on the slice, NaN elements only
         d2_vals_slice(slice_mask) = dst_d2_slice(vals_slice', h)';
         % Copy computed derivative values to the j-th column of the global
