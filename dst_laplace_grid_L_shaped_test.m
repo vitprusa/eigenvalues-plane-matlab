@@ -41,8 +41,8 @@ spy(global_mask)
 % We need a function that vanishes on boundary, and for which we can
 % calculate the laplacian
 
-mm = 2;
-nn = 6;
+mm = 2; % Must be less or equal to P
+nn = 11; % Must be less or equal to Q
 u = @(x, y) sin(mm/(P*h)*pi*x).*sin(nn/(Q*h)*pi*y);
 laplace_u = @(x, y) (-(pi).^2 / ((P*h).^2)*mm.^2 - (pi).^2 / ((Q*h).^2)*nn.^2)*u(x, y);
 
