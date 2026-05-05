@@ -47,7 +47,7 @@ dofs = sum(global_mask, 'all');
 % identity matrix in the degrees of freedom space. Can I vectorise this?
 idm = eye(dofs);
 L = zeros(dofs);
-for i = 1:dofs
+parfor i = 1:dofs
     L(:,i) = Lop(idm(:,i));
 end
 
@@ -79,12 +79,12 @@ norm(eigs_numerical - eigs_analytical_final, Inf)
 % eigs_numerical 
 
 
-data_analytical_full = -(k.^2+k'.^2);
-data_numerical = eigs_numerical';
-data_analytical_full = sort(data_analytical_full(:),'descend');
-data_x1 = 1:numel(data_analytical_full);
-data_x2 = 1:numel(data_numerical);
-plot(data_analytical_full,ones(size(data_analytical_full)),'o','LineStyle','none')
-hold on
-plot(data_numerical,ones(size(data_numerical)),'o','LineStyle','none','MarkerEdgeColor','r')
-hold off
+% data_analytical_full = -(k.^2+k'.^2);
+% data_numerical = eigs_numerical';
+% data_analytical_full = sort(data_analytical_full(:),'descend');
+% data_x1 = 1:numel(data_analytical_full);
+% data_x2 = 1:numel(data_numerical);
+% plot(data_analytical_full,ones(size(data_analytical_full)),'o','LineStyle','none')
+% hold on
+% plot(data_numerical,ones(size(data_numerical)),'o','LineStyle','none','MarkerEdgeColor','r')
+% hold off
