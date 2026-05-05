@@ -16,8 +16,8 @@ y_range = [d, f];
 
 % Grid spacing must be the same in both directions
 % M is the number of DOF (interior grid points) in one slice (before applying the mask)
-M = 23;
-h = (c-a)/(M+1);
+M = 20;
+h = (b-a)/(M+1);
 
 x_vec = x_range(1) : h : x_range(2);
 y_vec = y_range(1) : h : y_range(2);
@@ -27,9 +27,11 @@ y_vec = y_range(1) : h : y_range(2);
 phi = @(x,y) indicator_Lshape(x, y, a, b, c, d, e, f);   % L-shaped domain
 
 % Create mask
+tic
 global_mask = phi(X, Y) > 0; 
+toc
 
-spy(global_mask)
+%spy(global_mask)
 
 % NUMERICAL COMPUTATION, DST
 % Laplace operator acting on values vector
@@ -46,17 +48,22 @@ dofs = sum(global_mask, 'all');
 % identity matrix in the degrees of freedom space. Can I vectorise this?
 idm = eye(dofs);
 L = zeros(dofs);
-for i = 1:dofs
+parfor i = 1:dofs
     L(:,i) = Lop(idm(:,i));
 end
 
 % This does not work
 % L = Lop(eye(dofs));
+DD = eigs(Lop,dofs,10,'smallestabs');
+% [~, D] = eig(L);
+tic
+D = eig(L);
+toc
+%eigs_numerical = sort(diag(D), 'descend');
+eigs_numerical = sort(D,'descend');
 
-[~, D] = eig(L);
-eigs_numerical = sort(diag(D), 'descend');
 
-% FIRST TEN EIGENVALUES known in literature
+% First 10 eigenvalues known in literature
 
 lambda = [-9.6397238440;
           -15.1972519267;
@@ -69,8 +76,51 @@ lambda = [-9.6397238440;
           -49.3480220054; % 5*pi^2
           -56.7096098902];
 
+% First 40 eigenvalues
+
+Lambda = [-9.65934;
+	      -15.1988;
+	      -19.7414;
+	      -29.5285;
+	      -31.967;
+	      -41.526;
+	      -44.9729;
+	      -49.3775;
+	      -49.38;
+	      -56.7945;
+	      -65.4565;
+	      -71.1954;
+	      -71.6685;
+	      -79.0801;
+	      -89.5956;
+	      -92.4954;
+	      -97.6157;
+	      -98.9282;
+	      -98.9364;
+	      -101.916;
+	      -112.734;
+	      -115.911;
+	      -128.783;
+	      -128.834;
+	      -130.71;
+	      -130.894;
+	      -143.209;
+	      -151.945;
+	      -155.561;
+	      -163.203;
+	      -165.685;
+	      -165.901;
+	      -168.777;
+	      -168.895;
+	      -178.933;
+	      -181.038;
+	      -185.429;
+	      -199.12;
+	      -199.158;
+	      -203.332];
+
 % Be careful, the linear ordering is not by n x n blocks!
 % We rather match a block, not the first dof eigenvalues of the continuous
 % operator!
-norm(eigs_numerical(1:10) - lambda)
-norm(eigs_numerical(1:10) - lambda, Inf)
+norm(eigs_numerical(1:40) - Lambda)
+norm(eigs_numerical(1:40) - Lambda, Inf)
