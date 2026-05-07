@@ -16,7 +16,7 @@ y_range = [d, f];
 
 % Grid spacing must be the same in both directions
 % M is the number of DOF (interior grid points) in one slice (before applying the mask)
-M = 20;
+M = 29;
 h = (b-a)/(M+1);
 
 x_vec = x_range(1) : h : x_range(2);
@@ -54,13 +54,24 @@ end
 
 % This does not work
 % L = Lop(eye(dofs));
-DD = eigs(Lop,dofs,10,'smallestabs');
+
+% CHECK: With some large M, L is no longer perfectly symmetric beacuse of 
+% numerical errors
+
+% norm(L-L','fro')
+
+
+%DD = eigs(Lop,dofs,10,'smallestabs');
 % [~, D] = eig(L);
 tic
 D = eig(L);
 toc
 %eigs_numerical = sort(diag(D), 'descend');
-eigs_numerical = sort(D,'descend');
+%eigs_numerical = sort(D,'descend');
+
+% We have to consider the real part of D, otherwise the sorting does not
+% work well
+eigs_numerical = sort(real(D),'descend'); 
 
 
 % First 10 eigenvalues known in literature
