@@ -42,3 +42,51 @@ end
 
 [~, D] = eig(L);
 eigs_numerical = sort(diag(D), 'descend');
+
+% First 40 eigenvalues, Wolfram Language
+Lambda = -[7.77338;
+    8.58911;
+    13.9507;
+    13.9546;
+    14.3126;
+    17.7206;
+    19.748;
+    24.8349;
+    26.4306;
+    26.4816;
+    33.0826;
+    37.2337;
+    37.303;
+    39.2822;
+    40.8027;
+    42.3474;
+    45.3896;
+    46.4166;
+    47.6086;
+    49.4738;
+    49.4815;
+    52.1734;
+    55.1058;
+    58.9657;
+    62.9425;
+    63.0716;
+    63.4004;
+    65.7973;
+    67.8505;
+    72.4734;
+    77.4846;
+    79.4798;
+    80.3673;
+    80.4442;
+    85.8397;
+    86.6899;
+    88.6362;
+    92.0113;
+    92.9729;
+    96.3744];
+
+% Be careful, the linear ordering is not by n x n blocks!
+% We rather match a block, not the first dof eigenvalues of the continuous
+% operator!
+norm(eigs_numerical(1:40) - Lambda)
+norm(eigs_numerical(1:40) - Lambda, Inf)
