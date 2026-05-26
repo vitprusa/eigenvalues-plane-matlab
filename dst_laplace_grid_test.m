@@ -56,7 +56,7 @@ laplace_u_masked_vals_grid(global_mask) = laplace_u_grid(global_mask);
 
 % NUMEIRCAL COMPUTATION, DST
 tic
-laplace_u_masked_vals_grid_num = dst_laplace_grid(u_masked_vals_grid, global_mask, h);
+laplace_u_masked_vals_grid_num = dst_laplace_grid(u_masked_vals_grid, h);
 toc
 
 % RESIDUAL

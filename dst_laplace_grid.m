@@ -1,4 +1,6 @@
-function laplace_vals_grid = dst_laplace_grid(vals_grid, grid_mask, h)
+function laplace_vals_grid = dst_laplace_grid(vals_grid, h)
+
+grid_mask = ~isnan(vals_grid);
 
 vals_grid_D2XX = NaN(size(grid_mask));
 vals_grid_D2YY = NaN(size(grid_mask));
