@@ -26,7 +26,7 @@ applyBoundaryCondition(model, 'dirichlet', 'Edge', 1:model.Geometry.NumEdges, 'u
 specifyCoefficients(model, 'm', 0, 'd', 1, 'c', 1, 'a', 0, 'f', 0);
 
 % Generate mesh
-generateMesh(model, 'Hmax', 0.05, 'GeometricOrder', 'quadratic');
+generateMesh(model, 'Hmax', 0.1, 'GeometricOrder', 'quadratic');
 
 % Assemble stiffness and mass matrices
 FEM_raw = assembleFEMatrices(model, 'KM');
@@ -44,7 +44,8 @@ eigs_fem = sort(diag(D), 'ascend');
 % Analytical eigenvalues for the isosceles right triangle with legs of length pi
 % are a subset of -(n^2 + m^2) for n,m >= 1 (those with antisymmetric modes
 % along the hypotenuse). Here we just compare with brute-force enumeration.
-M = 50;
+% TODO
+M = 90;
 k = 1:M;
 eigs_all = k.^2 + k'.^2;
 eigs_analytical = sort(unique(eigs_all(:)), 'ascend');
