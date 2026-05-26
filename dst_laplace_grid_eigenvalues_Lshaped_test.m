@@ -16,7 +16,7 @@ y_range = [d, f];
 
 % Grid spacing must be the same in both directions
 % M is the number of DOF (interior grid points) in one slice (before applying the mask)
-M = 29;
+M = 60;
 h = (b-a)/(M+1);
 
 x_vec = x_range(1) : h : x_range(2);

@@ -12,7 +12,7 @@ y_range = [c, d];
 
 % Grid spacing must be the same in both directions
 % M is the number of DOF (interior grid points) in one slice (before applying the mask)
-M = 20;
+M = 100;
 h = (b-a)/(M+1);
 
 x_vec = x_range(1) : h : x_range(2);
@@ -40,7 +40,7 @@ dofs = sum(global_mask, 'all');
 % identity matrix in the degeers of freedom space. Can I vectorise this?
 idm = eye(dofs);
 L = zeros(dofs);
-for i = 1:dofs
+parfor i = 1:dofs
     L(:,i) = Lop(idm(:,i));
 end
 
