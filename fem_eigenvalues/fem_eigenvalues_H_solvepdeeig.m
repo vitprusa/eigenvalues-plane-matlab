@@ -1,5 +1,6 @@
 clc;
 clear
+addpath('..')
 
 % H-shaped domain composed of three rectangles:
 %   left column:  [-1, 0] x [-2, 1]
