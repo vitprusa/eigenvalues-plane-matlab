@@ -29,8 +29,8 @@ y_vec = y_range(1) : h : y_range(2);
 [X, Y] = ndgrid(x_vec, y_vec); 
 
 % Defining function for the domain: choose which one between GWW1 and GWW2
-%phi = @(x,y) indicator_global_gww1(x, y, a, b, c, d, f, g);     % GWW1 domain
-phi = @(x,y) indicator_global_gww2(x, y, a, b, c, d, f, g, i);   % GWW2 domain
+phi = @(x,y) indicator_global_gww1(x, y, a, b, c, d, f, g);     % GWW1 domain
+% phi = @(x,y) indicator_global_gww2(x, y, a, b, c, d, f, g, i);   % GWW2 domain
 
 % Create mask
 global_mask = phi(X, Y) > 0; 
@@ -53,15 +53,15 @@ dofs = sum(global_mask, 'all');
 % identity matrix in the degrees of freedom space. Can I vectorise this?
 idm = eye(dofs);
 L = zeros(dofs);
-parfor i = 1:dofs
-    L(:,i) = Lop(idm(:,i));
+parfor j = 1:dofs
+    L(:,j) = Lop(idm(:,j));
 end
 
 % This does not work
 % L = Lop(eye(dofs));
 tic
-[~, D] = eig(L);
-eigs_numerical = sort(diag(D), 'descend');
+D = eig(L);
+eigs_numerical = sort(real(D), 'descend');
 toc
 
 % First 25 eigenvalues known in literature 
@@ -97,7 +97,37 @@ lambda = [-2.53794399980;
 % Be careful, the linear ordering is not by n x n blocks!
 % We rather match a block, not the first dof eigenvalues of the continuous
 % operator!
-norm(eigs_numerical(1:25) - lambda)
+% norm(eigs_numerical(1:25) - lambda)
 norm(eigs_numerical(1:25) - lambda, Inf)
 
 
+% Asymptotic behavior:
+
+Area = (i-f)*(b-a)/2+(d-b)*(g-f)+(f-e)*(d-c)/2;
+%kmax = round(0.8*dofs);
+n = (1 : dofs)';
+% n = (dofs - k +1: dofs)';
+E = -eigs_numerical./n;
+figure
+plot(n,E,'o','LineStyle','none','MarkerEdgeColor','r')
+%plot(n,E,'r')
+hold on
+plot(n,ones(1,dofs)*4*pi/Area,'k')
+hold on
+
+C = 4*pi/Area;              % asymptotic value
+diffE = abs(E - C);         % absolute difference
+% Tolerance: relative to median(E) or an absolute small number
+tol = 0.032 * median(abs(E));   % it's very sensitive and it has to be adjusted
+% Find first index where diff exceeds tolerance
+% The control starts at sufficiently large value of n, 
+% as we are interested in the high-order indexes 
+n_c = find(diffE(0.6*dofs:end) > tol, 1, 'first');
+n_critical = 0.6*dofs + n_c;
+
+if isempty(n_critical)
+    fprintf('No deviation found above tol = %g\n', tol)
+else
+    fprintf('Deviation starts at n = %d (tol = %g)\n', n_critical, tol)
+    xline(n_critical, '--k'); 
+end
