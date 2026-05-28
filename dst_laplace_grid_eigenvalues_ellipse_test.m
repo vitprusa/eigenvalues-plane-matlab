@@ -46,42 +46,42 @@ Lop = @(x) vals_grid_to_vals_vec( ...
 % Number of degrees of freedom
 dofs = sum(global_mask, 'all');
 
-% Eigenvalue solver, subset of eigenvalues, L in operator form
-k = 10; % We want first k eigenvalues
-%opts.issym  = true;           % operator is symmetric, BEWARE the matrix is not, but the operator is
-%opts.isreal = true;           % set if A is real
-%opts.tol = 1e-10;
-%opts.maxit = 500;
-%opts.SubspaceDimension = 100;
-%opts.disp   = 1;
-
-%'bothendsreal'
-tic
-D = eigs(Lop, dofs, k, 'largestreal', ...
-    'Tolerance',           1e-8, ...
-    'MaxIterations',       500, ...
-    'SubspaceDimension',   100, ...
-    'IsFunctionSymmetric', true, ...   
-    'Display',             1);
-%D = eigs(Lop, dofs, k, sigma, opts);
-D = real(D);
-toc
-eigs_numerical_subset = sort(D, 'descend');
-
-% % Assemble matrix whose i-th column is Lop applied to i-th column of
-% % identity matrix in the degrees of freedom space. Can I vectorise this?
-% idm = eye(dofs);
-% L = zeros(dofs);
-% parfor i = 1:dofs
-%     L(:,i) = Lop(idm(:,i));
-% end
+% % Eigenvalue solver, subset of eigenvalues, L in operator form
+% k = 10; % We want first k eigenvalues
+% %opts.issym  = true;           % operator is symmetric, BEWARE the matrix is not, but the operator is
+% %opts.isreal = true;           % set if A is real
+% %opts.tol = 1e-10;
+% %opts.maxit = 500;
+% %opts.SubspaceDimension = 100;
+% %opts.disp   = 1;
 % 
-% % This does not work
-% % L = Lop(eye(dofs));
+% %'bothendsreal'
 % tic
-% [~, D] = eig(L);
-% eigs_numerical = sort(diag(D), 'descend');
+% D = eigs(Lop, dofs, k, 'largestreal', ...
+%     'Tolerance',           1e-8, ...
+%     'MaxIterations',       500, ...
+%     'SubspaceDimension',   100, ...
+%     'IsFunctionSymmetric', true, ...   
+%     'Display',             1);
+% %D = eigs(Lop, dofs, k, sigma, opts);
+% D = real(D);
 % toc
+% eigs_numerical_subset = sort(D, 'descend');
+
+% Assemble matrix whose i-th column is Lop applied to i-th column of
+% identity matrix in the degrees of freedom space. Can I vectorise this?
+idm = eye(dofs);
+L = zeros(dofs);
+for i = 1:dofs
+    L(:,i) = Lop(idm(:,i));
+end
+
+% This does not work
+% L = Lop(eye(dofs));
+tic
+D = eig(L);
+eigs_numerical = sort(real(D), 'descend');
+toc
 
 % First 3 eigenvalues known in literature 
 
@@ -136,6 +136,38 @@ Lambda = [-5.87631;
 % operator!
 % norm(eigs_numerical(1:40) - Lambda)
 % norm(eigs_numerical(1:40) - Lambda, Inf)
-norm(eigs_numerical_subset(1:k) - Lambda(1:k))
-norm(eigs_numerical_subset(1:k) - Lambda(1:k), Inf)
+% norm(eigs_numerical_subset(1:k) - Lambda(1:k))
+% norm(eigs_numerical_subset(1:k) - Lambda(1:k), Inf)
 
+
+% Asymptotic behavior:
+
+Area = pi*(b-a)*(e-d)*3/4;
+%kmax = round(0.8*dofs);
+n = (1 : dofs)';
+% n = (dofs - k +1: dofs)';
+E = -eigs_numerical./n;
+figure
+plot(n,E,'o','LineStyle','none','MarkerEdgeColor','r')
+%plot(n,E,'r')
+hold on
+plot(n,ones(1,dofs)*4*pi/Area,'k')
+hold on
+
+
+C = 4*pi/Area;              % asymptotic value
+diffE = abs(E - C);         % absolute difference
+% Tolerance: relative to median(E) or an absolute small number
+tol = 0.03 * median(abs(E));   % it's very sensitive and it has to be adjusted
+% Find first index where diff exceeds tolerance
+% The control starts at sufficiently large value of n, 
+% as we are interested in the high-order indexes 
+n_c = find(diffE(0.5*dofs:end) > tol, 1, 'first');
+n_critical = 0.5*dofs + n_c;
+
+if isempty(n_critical)
+    fprintf('No deviation found above tol = %g\n', tol)
+else
+    fprintf('Deviation starts at n = %d (tol = %g)\n', n_critical, tol)
+    xline(n_critical, '--k'); 
+end
