@@ -13,7 +13,7 @@ y_range = [c, d];
 % Grid spacing must be the same in both directions
 % M is the number of DOF (interior grid points) in one slice (before applying the mask)
 
-M = 20;
+M = 40;
 h = (b-a)/(M+1);
 
 
@@ -47,15 +47,17 @@ dofs = sum(global_mask, 'all');
 % identity matrix in the degrees of freedom space. Can I vectorise this?
 idm = eye(dofs);
 L = zeros(dofs);
-parfor i = 1:dofs
+for i = 1:dofs
     L(:,i) = Lop(idm(:,i));
 end
 
 % This does not work
 % L = Lop(eye(dofs));
 tic
-[~, D] = eig(L);
-eigs_numerical = sort(diag(D), 'descend');
+% [~, D] = eig(L);
+% eigs_numerical = sort(diag(D), 'descend');
+D = eig(L);
+eigs_numerical = sort(real(D), 'descend');
 toc
 
 % ANALYTICAL FORMULA
@@ -72,7 +74,7 @@ eigs_analytical_final = eigs_analytical_new(end-dofs+1:end);
 % Be careful, the linear ordering is not by n x n blocks!
 % We rather match a block, not the first dof eigenvalues of the continuous
 % operator!
-norm(eigs_numerical - eigs_analytical_final)
+% norm(eigs_numerical - eigs_analytical_final)
 norm(eigs_numerical - eigs_analytical_final, Inf)
 
 % If we want to display the plot with both eigs_analytical_full and
@@ -88,3 +90,35 @@ norm(eigs_numerical - eigs_analytical_final, Inf)
 % hold on
 % plot(data_numerical,ones(size(data_numerical)),'o','LineStyle','none','MarkerEdgeColor','r')
 % hold off
+
+
+% Asymptotic behavior:
+
+Area = (b-a)*(d-c)/2;
+%kmax = round(0.8*dofs);
+n = (1 : dofs)';
+% n = (dofs - k +1: dofs)';
+E = -eigs_numerical./n;
+figure
+plot(n,E,'o','LineStyle','none','MarkerEdgeColor','r')
+%plot(n,E,'r')
+hold on
+plot(n,ones(1,dofs)*4*pi/Area,'k')
+hold on
+
+C = 4*pi/Area;              % asymptotic value
+diffE = abs(E - C);         % absolute difference
+% Tolerance: relative to median(E) or an absolute small number
+tol = 0.047 * median(abs(E));   % it's very sensitive and it has to be adjusted
+% Find first index where diff exceeds tolerance
+% The control starts at sufficiently large value of n, 
+% as we are interested in the high-order indexes 
+n_c = find(diffE(0.6*dofs:end) > tol, 1, 'first');
+n_critical = 0.6*dofs + n_c;
+
+if isempty(n_critical)
+    fprintf('No deviation found above tol = %g\n', tol)
+else
+    fprintf('Deviation starts at n = %d (tol = %g)\n', n_critical, tol)
+    xline(n_critical, '--k'); 
+end
