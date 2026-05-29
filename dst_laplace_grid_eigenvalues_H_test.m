@@ -20,7 +20,7 @@ phi = @(x,y) indicator_H(x, y);
 % Create mask
 global_mask = phi(X, Y) > 0;
 
-%spy(global_mask)
+spy(global_mask)
 
 % NUMERICAL COMPUTATION, DST
 % Laplace operator acting on values vector
