@@ -11,7 +11,7 @@ function check_batched_timing
     project_root = fileparts(fileparts(fileparts(mfilename('fullpath'))));
     run(fullfile(project_root, 'startup.m'));
 
-    phi = @(x,y) indicator_Lshape(x,y,-1,0,1,-1,0,1);
+    phi = @(x,y) indicator_L_shaped(x,y,-1,0,1,-1,0,1);
     M = 60;
 
     tic;

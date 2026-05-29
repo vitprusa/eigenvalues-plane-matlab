@@ -1,4 +1,4 @@
-function res = indicator_global_gww1(x, y, a, b, c, d, f, g)
+function res = indicator_gww1(x, y, a, b, c, d, f, g)
 
     tol = 1e-15;
 

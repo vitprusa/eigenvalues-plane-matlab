@@ -26,7 +26,7 @@ y_vec = y_range(1) : h : y_range(2);
 [X, Y] = ndgrid(x_vec, y_vec); 
 
 % Defining function for the domain
-phi = @(x,y) indicator_Lshape(x, y, a, b, c, d, e, f);   % L-shaped domain
+phi = @(x,y) indicator_L_shaped(x, y, a, b, c, d, e, f);   % L-shaped domain
 
 % Create mask
 global_mask = phi(X, Y) > 0; 

@@ -14,7 +14,7 @@ function check_op_batched_equiv
 
     cases = {
         'rectangle',  [0 pi],   [0 pi],   20, @(x,y) indicator_rectangle(x,y,0,pi,0,pi)
-        'L-shaped',   [-1 1],   [-1 1],   30, @(x,y) indicator_Lshape(x,y,-1,0,1,-1,0,1)
+        'L-shaped',   [-1 1],   [-1 1],   30, @(x,y) indicator_L_shaped(x,y,-1,0,1,-1,0,1)
         'H',          [-1 2],   [-2 1],   24, @(x,y) indicator_H(x,y)
     };
 

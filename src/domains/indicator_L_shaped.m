@@ -1,5 +1,5 @@
 
-function res = indicator_Lshape(x, y, a, b, c, d, e, f)
+function res = indicator_L_shaped(x, y, a, b, c, d, e, f)
 
     res1 = double(x > a & x < b & y > d & y < f);
 

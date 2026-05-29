@@ -29,8 +29,8 @@ y_vec = y_range(1) : h : y_range(2);
 [X, Y] = ndgrid(x_vec, y_vec); 
 
 % Defining function for the domain: choose which one between GWW1 and GWW2
-%phi = @(x,y) indicator_global_gww1(x, y, a, b, c, d, f, g);     % GWW1 domain
-phi = @(x,y) indicator_global_gww2(x, y, a, b, c, d, f, g, i);   % GWW2 domain
+%phi = @(x,y) indicator_gww1(x, y, a, b, c, d, f, g);     % GWW1 domain
+phi = @(x,y) indicator_gww2(x, y, a, b, c, d, f, g, i);   % GWW2 domain
 
 % Create mask
 global_mask = phi(X, Y) > 0; 
