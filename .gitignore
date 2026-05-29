@@ -1,1 +1,4 @@
 *.asv
+
+# Generated test report
+test/mat_batched/report.md
