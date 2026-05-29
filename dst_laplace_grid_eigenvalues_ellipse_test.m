@@ -27,7 +27,7 @@ y_vec = y_range(1) : h : y_range(2);
 [X, Y] = ndgrid(x_vec, y_vec); 
 
 % Defining function for the domain
-phi = @(x,y) indicator_ellipse(x, y, a, b, c, e);   % ellipse minus quadrant domain
+phi = @(x,y) indicator_ellipse_minus_quadrant(x, y, a, b, c, e);   % ellipse minus quadrant domain
 
 % Create mask
 global_mask = phi(X, Y) > 0; 

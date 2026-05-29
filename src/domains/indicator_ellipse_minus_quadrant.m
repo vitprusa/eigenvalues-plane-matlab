@@ -1,4 +1,4 @@
-function res = indicator_ellipse(x, y, a, b, c, e)
+function res = indicator_ellipse_minus_quadrant(x, y, a, b, c, e)
 
     tol = 1e-14;
 
