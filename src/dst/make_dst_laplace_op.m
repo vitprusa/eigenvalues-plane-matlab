@@ -14,7 +14,8 @@ function [dst_laplace_op, info] = make_dst_laplace_op(x_range, y_range, M, indic
 %                          of the bounding box of the grid.
 %     y_range            - 1-by-2 vector [y_min, y_max] giving the y-extent
 %                          of the bounding box of the grid.
-%     M                  - number of interior grid points along one slice;
+%     M                  - number of interior grid points along one full
+%                          bounding-box slice;
 %                          used to derive the (equal) grid spacing
 %                          h = (x_max - x_min)/(M+1).
 %     indicator_function - domain-defining function handle indicator_function(x, y) that is
