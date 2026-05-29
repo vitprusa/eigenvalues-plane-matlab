@@ -18,7 +18,8 @@ phi = @(x,y) indicator_rectangle(x, y, a, b, c, d);   % rectangle
 
 % NUMERICAL COMPUTATION, DST
 % Assemble the masked DST-based Laplace matrix and the grid/domain info
-[L, info] = make_dst_laplace_mat(x_range, y_range, M, phi);
+% [L, info] = make_dst_laplace_mat(x_range, y_range, M, phi);
+[L, info] = make_dst_laplace_mat_batched(x_range, y_range, M, phi);
 
 [~, D] = eig(L);
 eigs_numerical = sort(diag(D), 'descend');
