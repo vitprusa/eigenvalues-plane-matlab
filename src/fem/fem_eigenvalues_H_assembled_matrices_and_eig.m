@@ -1,6 +1,5 @@
 clc;
 clear
-addpath('..')
 
 % H-shaped domain composed of three rectangles:
 %   left column:  [-1, 0] x [-2, 1]
@@ -32,9 +31,18 @@ specifyCoefficients(model, 'm', 0, 'd', 1, 'c', 1, 'a', 0, 'f', 0);
 % Generate mesh
 generateMesh(model, 'Hmax', 0.05, 'GeometricOrder', 'quadratic');
 
-% Solve eigenvalue problem in range [0, 200]
-result = solvepdeeig(model, [0, 200]);
-eigs_fem = sort(result.Eigenvalues, 'ascend');
+% Assemble stiffness and mass matrices
+FEM_raw = assembleFEMatrices(model, 'KM');
+FEM_ns  = assembleFEMatrices(model, 'nullspace');
+B = FEM_ns.B;
+K = B' * FEM_raw.K * B;
+M = B' * FEM_raw.M * B;
+
+fprintf('DOFs: %d\n', size(K, 1));
+
+% Solve generalized eigenvalue problem K*u = lambda*M*u
+[~, D] = eig(full(K), full(M));
+eigs_fem = sort(diag(D), 'ascend');
 
 % First 40 known eigenvalues (Wolfram Language, positive convention)
 Lambda_known = [7.77338;
@@ -82,3 +90,13 @@ k = min(length(eigs_fem), length(Lambda_known));
 fprintf('Comparing first %d eigenvalues:\n', k);
 fprintf('  2-norm error: %e\n', norm(eigs_fem(1:k) - Lambda_known(1:k)));
 fprintf('  Inf-norm error: %e\n', norm(eigs_fem(1:k) - Lambda_known(1:k), Inf));
+
+figure
+plot(1:length(eigs_fem), eigs_fem, 'o', 'DisplayName', 'FEM')
+hold on
+plot(1:k, Lambda_known(1:k), 'x', 'DisplayName', 'Wolfram')
+hold off
+xlabel('Eigenvalue index')
+ylabel('Eigenvalue')
+legend
+title('FEM vs known eigenvalues (H domain)')

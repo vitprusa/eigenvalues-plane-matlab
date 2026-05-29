@@ -1,6 +1,5 @@
 clc;
 clear
-addpath('..')
 
 % Isosceles right triangle with vertices at (0,0), (pi,0), (pi,pi)
 % Defined by: x > 0, x < pi, y > 0, y < x

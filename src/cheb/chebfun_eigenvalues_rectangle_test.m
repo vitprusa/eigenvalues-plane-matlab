@@ -1,7 +1,5 @@
 clc;
 clear
-addpath('..')
-addpath('../chebfun/')
 
 % Rectangular domain [0, pi] x [0, pi]
 a = 0;
