@@ -88,14 +88,21 @@ isospectral GWW drums.
 ## Repository layout
 
 ```
-.                              driver scripts + startup.m
+.                              dst_laplace_full/partial_spectrum + startup.m
 src/dst/                       DST-based Laplace operator and matrix builders
 src/domains/                   bounding box and domain indicator functions
 src/fd/                        finite-difference cross-checks
 src/fem/                       finite-element cross-checks (PDE Toolbox)
 src/cheb/                      Chebyshev (Chebfun) cross-check
+results/                       per-domain full/partial spectrum scripts
 test/mat_batched/              equivalence and timing tests for the builders
 ```
+
+The two scripts in the root are templates; `results/` holds one
+full-spectrum and one partial-spectrum script per domain (ellipse minus a
+quadrant, isosceles triangle, small rectangle, H, L-shaped, and the GWW1/GWW2
+isospectral drums), each a copy of a template with that domain's bounding
+box, resolution, and indicator function.
 
 ## Tests
 
