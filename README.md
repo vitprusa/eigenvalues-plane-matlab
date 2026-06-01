@@ -122,6 +122,10 @@ rows of `experiments/domain_catalog.m`. `compute_dst_spectra` runs the
 `dst_laplace_spectrum` runner over the catalog and writes the results to
 `results/dst/`; the source tree holds no generated per-domain scripts.
 
+The `*.csv` spectra under `results/` are generated outputs and are not tracked
+in git (see `.gitignore`); regenerate them with the experiments drivers (or
+`results/wolfram/run.sh` for the reference spectra).
+
 ## Tests
 
 The batched builders and operators are checked for equivalence against the
