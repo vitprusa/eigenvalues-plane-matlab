@@ -59,6 +59,12 @@ parameters (`subspace_dim`, `tolerance`, `max_iterations`) are set in
 `compute_dst_spectra`. From a shell, `experiments/run.sh` runs everything
 headless.
 
+For a quick, self-contained demonstration on a single domain, the root
+scripts `dst_laplace_full_spectrum.m` (full spectrum via `eig`) and
+`dst_laplace_partial_spectrum.m` (leading eigenvalues via `eigs`) assemble
+and solve one domain inline; edit the bounding box, resolution `M`, and
+indicator `phi` at the top of each.
+
 > **Note.** The domain selected by the indicator function must be fully
 > embedded in the rectangular bounding box. This is *not* checked in the
 > code — it is the user's responsibility.
@@ -96,7 +102,7 @@ isospectral GWW drums.
 ## Repository layout
 
 ```
-.                              startup.m (MATLAB path setup)
+.                              startup.m + dst_laplace_full/partial_spectrum demo scripts
 src/dst/                       DST Laplace operator/matrix builders + spectrum runner
 src/domains/                   bounding box and domain indicator functions
 src/fd/                        finite-difference cross-checks
