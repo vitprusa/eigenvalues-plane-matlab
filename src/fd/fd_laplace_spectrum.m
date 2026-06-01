@@ -21,6 +21,8 @@ function [evals, info] = fd_laplace_spectrum(entry)
 %
 %   See also DOMAIN_CATALOG_FD, COMPUTE_SPECTRUM_FD.
 
+    t0 = tic;
+
     a = entry.box(1); b = entry.box(2); c = entry.box(3); d = entry.box(4);
     M = entry.M;
     h = (b - a) / (M + 1);
@@ -57,5 +59,5 @@ function [evals, info] = fd_laplace_spectrum(entry)
     % Eigenvalues of -Laplacian (positive), ascending. Real part as a hedge.
     evals = sort(real(eig(full(-L))), 'ascend');
 
-    info = struct('M', M, 'h', h, 'box', entry.box, 'dofs', dofs);
+    info = struct('M', M, 'h', h, 'box', entry.box, 'dofs', dofs, 'time', toc(t0));
 end

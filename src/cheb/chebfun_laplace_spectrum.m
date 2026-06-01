@@ -26,6 +26,7 @@ function [evals, info] = chebfun_laplace_spectrum(box, N)
     if nargin < 2 || isempty(N)
         N = 20;
     end
+    t0 = tic;
     a = box(1); b = box(2); c = box(3); d = box(4);
 
     % Second-derivative matrices on N Chebyshev points in each direction.
@@ -44,5 +45,5 @@ function [evals, info] = chebfun_laplace_spectrum(box, N)
     % against spurious imaginary parts.
     evals = sort(real(eig(full(-L))), 'ascend');
 
-    info = struct('N', N, 'box', box, 'dofs', (N - 2)^2);
+    info = struct('N', N, 'box', box, 'dofs', (N - 2)^2, 'time', toc(t0));
 end

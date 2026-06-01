@@ -22,6 +22,9 @@ function write_fem_csv(csv_file, evals, c, info)
     fprintf(fid, '# Domain: %s (FEM, %s)\n', c.name, info.method);
     fprintf(fid, '# Computed %s\n', datestr(now, 'yyyy-mm-dd HH:MM:SS'));
     fprintf(fid, '# Hmax = %g, dofs = %d, mesh nodes = %d\n', info.Hmax, info.dofs, info.n_nodes);
+    if isfield(info, 'time')
+        fprintf(fid, '# Computation time: %.3f s\n', info.time);
+    end
     fclose(fid);
 
     n        = (1:numel(evals))';

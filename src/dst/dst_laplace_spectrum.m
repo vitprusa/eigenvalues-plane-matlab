@@ -39,6 +39,8 @@ function [lambda, info] = dst_laplace_spectrum(c, mode, out_dir, opts)
     mode = string(mode);
     [x_range, y_range] = bounding_box(c.box(1), c.box(2), c.box(3), c.box(4));
 
+    t_solve = tic;   % time the assembly and eigen-solve
+
     switch mode
         case "full"
             M = c.M_full;
@@ -65,6 +67,8 @@ function [lambda, info] = dst_laplace_spectrum(c, mode, out_dir, opts)
             error('dst_laplace_spectrum:badMode', ...
                 'mode must be "full" or "partial", got "%s".', mode);
     end
+
+    info.time = toc(t_solve);
 
     if ~exist(out_dir, 'dir')
         mkdir(out_dir);

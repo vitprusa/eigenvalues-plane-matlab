@@ -33,6 +33,9 @@ function write_eigs_csv(csv_file, lambda, c, mode, M, info, opts)
     fprintf(fid, '# Computed %s\n', datestr(now, 'yyyy-mm-dd HH:MM:SS'));
     fprintf(fid, '# Bounding box [a, b] x [c, d] = [%g, %g] x [%g, %g]\n', box(1), box(2), box(3), box(4));
     fprintf(fid, '# Resolution M = %d, grid spacing h = %g, dofs = %d\n', M, info.h, info.dofs);
+    if isfield(info, 'time')
+        fprintf(fid, '# Computation time: %.3f s\n', info.time);
+    end
     fprintf(fid, '# Indicator function phi = %s\n', func2str(c.phi));
     if mode == "partial"
         fprintf(fid, '# eigs: k = %d, tolerance = %g, subspace_dim = %d, max_iterations = %d\n', ...

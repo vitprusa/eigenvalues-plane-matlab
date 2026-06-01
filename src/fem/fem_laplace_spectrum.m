@@ -29,6 +29,7 @@ function [evals, info] = fem_laplace_spectrum(entry, method)
 %   COMPUTE_SPECTRUM_FEM_SOLVEPDEEIG.
 
     method = string(method);
+    t0 = tic;
 
     % Geometry and model set-up (shared by both methods).
     dl = decsg(entry.gd, entry.sf, entry.ns);
@@ -65,5 +66,5 @@ function [evals, info] = fem_laplace_spectrum(entry, method)
     end
 
     info = struct('method', method, 'Hmax', Hmax, 'dofs', dofs, ...
-                  'n_nodes', size(model.Mesh.Nodes, 2));
+                  'n_nodes', size(model.Mesh.Nodes, 2), 'time', toc(t0));
 end

@@ -20,7 +20,9 @@ function compute_spectrum_mps()
 
     % Run the core MPS script (on the path via src/mps). It executes in this
     % workspace, leaving evals and the parameters K, N, np, lammax available.
+    t_solve = tic;
     Ldrum_modified;
+    mps_time = toc(t_solve);
 
     out_dir = fullfile(project_root, 'results', 'mps');
     if ~exist(out_dir, 'dir')
@@ -36,6 +38,7 @@ function compute_spectrum_mps()
     fprintf(fid, '# Computed %s\n', datestr(now, 'yyyy-mm-dd HH:MM:SS'));
     fprintf(fid, '# Betcke & Trefethen, SIAM Review 47(3):469-491, 2005\n');
     fprintf(fid, '# K = %d, accuracy N = %d, points np = %d, lammax = %g\n', K, N, np, lammax);
+    fprintf(fid, '# Computation time: %.3f s\n', mps_time);
     fclose(fid);
 
     n        = (1:numel(evals))';

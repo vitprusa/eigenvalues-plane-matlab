@@ -60,6 +60,9 @@ function write_cheb_csv(csv_file, evals, c, info)
         c.name, box(1), box(2), box(3), box(4));
     fprintf(fid, '# Computed %s\n', datestr(now, 'yyyy-mm-dd HH:MM:SS'));
     fprintf(fid, '# N = %d Chebyshev points per direction, dofs = %d\n', info.N, info.dofs);
+    if isfield(info, 'time')
+        fprintf(fid, '# Computation time: %.3f s\n', info.time);
+    end
     fclose(fid);
 
     n        = (1:numel(evals))';
