@@ -8,7 +8,7 @@ timed).
 
 | n | DST full | DST partial | FD | FEM eig | FEM solvepdeeig | Wolfram | MPS (ground truth) |
 |---|----------|-------------|------|---------|-----------------|---------|--------------------|
-| **DOFs** | 1776 | 66901 | 1776 | 2051 | 5653 | — ‡ | 51 † |
+| **DOFs** | 1776 | 66901 | 1776 | 2051 | 5653 § | — ‡ | 51 † |
 | **Time (s)** | 1.46 | 170.24 | 1.03 | 2.09 | 2.21 | — | 4.72 |
 | 1 |  9.67525 |  9.64298 |  9.66133 |  9.64999 |  9.64532 |  9.65934 |  **9.63972** |
 | 2 | 15.19657 | 15.19725 | 15.17674 | 15.19754 | 15.19732 | 15.19878 | **15.19725** |
@@ -25,6 +25,9 @@ accuracy with by far the smallest system. **‡  Wolfram** `NDEigensystem` build
 its own internal adaptive mesh, so its DOF count is not exposed. The remaining
 DOFs are read from each CSV header: DST/FD = interior masked grid points,
 FEM eig = constrained DOFs (`size(K,1)`), FEM solvepdeeig = mesh nodes.
+
+**§  FEM solvepdeeig** reports the number of **mesh nodes**, not the
+(constrained) degrees of freedom — unlike FEM eig, which records `size(K,1)`.
 
 ## Sources
 
