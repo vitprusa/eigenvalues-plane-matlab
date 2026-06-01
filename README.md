@@ -8,8 +8,14 @@ two-dimensional domains.
 
 The core idea is to discretise the Laplace operator with homogeneous
 Dirichlet boundary conditions using the **discrete sine transform (DST)**,
-which diagonalises the 1-D second-derivative operator on an interval. The
-2-D Laplacian is obtained by applying the DST-based second derivative along
+which diagonalises the 1-D second-derivative operator on an interval. See
+
+> Fusi, Lorenzo, Oliver Křenek, Vít Průša, Casey Rodriguez, Rebecca Tozzi, and Martin Vejvoda. "Discrete versus continuous—Linear lattice models and their exact continuous counterparts." International Journal of Engineering Science 224 (2026): 104530, [10.1016/j.ijengsci.2026.104530](https://doi.org/10.1016/j.ijengsci.2026.104530)
+
+for reference and thorough discussion.
+
+
+The 2-D Laplacian is obtained by applying the DST-based second derivative along
 every grid row and column and summing the contributions.
 
 An arbitrary domain is handled by embedding it in a rectangular **bounding
@@ -31,6 +37,7 @@ DST results.
 - **PDE Toolbox** — only for the FEM scripts in `src/fem`.
 - **Chebfun** — only for the Chebyshev script in `src/cheb`; expected in
   `fullfile(userpath, 'chebfun')` (see `startup.m`).
+- Wolfram Language (`wolframscript`) — only in case you need yet another software for eigenvalues computation.
 
 ## Getting started
 
@@ -43,7 +50,7 @@ startup
 
 ### Discrete sine transform
 
-Then run the experiment driver:
+For DST-based computation run the experiment driver:
 
 ```matlab
 compute_spectrum_dst                         % all domains, full + partial
@@ -86,8 +93,9 @@ indicator `phi` at the top of each.
 
 ### Other methods
 
-Script `experiments/run_mps.sh` runs eigenvalue computation for L-shaped domain using the method of particular solutions (MPS), script
-`experiments/run_wolfram.sh` runs eigenvalue computation for various domains. (MPS and Wolfram Language computed eigenvalues are used for comparison. MPS eigenvalues for the L-shaped domain are the "ground truth", MPS computes them with high accuracy.)
+Script `experiments/run_mps.sh` runs eigenvalue computation for L-shaped domain using the method of particular solutions (MPS). MPS eigenvalues for the L-shaped domain are the "ground truth", MPS computes them with high accuracy. 
+
+Script `experiments/run_wolfram.sh` runs eigenvalue computation for various domains using default `NDEigenvalues`/`NDEigensystem` solver in Wolfram Language. Wolfram Language computed eigenvalues are used for comparison.
 
 Script `experiments/run_cheb.sh` runs the Chebyshev spectral-collocation
 (Chebfun) computation for the square [0, pi] x [0, pi] and the rectangle
