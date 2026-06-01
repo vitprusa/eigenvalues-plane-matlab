@@ -133,7 +133,7 @@ src/fem/                       finite-element cross-checks (PDE Toolbox)
 src/cheb/                      Chebfun spectral-collocation runner (chebfun_laplace_spectrum)
 src/mps/                       method of particular solutions (Betcke & Trefethen)
 src/wolfram/                   Wolfram region catalog + reportEigenvalues (NDEigensystem)
-experiments/                   spectrum drivers (compute_spectrum_dst, compute_spectrum_mps, compute_wolfram_spectra, compute_spectrum_cheb) + catalogs + run_dst.sh, run_mps.sh, run_wolfram.sh, run_cheb.sh
+experiments/                   spectrum drivers (compute_spectrum_dst, compute_spectrum_mps, compute_spectrum_wolfram, compute_spectrum_cheb) + catalogs + run_dst.sh, run_mps.sh, run_wolfram.sh, run_cheb.sh
 results/dst/                   computed DST spectra, one CSV per (domain, mode)
 results/mps/                   MPS L-shaped spectrum CSV
 results/cheb/                  Chebfun spectra CSV, one per (domain, N)

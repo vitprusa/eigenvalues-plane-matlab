@@ -10,4 +10,4 @@ if ! command -v wolframscript >/dev/null 2>&1; then
 	exit 1
 fi
 
-wolframscript -file "${script_dir}/compute_wolfram_spectra.wls"
+wolframscript -file "${script_dir}/compute_spectrum_wolfram.wls"

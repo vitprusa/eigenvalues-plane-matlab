@@ -1,7 +1,7 @@
 (* ::Package:: *)
 
 (* Core library: domain regions and the reportEigenvalues function. Loaded by
-   the driver experiments/compute_wolfram_spectra.wls, which owns the output
+   the driver experiments/compute_spectrum_wolfram.wls, which owns the output
    path and the run loop. This file only defines symbols -- it deliberately
    does not ClearAll or SetDirectory, so that Get-ting it does not disturb the
    driver's state. Open it in the front end to use the regions interactively. *)
@@ -143,4 +143,4 @@ reportEigenvalues[outDir_String, name_String, specRegion_, nEigenvalues_] := Mod
 
 
 (* The run loop (which domains, how many eigenvalues, and where to write the
-   CSVs) lives in the driver experiments/compute_wolfram_spectra.wls. *)
+   CSVs) lives in the driver experiments/compute_spectrum_wolfram.wls. *)
