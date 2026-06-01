@@ -1,4 +1,4 @@
-% chebfun_eigenvalues_rectangle_test - Dirichlet-Laplacian spectrum on a
+% chebfun_eigenvalues_rectangle - Dirichlet-Laplacian spectrum on a
 % rectangle by Chebyshev spectral collocation (Chebfun diffmat), compared with
 % the analytic eigenvalues. This is the core computation for the driver
 % experiments/compute_rectangle_spectra_cheb.m, which runs this script and

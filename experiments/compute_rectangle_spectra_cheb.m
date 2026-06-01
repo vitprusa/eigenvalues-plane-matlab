@@ -7,12 +7,12 @@ function compute_rectangle_spectra_cheb()
 %   a metadata header (columns n, lambda_n).
 %
 %   The computation is the core script
-%   src/cheb/chebfun_eigenvalues_rectangle_test.m, which this runner executes
+%   src/cheb/chebfun_eigenvalues_rectangle.m, which this runner executes
 %   (leaving the eigenvalues in eigs_chebfun and the parameters a, b, c, d, N
 %   in the workspace); this file owns the path setup and the CSV export. To
 %   change the resolution N or the box, edit that script. Requires Chebfun.
 %
-%   See also CHEBFUN_EIGENVALUES_RECTANGLE_TEST.
+%   See also CHEBFUN_EIGENVALUES_RECTANGLE.
 
     % This file lives in experiments/; put the project sources on the path.
     project_root = fileparts(fileparts(mfilename('fullpath')));
@@ -20,7 +20,7 @@ function compute_rectangle_spectra_cheb()
 
     % Run the core script (on the path via src/cheb). It executes in this
     % workspace, leaving eigs_chebfun and the parameters a, b, c, d, N.
-    chebfun_eigenvalues_rectangle_test;
+    chebfun_eigenvalues_rectangle;
 
     out_dir = fullfile(project_root, 'results', 'cheb');
     if ~exist(out_dir, 'dir')
