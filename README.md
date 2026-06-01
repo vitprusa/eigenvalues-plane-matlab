@@ -49,6 +49,19 @@ compute_dst_spectra("L_shaped")             % one domain, both modes
 compute_dst_spectra("L_shaped", "partial")  % one domain, one mode
 ```
 
+The optional second argument is the **mode**, selecting which part of the
+spectrum to compute (default is both, `["full" "partial"]`):
+
+- `"full"` assembles the dense Laplace matrix (`make_dst_laplace_mat_batched`)
+  and computes the **entire** spectrum with `eig`, at the coarser resolution
+  `M_full` — dense `eig` scales steeply, so the grid is kept small.
+- `"partial"` builds the matrix-free operator (`make_dst_laplace_op_batched`)
+  and computes only the **leading `k` eigenvalues** with the iterative `eigs`,
+  affordable at the much finer resolution `M_partial`.
+
+Each (domain, mode) pair produces one CSV; the two `M` values come from the
+catalog row.
+
 It computes the eigenvalues for every domain in `domain_catalog` and writes
 one CSV per (domain, mode) into `results/dst/`, each carrying a header that
 records the bounding box, resolution, grid spacing, dofs, and indicator
