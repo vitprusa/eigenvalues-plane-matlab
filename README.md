@@ -116,9 +116,9 @@ results/wolfram/               Wolfram Language reference spectra
 test/mat_batched/              equivalence and timing tests for the builders
 ```
 
-The domains (ellipse minus a quadrant, isosceles triangle, small rectangle,
-H, L-shaped, and the GWW1/GWW2 isospectral drums) are defined as rows of
-`experiments/domain_catalog.m`. `compute_dst_spectra` runs the
+The domains (square, ellipse minus a quadrant, isosceles triangle, small
+rectangle, H, L-shaped, and the GWW1/GWW2 isospectral drums) are defined as
+rows of `experiments/domain_catalog.m`. `compute_dst_spectra` runs the
 `dst_laplace_spectrum` runner over the catalog and writes the results to
 `results/dst/`; the source tree holds no generated per-domain scripts.
 
