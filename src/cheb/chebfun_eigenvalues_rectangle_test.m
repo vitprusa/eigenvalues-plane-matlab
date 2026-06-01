@@ -1,5 +1,9 @@
-clc;
-clear
+% chebfun_eigenvalues_rectangle_test - Dirichlet-Laplacian spectrum on a
+% rectangle by Chebyshev spectral collocation (Chebfun diffmat), compared with
+% the analytic eigenvalues. This is the core computation for the driver
+% experiments/compute_rectangle_spectra_cheb.m, which runs this script and
+% exports eigs_chebfun; it therefore does not clc/clear (that would wipe the
+% driver's workspace). Requires Chebfun on the path (see startup.m).
 
 % Rectangular domain [0, pi] x [0, pi]
 a = 0;

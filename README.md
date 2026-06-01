@@ -81,6 +81,10 @@ indicator `phi` at the top of each.
 Script `experiments/run_mps.sh` runs eigenvalue computation for L-shaped domain using the method of particular solutions (MPS), script
 `experiments/run_wolfram.sh` runs eigenvalue computation for various domains. (MPS and Wolfram Language computed eigenvalues are used for comparison. MPS eigenvalues for the L-shaped domain are the "ground truth", MPS computes them with high accuracy.)
 
+Script `experiments/run_cheb.sh` runs the Chebyshev spectral-collocation
+(Chebfun) computation for the rectangle [0, pi] x [0, pi] — another
+cross-check, whose leading eigenvalues match the analytic n^2 + m^2.
+
 > **Note.** The domain selected by the indicator function must be fully
 > embedded in the rectangular bounding box. This is *not* checked in the
 > code — it is the user's responsibility.
@@ -123,12 +127,13 @@ src/dst/                       DST Laplace operator/matrix builders + spectrum r
 src/domains/                   bounding box and domain indicator functions
 src/fd/                        finite-difference cross-checks
 src/fem/                       finite-element cross-checks (PDE Toolbox)
-src/cheb/                      Chebyshev (Chebfun) cross-check
+src/cheb/                      Chebyshev (Chebfun) rectangle spectrum (cross-check)
 src/mps/                       method of particular solutions (Betcke & Trefethen)
 src/wolfram/                   Wolfram region catalog + reportEigenvalues (NDEigensystem)
-experiments/                   spectrum drivers (compute_dst_spectra, compute_L_shaped_spectra_MPS, compute_wolfram_spectra) + run_dst.sh, run_mps.sh, run_wolfram.sh
+experiments/                   spectrum drivers (compute_dst_spectra, compute_L_shaped_spectra_MPS, compute_wolfram_spectra, compute_rectangle_spectra_cheb) + run_dst.sh, run_mps.sh, run_wolfram.sh, run_cheb.sh
 results/dst/                   computed DST spectra, one CSV per (domain, mode)
 results/mps/                   MPS L-shaped spectrum CSV
+results/cheb/                  Chebfun rectangle spectrum CSV
 results/wolfram/               Wolfram Language reference spectra CSV
 test/mat_batched/              equivalence and timing tests for the builders
 ```
