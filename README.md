@@ -41,17 +41,23 @@ folders on the path:
 startup
 ```
 
-Then run one of the driver scripts:
+Then run the experiment driver:
 
 ```matlab
-dst_laplace_full_spectrum      % full spectrum via eig
-dst_laplace_partial_spectrum   % leading eigenvalues via eigs
+compute_dst_spectra                         % all domains, full + partial
+compute_dst_spectra("L_shaped")             % one domain, both modes
+compute_dst_spectra("L_shaped", "partial")  % one domain, one mode
 ```
 
-Edit the bounding box (`a, b, c, d`), the resolution `M`, and the indicator
-function `phi` at the top of each script to change the domain and grid. In
-`dst_laplace_partial_spectrum` you can also tune the number of eigenvalues
-`k` and the `eigs` parameters (`subspace_dim`, `tolerance`, `max_iterations`).
+It computes the eigenvalues for every domain in `domain_catalog` and writes
+one CSV per (domain, mode) into `results/dst/`, each carrying a header that
+records the bounding box, resolution, grid spacing, dofs, and indicator
+function. To add or change a domain, edit a single row of
+`experiments/domain_catalog.m` (name, bounding box, indicator, and the
+full/partial resolutions `M`); the number of eigenvalues `k` and the `eigs`
+parameters (`subspace_dim`, `tolerance`, `max_iterations`) are set in
+`compute_dst_spectra`. From a shell, `experiments/run.sh` runs everything
+headless.
 
 > **Note.** The domain selected by the indicator function must be fully
 > embedded in the rectangular bounding box. This is *not* checked in the
@@ -76,7 +82,9 @@ sharing the signature `(x_range, y_range, M, indicator_function)`:
 Supporting routines: `dst_laplace_grid` (Laplacian of a full grid),
 `dst_d2_slice` / `dst_d2_chunk` (1-D DST second derivative), and
 `vals_vec_to_vals_grid` / `vals_grid_to_vals_vec` (scatter/gather between the
-degrees-of-freedom vector and the masked grid).
+degrees-of-freedom vector and the masked grid). `dst_laplace_spectrum`
+(assemble → solve → CSV via `write_eigs_csv`) is the end-to-end runner for a
+single domain, driven over the catalog by `compute_dst_spectra`.
 
 ## Domains (`src/domains`)
 
@@ -88,21 +96,23 @@ isospectral GWW drums.
 ## Repository layout
 
 ```
-.                              dst_laplace_full/partial_spectrum + startup.m
-src/dst/                       DST-based Laplace operator and matrix builders
+.                              startup.m (MATLAB path setup)
+src/dst/                       DST Laplace operator/matrix builders + spectrum runner
 src/domains/                   bounding box and domain indicator functions
 src/fd/                        finite-difference cross-checks
 src/fem/                       finite-element cross-checks (PDE Toolbox)
 src/cheb/                      Chebyshev (Chebfun) cross-check
-results/                       per-domain full/partial spectrum scripts
+experiments/                   domain_catalog + compute_dst_spectra driver + run.sh
+results/dst/                   computed spectra, one CSV per (domain, mode)
+results/wolfram/               Wolfram Language reference spectra
 test/mat_batched/              equivalence and timing tests for the builders
 ```
 
-The two scripts in the root are templates; `results/` holds one
-full-spectrum and one partial-spectrum script per domain (ellipse minus a
-quadrant, isosceles triangle, small rectangle, H, L-shaped, and the GWW1/GWW2
-isospectral drums), each a copy of a template with that domain's bounding
-box, resolution, and indicator function.
+The domains (ellipse minus a quadrant, isosceles triangle, small rectangle,
+H, L-shaped, and the GWW1/GWW2 isospectral drums) are defined as rows of
+`experiments/domain_catalog.m`. `compute_dst_spectra` runs the
+`dst_laplace_spectrum` runner over the catalog and writes the results to
+`results/dst/`; the source tree holds no generated per-domain scripts.
 
 ## Tests
 
@@ -124,8 +134,17 @@ The scripts were written by Oliver Křenek, Vít Průša
 (<vit.prusa@matfyz.cuni.cz>), Rebecca Tozzi and Martin Vejvoda. Vít Průša is
 responsible for the conceptualisation of the work.
 
-The testing scripts, the batched versions of the initial scripts, and the
-documentation strings were written by Claude Code (Claude Opus 4.8).
+The core numerical routines — `dst_d2_chunk`, `dst_d2_slice`,
+`dst_laplace_grid`, `vals_vec_to_vals_grid`, `vals_grid_to_vals_vec`,
+`make_dst_laplace_mat`, and `make_dst_laplace_op` (all in `src/dst`) — were
+written by the human authors.
+
+The auxiliary scripts — the domain catalog (`experiments/domain_catalog.m`),
+the spectrum runner (`src/dst/dst_laplace_spectrum.m`) and CSV writer
+(`src/dst/write_eigs_csv.m`), and the driver
+(`experiments/compute_dst_spectra.m`) — together with the testing scripts, the
+batched versions of the core builders, and the documentation strings, were
+written by Claude Code (Claude Opus 4.8).
 
 ## License
 
