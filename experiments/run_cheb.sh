@@ -1,6 +1,11 @@
 #!/usr/bin/env bash
-# Run the Chebfun rectangle eigenvalue experiment, writing the eigenvalues to
-# results/cheb/rectangle_eigenvalues_cheb.csv. Requires Chebfun (see startup.m).
+# Run the Chebfun eigenvalue experiments for every domain in the catalog and a
+# sweep of Chebyshev orders N, writing one CSV per (domain, N) into
+# results/cheb/. Requires Chebfun (see startup.m).
+#
+# To run a subset, call the driver directly from MATLAB, e.g.
+#   compute_cheb_spectra("square")
+#   compute_cheb_spectra("", [16 24 32])
 set -euo pipefail
 
 script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
@@ -10,4 +15,4 @@ if ! command -v matlab >/dev/null 2>&1; then
 	exit 1
 fi
 
-matlab -batch "addpath('${script_dir}'); compute_rectangle_spectra_cheb()"
+matlab -batch "addpath('${script_dir}'); compute_cheb_spectra()"
