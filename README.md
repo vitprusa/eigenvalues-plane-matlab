@@ -44,9 +44,9 @@ startup
 Then run the experiment driver:
 
 ```matlab
-compute_dst_spectra                         % all domains, full + partial
-compute_dst_spectra("L_shaped")             % one domain, both modes
-compute_dst_spectra("L_shaped", "partial")  % one domain, one mode
+compute_spectrum_dst                         % all domains, full + partial
+compute_spectrum_dst("L_shaped")             % one domain, both modes
+compute_spectrum_dst("L_shaped", "partial")  % one domain, one mode
 ```
 
 The optional second argument is the **mode**, selecting which part of the
@@ -62,14 +62,14 @@ spectrum to compute (default is both, `["full" "partial"]`):
 Each (domain, mode) pair produces one CSV; the two `M` values come from the
 catalog row.
 
-It computes the eigenvalues for every domain in `domain_catalog` and writes
+It computes the eigenvalues for every domain in `domain_catalog_dst` and writes
 one CSV per (domain, mode) into `results/dst/`, each carrying a header that
 records the bounding box, resolution, grid spacing, dofs, and indicator
 function. To add or change a domain, edit a single row of
-`experiments/domain_catalog.m` (name, bounding box, indicator, and the
+`experiments/domain_catalog_dst.m` (name, bounding box, indicator, and the
 full/partial resolutions `M`); the number of eigenvalues `k` and the `eigs`
 parameters (`subspace_dim`, `tolerance`, `max_iterations`) are set in
-`compute_dst_spectra`. From a shell, `experiments/run_dst.sh` runs the DST
+`compute_spectrum_dst`. From a shell, `experiments/run_dst.sh` runs the DST
 experiments headless. 
 
 For a quick, self-contained demonstration on a single domain, the root
@@ -85,8 +85,8 @@ Script `experiments/run_cheb.sh` runs the Chebyshev spectral-collocation
 (Chebfun) computation for the square [0, pi] x [0, pi] and the rectangle
 [0, 2*pi] x [0, pi], sweeping several Chebyshev orders `N` (one CSV per domain
 and `N`) — a cross-check whose leading eigenvalues match the analytic spectra.
-The domains are rows of `experiments/cheb_domain_catalog.m`, mirroring the DST
-catalog; `compute_cheb_spectra(name, Nvals)` filters by domain and `N` list.
+The domains are rows of `experiments/domain_catalog_cheb.m`, mirroring the DST
+catalog; `compute_spectrum_cheb(name, Nvals)` filters by domain and `N` list.
 
 > **Note.** The domain selected by the indicator function must be fully
 > embedded in the rectangular bounding box. This is *not* checked in the
@@ -113,7 +113,7 @@ Supporting routines: `dst_laplace_grid` (Laplacian of a full grid),
 `vals_vec_to_vals_grid` / `vals_grid_to_vals_vec` (scatter/gather between the
 degrees-of-freedom vector and the masked grid). `dst_laplace_spectrum`
 (assemble → solve → CSV via `write_eigs_csv`) is the end-to-end runner for a
-single domain, driven over the catalog by `compute_dst_spectra`.
+single domain, driven over the catalog by `compute_spectrum_dst`.
 
 ## Domains (`src/domains`)
 
@@ -133,7 +133,7 @@ src/fem/                       finite-element cross-checks (PDE Toolbox)
 src/cheb/                      Chebfun spectral-collocation runner (chebfun_laplace_spectrum)
 src/mps/                       method of particular solutions (Betcke & Trefethen)
 src/wolfram/                   Wolfram region catalog + reportEigenvalues (NDEigensystem)
-experiments/                   spectrum drivers (compute_dst_spectra, compute_L_shaped_spectra_MPS, compute_wolfram_spectra, compute_cheb_spectra) + catalogs + run_dst.sh, run_mps.sh, run_wolfram.sh, run_cheb.sh
+experiments/                   spectrum drivers (compute_spectrum_dst, compute_spectrum_mps, compute_wolfram_spectra, compute_spectrum_cheb) + catalogs + run_dst.sh, run_mps.sh, run_wolfram.sh, run_cheb.sh
 results/dst/                   computed DST spectra, one CSV per (domain, mode)
 results/mps/                   MPS L-shaped spectrum CSV
 results/cheb/                  Chebfun spectra CSV, one per (domain, N)
@@ -143,7 +143,7 @@ test/mat_batched/              equivalence and timing tests for the builders
 
 The domains (square, rectangle, ellipse minus a quadrant, isosceles triangle,
 small rectangle, H, L-shaped, and the GWW1/GWW2 isospectral drums) are defined
-as rows of `experiments/domain_catalog.m`. `compute_dst_spectra` runs the
+as rows of `experiments/domain_catalog_dst.m`. `compute_spectrum_dst` runs the
 `dst_laplace_spectrum` runner over the catalog and writes the results to
 `results/dst/`; the source tree holds no generated per-domain scripts.
 
@@ -176,10 +176,10 @@ The core numerical routines — `dst_d2_chunk`, `dst_d2_slice`,
 `make_dst_laplace_mat`, and `make_dst_laplace_op` (all in `src/dst`) — were
 written by the human authors.
 
-The auxiliary scripts — the domain catalog (`experiments/domain_catalog.m`),
+The auxiliary scripts — the domain catalog (`experiments/domain_catalog_dst.m`),
 the spectrum runner (`src/dst/dst_laplace_spectrum.m`) and CSV writer
 (`src/dst/write_eigs_csv.m`), and the driver
-(`experiments/compute_dst_spectra.m`) — together with the testing scripts, the
+(`experiments/compute_spectrum_dst.m`) — together with the testing scripts, the
 batched versions of the core builders, and the documentation strings, were
 written by Claude Code (Claude Opus 4.8).
 

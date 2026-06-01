@@ -3,8 +3,8 @@
 # *-eigenvalues.csv files into results/dst/.
 #
 # To run a subset, call the driver directly from MATLAB, e.g.
-#   compute_dst_spectra("L_shaped")
-#   compute_dst_spectra("L_shaped", "partial")
+#   compute_spectrum_dst("L_shaped")
+#   compute_spectrum_dst("L_shaped", "partial")
 set -euo pipefail
 
 script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
@@ -14,4 +14,4 @@ if ! command -v matlab >/dev/null 2>&1; then
 	exit 1
 fi
 
-matlab -batch "addpath('${script_dir}'); compute_dst_spectra()"
+matlab -batch "addpath('${script_dir}'); compute_spectrum_dst()"

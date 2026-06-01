@@ -1,7 +1,7 @@
-function compute_L_shaped_spectra_MPS()
-%COMPUTE_L_SHAPED_SPECTRA_MPS Run the MPS L-shaped eigenvalue experiment.
+function compute_spectrum_mps()
+%COMPUTE_SPECTRUM_MPS Run the MPS L-shaped eigenvalue experiment.
 %
-%   compute_L_shaped_spectra_MPS() computes the leading Dirichlet-Laplacian
+%   compute_spectrum_mps() computes the leading Dirichlet-Laplacian
 %   eigenvalues on the L-shaped region by the Method of Particular Solutions
 %   and writes them to results/mps/L_shaped_eigenvalues_MPS.csv with a
 %   metadata header (columns n, lambda_n).
@@ -30,7 +30,7 @@ function compute_L_shaped_spectra_MPS()
 
     fid = fopen(csv_file, 'w');
     if fid == -1
-        error('compute_L_shaped_spectra_MPS:cannotOpen', 'Could not open %s for writing.', csv_file);
+        error('compute_spectrum_mps:cannotOpen', 'Could not open %s for writing.', csv_file);
     end
     fprintf(fid, '# Domain: L_shaped (MPS, method of particular solutions)\n');
     fprintf(fid, '# Computed %s\n', datestr(now, 'yyyy-mm-dd HH:MM:SS'));

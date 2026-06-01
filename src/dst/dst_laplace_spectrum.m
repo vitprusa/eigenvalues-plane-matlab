@@ -4,7 +4,7 @@ function [lambda, info] = dst_laplace_spectrum(c, mode, out_dir, opts)
 %   [lambda, info] = dst_laplace_spectrum(c, mode, out_dir, opts)
 %
 %   Computes the Dirichlet-Laplacian eigenvalues on the domain described by
-%   the catalog entry c (see DOMAIN_CATALOG) and writes them to
+%   the catalog entry c (see DOMAIN_CATALOG_DST) and writes them to
 %   <out_dir>/<c.name>_<mode>-eigenvalues.csv with a metadata header.
 %
 %   The domain is described by an indicator function embedded in a rectangular
@@ -13,7 +13,7 @@ function [lambda, info] = dst_laplace_spectrum(c, mode, out_dir, opts)
 %
 %   Inputs:
 %     c       - struct with fields name, box = [a b c d], phi, M_full,
-%               M_partial (see DOMAIN_CATALOG).
+%               M_partial (see DOMAIN_CATALOG_DST).
 %     mode    - "full"    : whole spectrum from a dense matrix
 %                           (make_dst_laplace_mat_batched + eig), at M_full.
 %               "partial" : leading opts.k eigenvalues from the matrix-free
@@ -29,7 +29,7 @@ function [lambda, info] = dst_laplace_spectrum(c, mode, out_dir, opts)
 %               definite) Laplacian, so its eigenvalues are negated here.
 %     info    - grid/domain struct returned by the operator factory.
 %
-%   See also DOMAIN_CATALOG, WRITE_EIGS_CSV, MAKE_DST_LAPLACE_MAT_BATCHED,
+%   See also DOMAIN_CATALOG_DST, WRITE_EIGS_CSV, MAKE_DST_LAPLACE_MAT_BATCHED,
 %   MAKE_DST_LAPLACE_OP_BATCHED.
 
     if nargin < 4

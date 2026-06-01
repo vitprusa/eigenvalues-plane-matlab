@@ -1,8 +1,8 @@
-function cases = domain_catalog(name)
-%DOMAIN_CATALOG Registry of domains for the DST-Laplacian experiments.
+function cases = domain_catalog_dst(name)
+%DOMAIN_CATALOG_DST Registry of domains for the DST-Laplacian experiments.
 %
-%   cases = DOMAIN_CATALOG() returns a struct array describing every domain.
-%   cases = DOMAIN_CATALOG(name) returns only the entry whose name matches,
+%   cases = DOMAIN_CATALOG_DST() returns a struct array describing every domain.
+%   cases = DOMAIN_CATALOG_DST(name) returns only the entry whose name matches,
 %   erroring if there is no such domain.
 %
 %   Each entry has the fields:
@@ -18,7 +18,7 @@ function cases = domain_catalog(name)
 %
 %   To add a domain, add one make_case row here -- no new scripts are needed.
 %
-%   See also DST_LAPLACE_SPECTRUM, COMPUTE_DST_SPECTRA.
+%   See also DST_LAPLACE_SPECTRUM, COMPUTE_SPECTRUM_DST.
 
     % Start with an empty struct array carrying the right fields.
     cases = repmat(make_case('', [0 0 0 0], @(x, y) x, 0, 0), 0, 1);
@@ -37,7 +37,7 @@ function cases = domain_catalog(name)
     if nargin >= 1 && ~isempty(name)
         match = strcmp({cases.name}, name);
         if ~any(match)
-            error('domain_catalog:unknownDomain', ...
+            error('domain_catalog_dst:unknownDomain', ...
                 'Unknown domain "%s". Known domains: %s.', name, strjoin({cases.name}, ', '));
         end
         cases = cases(match);

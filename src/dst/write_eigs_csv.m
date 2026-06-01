@@ -11,7 +11,7 @@ function write_eigs_csv(csv_file, lambda, c, mode, M, info, opts)
 %     csv_file - full path of the output file (its directory must exist).
 %     lambda   - vector of eigenvalues of -Laplacian (positive), ordered from
 %                the smallest.
-%     c        - catalog entry with fields name, box, phi (see DOMAIN_CATALOG).
+%     c        - catalog entry with fields name, box, phi (see DOMAIN_CATALOG_DST).
 %     mode     - "full" or "partial"; the eigs options are logged only for the
 %                partial spectrum.
 %     M        - grid resolution actually used.
@@ -19,7 +19,7 @@ function write_eigs_csv(csv_file, lambda, c, mode, M, info, opts)
 %     opts     - partial-spectrum options with fields k, tolerance,
 %                subspace_dim, max_iterations. Ignored when mode is "full".
 %
-%   See also DST_LAPLACE_SPECTRUM, DOMAIN_CATALOG.
+%   See also DST_LAPLACE_SPECTRUM, DOMAIN_CATALOG_DST.
 
     mode = string(mode);
     box  = c.box;

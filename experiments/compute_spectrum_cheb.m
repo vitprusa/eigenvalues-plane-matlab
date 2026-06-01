@@ -1,23 +1,23 @@
-function compute_cheb_spectra(name, Nvals)
-%COMPUTE_CHEB_SPECTRA Run the Chebfun rectangle eigenvalue experiments.
+function compute_spectrum_cheb(name, Nvals)
+%COMPUTE_SPECTRUM_CHEB Run the Chebfun rectangle eigenvalue experiments.
 %
-%   compute_cheb_spectra() computes the Dirichlet-Laplacian spectrum for every
-%   domain in CHEB_DOMAIN_CATALOG at each resolution in a default list of
+%   compute_spectrum_cheb() computes the Dirichlet-Laplacian spectrum for every
+%   domain in DOMAIN_CATALOG_CHEB at each resolution in a default list of
 %   Chebyshev orders, writing one CSV per (domain, N) into results/cheb/.
 %
-%   compute_cheb_spectra(name) restricts to the single domain "name".
-%   compute_cheb_spectra(name, Nvals) overrides the list of Chebyshev orders N.
+%   compute_spectrum_cheb(name) restricts to the single domain "name".
+%   compute_spectrum_cheb(name, Nvals) overrides the list of Chebyshev orders N.
 %   Pass "" or [] for name to keep all domains while choosing Nvals.
 %
 %   Examples:
-%     compute_cheb_spectra();                 % all domains, default Nvals
-%     compute_cheb_spectra("square");         % one domain, default Nvals
-%     compute_cheb_spectra("", [16 24 32]);   % all domains, chosen Nvals
+%     compute_spectrum_cheb();                 % all domains, default Nvals
+%     compute_spectrum_cheb("square");         % one domain, default Nvals
+%     compute_spectrum_cheb("", [16 24 32]);   % all domains, chosen Nvals
 %
 %   Each CSV (columns n, lambda_n) carries a header recording the domain, box,
 %   N, and dofs. Requires Chebfun; see startup.m.
 %
-%   See also CHEB_DOMAIN_CATALOG, CHEBFUN_LAPLACE_SPECTRUM.
+%   See also DOMAIN_CATALOG_CHEB, CHEBFUN_LAPLACE_SPECTRUM.
 
     if nargin < 1
         name = '';
@@ -27,7 +27,7 @@ function compute_cheb_spectra(name, Nvals)
     end
 
     % This file lives in experiments/; put the project sources and this folder
-    % (for cheb_domain_catalog) on the path.
+    % (for domain_catalog_cheb) on the path.
     experiments_dir = fileparts(mfilename('fullpath'));
     project_root    = fileparts(experiments_dir);
     run(fullfile(project_root, 'startup.m'));
@@ -38,7 +38,7 @@ function compute_cheb_spectra(name, Nvals)
         mkdir(out_dir);
     end
 
-    cases = cheb_domain_catalog(name);
+    cases = domain_catalog_cheb(name);
     for i = 1:numel(cases)
         c = cases(i);
         for N = Nvals
@@ -54,7 +54,7 @@ function write_cheb_csv(csv_file, evals, c, info)
     box = c.box;
     fid = fopen(csv_file, 'w');
     if fid == -1
-        error('compute_cheb_spectra:cannotOpen', 'Could not open %s for writing.', csv_file);
+        error('compute_spectrum_cheb:cannotOpen', 'Could not open %s for writing.', csv_file);
     end
     fprintf(fid, '# Domain: %s [%g, %g] x [%g, %g] (Chebfun spectral collocation)\n', ...
         c.name, box(1), box(2), box(3), box(4));

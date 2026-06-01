@@ -21,7 +21,7 @@ function [evals, info] = chebfun_laplace_spectrum(box, N)
 %
 %   Requires Chebfun (diffmat) on the path; see startup.m.
 %
-%   See also COMPUTE_CHEB_SPECTRA, CHEB_DOMAIN_CATALOG.
+%   See also COMPUTE_SPECTRUM_CHEB, DOMAIN_CATALOG_CHEB.
 
     if nargin < 2 || isempty(N)
         N = 20;

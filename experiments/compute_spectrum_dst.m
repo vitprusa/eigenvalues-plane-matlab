@@ -1,22 +1,22 @@
-function compute_dst_spectra(name, modes)
-%COMPUTE_DST_SPECTRA Run the DST-Laplacian eigenvalue experiments.
+function compute_spectrum_dst(name, modes)
+%COMPUTE_SPECTRUM_DST Run the DST-Laplacian eigenvalue experiments.
 %
-%   compute_dst_spectra() computes both the full and the partial spectrum for
-%   every domain in DOMAIN_CATALOG and writes one CSV per (domain, mode) into
+%   compute_spectrum_dst() computes both the full and the partial spectrum for
+%   every domain in DOMAIN_CATALOG_DST and writes one CSV per (domain, mode) into
 %   results/dst/.
 %
-%   compute_dst_spectra(name) restricts the run to the single domain "name".
-%   compute_dst_spectra(name, modes) further restricts the modes, where modes
+%   compute_spectrum_dst(name) restricts the run to the single domain "name".
+%   compute_spectrum_dst(name, modes) further restricts the modes, where modes
 %   is "full", "partial", or ["full" "partial"]. Pass "" or [] for name to
 %   keep all domains while selecting modes.
 %
 %   Examples:
-%     compute_dst_spectra();                        % everything
-%     compute_dst_spectra("L_shaped");              % one domain, both modes
-%     compute_dst_spectra("L_shaped", "partial");   % one domain, one mode
-%     compute_dst_spectra("", "full");              % all domains, full only
+%     compute_spectrum_dst();                        % everything
+%     compute_spectrum_dst("L_shaped");              % one domain, both modes
+%     compute_spectrum_dst("L_shaped", "partial");   % one domain, one mode
+%     compute_spectrum_dst("", "full");              % all domains, full only
 %
-%   See also DOMAIN_CATALOG, DST_LAPLACE_SPECTRUM.
+%   See also DOMAIN_CATALOG_DST, DST_LAPLACE_SPECTRUM.
 
     if nargin < 1
         name = '';
@@ -27,7 +27,7 @@ function compute_dst_spectra(name, modes)
     modes = string(modes);
 
     % This file lives in experiments/; put the project sources and this
-    % folder (for domain_catalog) on the path.
+    % folder (for domain_catalog_dst) on the path.
     experiments_dir = fileparts(mfilename('fullpath'));
     project_root    = fileparts(experiments_dir);
     run(fullfile(project_root, 'startup.m'));
@@ -39,7 +39,7 @@ function compute_dst_spectra(name, modes)
     opts = struct('k', 10, 'tolerance', 1e-10, ...
                   'subspace_dim', 100, 'max_iterations', 300);
 
-    cases = domain_catalog(name);
+    cases = domain_catalog_dst(name);
     for i = 1:numel(cases)
         for mode = modes
             fprintf('=== %s : %s spectrum ===\n', cases(i).name, mode);

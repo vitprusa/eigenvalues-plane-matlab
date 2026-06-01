@@ -1,8 +1,8 @@
-function cases = cheb_domain_catalog(name)
-%CHEB_DOMAIN_CATALOG Registry of rectangular domains for the Chebfun experiments.
+function cases = domain_catalog_cheb(name)
+%DOMAIN_CATALOG_CHEB Registry of rectangular domains for the Chebfun experiments.
 %
-%   cases = CHEB_DOMAIN_CATALOG() returns a struct array of every domain.
-%   cases = CHEB_DOMAIN_CATALOG(name) returns only the matching entry, erroring
+%   cases = DOMAIN_CATALOG_CHEB() returns a struct array of every domain.
+%   cases = DOMAIN_CATALOG_CHEB(name) returns only the matching entry, erroring
 %   if there is no such domain.
 %
 %   Each entry has the fields:
@@ -12,7 +12,7 @@ function cases = cheb_domain_catalog(name)
 %   The Chebfun method (diffmat + Kronecker sum) handles tensor-product
 %   rectangles only. To add a domain, add one make_case row here.
 %
-%   See also COMPUTE_CHEB_SPECTRA, CHEBFUN_LAPLACE_SPECTRUM.
+%   See also COMPUTE_SPECTRUM_CHEB, CHEBFUN_LAPLACE_SPECTRUM.
 
     % Start with an empty struct array carrying the right fields.
     cases = repmat(make_case('', [0 0 0 0]), 0, 1);
@@ -24,7 +24,7 @@ function cases = cheb_domain_catalog(name)
     if nargin >= 1 && ~isempty(name)
         match = strcmp({cases.name}, name);
         if ~any(match)
-            error('cheb_domain_catalog:unknownDomain', ...
+            error('domain_catalog_cheb:unknownDomain', ...
                 'Unknown domain "%s". Known domains: %s.', name, strjoin({cases.name}, ', '));
         end
         cases = cases(match);

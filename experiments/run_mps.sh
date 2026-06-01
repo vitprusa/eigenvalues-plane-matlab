@@ -10,4 +10,4 @@ if ! command -v matlab >/dev/null 2>&1; then
 	exit 1
 fi
 
-matlab -batch "addpath('${script_dir}'); compute_L_shaped_spectra_MPS()"
+matlab -batch "addpath('${script_dir}'); compute_spectrum_mps()"

@@ -4,8 +4,8 @@
 # results/cheb/. Requires Chebfun (see startup.m).
 #
 # To run a subset, call the driver directly from MATLAB, e.g.
-#   compute_cheb_spectra("square")
-#   compute_cheb_spectra("", [16 24 32])
+#   compute_spectrum_cheb("square")
+#   compute_spectrum_cheb("", [16 24 32])
 set -euo pipefail
 
 script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
@@ -15,4 +15,4 @@ if ! command -v matlab >/dev/null 2>&1; then
 	exit 1
 fi
 
-matlab -batch "addpath('${script_dir}'); compute_cheb_spectra()"
+matlab -batch "addpath('${script_dir}'); compute_spectrum_cheb()"
