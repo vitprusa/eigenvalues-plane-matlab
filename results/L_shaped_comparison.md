@@ -2,11 +2,14 @@
 
 First 8 eigenvalues of the Dirichlet Laplacian (-Delta u = lambda u) on the
 L-shaped domain, computed by each technique. Values to 5 decimals; the **DOFs**
-row gives the size of each discrete problem.
+row gives the size of each discrete problem and **Time (s)** the measured
+computation time (`tic`/`toc` around each per-domain solve; Wolfram is not
+timed).
 
 | n | DST full | DST partial | FD | FEM eig | FEM solvepdeeig | Wolfram | MPS (ground truth) |
 |---|----------|-------------|------|---------|-----------------|---------|--------------------|
 | **DOFs** | 1776 | 66901 | 1776 | 2051 | 5653 | — ‡ | 51 † |
+| **Time (s)** | 1.46 | 170.24 | 1.03 | 2.09 | 2.21 | — | 4.72 |
 | 1 |  9.67525 |  9.64298 |  9.66133 |  9.64999 |  9.64532 |  9.65934 |  **9.63972** |
 | 2 | 15.19657 | 15.19725 | 15.17674 | 15.19754 | 15.19732 | 15.19878 | **15.19725** |
 | 3 | 19.73921 | 19.73921 | 19.71325 | 19.73946 | 19.73925 | 19.74141 | **19.73921** |
@@ -56,3 +59,16 @@ digits). Relative to it:
   high but still within ~0.2%.
 - Chebfun is absent: its tensor-product (`diffmat` + Kronecker) construction
   handles rectangles only, so it has no L-shaped entry.
+
+## Cost vs. accuracy
+
+- **MPS is the efficiency winner**: highest accuracy in 4.7 s with just 51
+  basis functions — orders of magnitude fewer DOFs than the grid methods.
+- **DST partial buys its accuracy dearly**: 170 s (66 901 DOFs), by far the
+  most expensive — the cost of the `eigs` solve on the fine M = 299 operator.
+- **FD and DST full are the cheapest grid solves** (~1 s at 1776 DOFs); FEM
+  sits between (~2 s). So at equal size DST full matches FD's cost while being
+  more accurate on the smooth modes.
+- Timings are wall-clock for the per-domain solve (assembly + eigensolver),
+  measured with `tic`/`toc`; they exclude MATLAB start-up and I/O and vary
+  run-to-run (the first DST call also absorbs the parallel-pool start-up).
