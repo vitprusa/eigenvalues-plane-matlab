@@ -41,6 +41,8 @@ folders on the path:
 startup
 ```
 
+### Discrete sine transform
+
 Then run the experiment driver:
 
 ```matlab
@@ -77,6 +79,8 @@ scripts `dst_laplace_full_spectrum.m` (full spectrum via `eig`) and
 `dst_laplace_partial_spectrum.m` (leading eigenvalues via `eigs`) assemble
 and solve one domain inline; edit the bounding box, resolution `M`, and
 indicator `phi` at the top of each.
+
+### Other methods
 
 Script `experiments/run_mps.sh` runs eigenvalue computation for L-shaped domain using the method of particular solutions (MPS), script
 `experiments/run_wolfram.sh` runs eigenvalue computation for various domains. (MPS and Wolfram Language computed eigenvalues are used for comparison. MPS eigenvalues for the L-shaped domain are the "ground truth", MPS computes them with high accuracy.)
