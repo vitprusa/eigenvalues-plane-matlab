@@ -69,8 +69,9 @@ function. To add or change a domain, edit a single row of
 `experiments/domain_catalog.m` (name, bounding box, indicator, and the
 full/partial resolutions `M`); the number of eigenvalues `k` and the `eigs`
 parameters (`subspace_dim`, `tolerance`, `max_iterations`) are set in
-`compute_dst_spectra`. From a shell, `experiments/run.sh` runs everything
-headless.
+`compute_dst_spectra`. From a shell, `experiments/run_dst.sh` runs the DST
+experiments headless (`experiments/run_mps.sh` for MPS,
+`experiments/run_wolfram.sh` for the Wolfram reference).
 
 For a quick, self-contained demonstration on a single domain, the root
 scripts `dst_laplace_full_spectrum.m` (full spectrum via `eig`) and
@@ -123,7 +124,7 @@ src/fem/                       finite-element cross-checks (PDE Toolbox)
 src/cheb/                      Chebyshev (Chebfun) cross-check
 src/mps/                       method of particular solutions (Betcke & Trefethen)
 src/wolfram/                   Wolfram region catalog + reportEigenvalues (NDEigensystem)
-experiments/                   spectrum drivers (compute_dst_spectra, compute_L_shaped_spectra_MPS, compute_wolfram_spectra) + run.sh, run_wolfram.sh
+experiments/                   spectrum drivers (compute_dst_spectra, compute_L_shaped_spectra_MPS, compute_wolfram_spectra) + run_dst.sh, run_mps.sh, run_wolfram.sh
 results/dst/                   computed DST spectra, one CSV per (domain, mode)
 results/mps/                   MPS L-shaped spectrum CSV
 results/wolfram/               Wolfram Language reference spectra CSV
