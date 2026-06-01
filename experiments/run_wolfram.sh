@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
-# Run the Wolfram Language eigenvalue computation, writing the
-# *-eigenvalues.csv files into this directory.
+# Run the Wolfram Language reference eigenvalue computation, writing the
+# *-eigenvalues.csv files into results/wolfram/.
 set -euo pipefail
 
 script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
@@ -10,4 +10,4 @@ if ! command -v wolframscript >/dev/null 2>&1; then
 	exit 1
 fi
 
-wolframscript -file "${script_dir}/eigenvalues-various-domains.wls"
+wolframscript -file "${script_dir}/compute_wolfram_spectra.wls"

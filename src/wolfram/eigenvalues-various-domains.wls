@@ -1,10 +1,10 @@
-#!/usr/bin/env wolframscript
 (* ::Package:: *)
 
-ClearAll["Global`*"]
-(* Work in the directory holding this file, whether run as a script
-   (wolframscript sets $InputFileName) or inside the front end. *)
-SetDirectory[If[$InputFileName =!= "", DirectoryName[$InputFileName], NotebookDirectory[]]]
+(* Core library: domain regions and the reportEigenvalues function. Loaded by
+   the driver experiments/compute_wolfram_spectra.wls, which owns the output
+   path and the run loop. This file only defines symbols -- it deliberately
+   does not ClearAll or SetDirectory, so that Get-ting it does not disturb the
+   driver's state. Open it in the front end to use the regions interactively. *)
 
 
 (* ::Title:: *)
@@ -88,6 +88,23 @@ RegionPlot[hRegion]
 Region[hRegion]
 
 
+(* ::Subsection:: *)
+(*Region catalog*)
+
+
+(* ::Text:: *)
+(*Association mapping output name -> region, iterated over by the driver. The keys become the CSV file stems.*)
+
+
+wolframRegions = <|
+	"triangle"               -> tRegion,
+	"rectangle"              -> rRegion,
+	"L-shaped"               -> lRegion,
+	"ellipse-minus-quadrant" -> ellRegion,
+	"H-shaped"               -> hRegion
+|>;
+
+
 (* ::Section:: *)
 (*Known eigenvalues*)
 
@@ -103,11 +120,11 @@ refEigenvaluesLRegion = {9.6397238, 15.19725, 2*\[Pi]^2, 29.5214811, 31.9126360,
 (*Eigenvalues computation*)
 
 
-reportEigenvalues[specRegion_, nEigenvalues_, name_String] := Module[{eigenvalues, eigenfunctions, rows, data, file, table, figures},
+reportEigenvalues[outDir_String, name_String, specRegion_, nEigenvalues_] := Module[{eigenvalues, eigenfunctions, rows, data, file, table, figures},
 	{eigenvalues, eigenfunctions} = NDEigensystem[ {-Laplacian[u[x, y], {x, y}], DirichletCondition[u[x, y] == 0, True]}, u[x, y], {x, y} \[Element] specRegion, nEigenvalues];
 	rows = Table[{n, eigenvalues[[n]]}, {n, 1, nEigenvalues}];
 	data = Join[{{"n", "lambda_n"}}, rows];
-	file = name <> "-eigenvalues.csv";
+	file = FileNameJoin[{outDir, name <> "-eigenvalues.csv"}];
 	Export[file, data];
 	table = TableForm[
 		rows,
@@ -125,52 +142,5 @@ reportEigenvalues[specRegion_, nEigenvalues_, name_String] := Module[{eigenvalue
 ]
 
 
-(* ::Section:: *)
-(*Results*)
-
-
-(* ::Subsection:: *)
-(*Triangle*)
-
-
-nEigenvalues = 40;
-reportEigenvalues[tRegion, nEigenvalues, "triangle"]
-
-
-(* ::Subsection:: *)
-(*Rectangle*)
-
-
-nEigenvalues = 40;
-reportEigenvalues[rRegion, nEigenvalues, "rectangle"]
-
-
-(* ::Subsection:: *)
-(*L-shaped*)
-
-
-nEigenvalues = 40;
-reportEigenvalues[lRegion, nEigenvalues, "L-shaped"]
-
-
-(* ::Text:: *)
-(*These are Trefethen' s eigenvalues.*)
-
-
-TableForm[Table[{n, N@refEigenvaluesLRegion[[n]]}, {n, 1, Length[refEigenvaluesLRegion]}], TableHeadings -> {None, {"n", "\!\(\*SubscriptBox[\(\[Lambda]\), \(n\)]\)"}}]
-
-
-(* ::Subsection:: *)
-(*Ellipse  minus quadrant*)
-
-
-nEigenvalues = 40;
-reportEigenvalues[ellRegion, nEigenvalues, "ellipse-minus-quadrant"]
-
-
-(* ::Subsection:: *)
-(*H-shaped region*)
-
-
-nEigenvalues = 40;
-reportEigenvalues[hRegion, nEigenvalues, "H-shaped"]
+(* The run loop (which domains, how many eigenvalues, and where to write the
+   CSVs) lives in the driver experiments/compute_wolfram_spectra.wls. *)

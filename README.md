@@ -122,10 +122,11 @@ src/fd/                        finite-difference cross-checks
 src/fem/                       finite-element cross-checks (PDE Toolbox)
 src/cheb/                      Chebyshev (Chebfun) cross-check
 src/mps/                       method of particular solutions (Betcke & Trefethen)
-experiments/                   spectrum drivers (compute_dst_spectra, compute_L_shaped_spectra_MPS) + run.sh
+src/wolfram/                   Wolfram region catalog + reportEigenvalues (NDEigensystem)
+experiments/                   spectrum drivers (compute_dst_spectra, compute_L_shaped_spectra_MPS, compute_wolfram_spectra) + run.sh, run_wolfram.sh
 results/dst/                   computed DST spectra, one CSV per (domain, mode)
 results/mps/                   MPS L-shaped spectrum CSV
-results/wolfram/               Wolfram Language reference spectra
+results/wolfram/               Wolfram Language reference spectra CSV
 test/mat_batched/              equivalence and timing tests for the builders
 ```
 
@@ -137,7 +138,7 @@ as rows of `experiments/domain_catalog.m`. `compute_dst_spectra` runs the
 
 The `*.csv` spectra under `results/` are generated outputs and are not tracked
 in git (see `.gitignore`); regenerate them with the experiments drivers (or
-`results/wolfram/run.sh` for the reference spectra).
+`experiments/run_wolfram.sh` for the reference spectra).
 
 ## Tests
 
