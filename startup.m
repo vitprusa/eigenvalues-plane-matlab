@@ -18,6 +18,7 @@ function startup
     addpath(fullfile(projectRoot, 'src', 'mps'));
     addpath(fullfile(projectRoot, 'src', 'cheb'));
     addpath(fullfile(projectRoot, 'src', 'fem'));
+    addpath(fullfile(projectRoot, 'src', 'fd'));
 
     % Local user's chebfun
     addpath(fullfile(userpath, 'chebfun'));

@@ -113,6 +113,13 @@ and mass matrices and solves the dense generalized problem `eig(K, M)`, while
 per domain into `results/fem/`; `compute_spectrum_fem_eig(name)` and
 `compute_spectrum_fem_solvepdeeig(name)` filter by domain.
 
+Script `experiments/run_fd.sh` runs a finite-difference (5-point stencil)
+computation on the same domains, over `experiments/domain_catalog_fd.m` — the
+same domains as the FEM catalog, but expressed as a bounding box plus an
+indicator mask and a grid resolution `M` (the DST representation). It writes
+one CSV per domain into `results/fd/`; `compute_spectrum_fd(name)` filters by
+domain.
+
 ## Core API (`src/dst`)
 
 The Laplace operator is built by a small family of factory functions, all
@@ -149,16 +156,17 @@ isospectral GWW drums.
 .                              startup.m + dst_laplace_full/partial_spectrum demo scripts
 src/dst/                       DST Laplace operator/matrix builders + spectrum runner
 src/domains/                   bounding box and domain indicator functions
-src/fd/                        finite-difference cross-checks
+src/fd/                        finite-difference spectrum runner (fd_laplace_spectrum)
 src/fem/                       finite-element (PDE Toolbox) spectrum runner (fem_laplace_spectrum)
 src/cheb/                      Chebfun spectral-collocation runner (chebfun_laplace_spectrum)
 src/mps/                       method of particular solutions (Betcke & Trefethen)
 src/wolfram/                   Wolfram region catalog + reportEigenvalues (NDEigensystem)
-experiments/                   spectrum drivers (compute_spectrum_{dst,mps,wolfram,cheb,fem_eig,fem_solvepdeeig}) + catalogs + run_{dst,mps,wolfram,cheb,fem_eig,fem_solvepdeeig}.sh
+experiments/                   spectrum drivers (compute_spectrum_{dst,mps,wolfram,cheb,fem_eig,fem_solvepdeeig,fd}) + catalogs + run_{dst,mps,wolfram,cheb,fem_eig,fem_solvepdeeig,fd}.sh
 results/dst/                   computed DST spectra, one CSV per (domain, mode)
 results/mps/                   MPS L-shaped spectrum CSV
 results/cheb/                  Chebfun spectra CSV, one per (domain, N)
 results/fem/                   FEM spectra CSV, one per (domain, workflow)
+results/fd/                    finite-difference spectra CSV, one per domain
 results/wolfram/               Wolfram Language reference spectra CSV
 test/mat_batched/              equivalence and timing tests for the builders
 ```
