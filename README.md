@@ -104,6 +104,15 @@ and `N`) — a cross-check whose leading eigenvalues match the analytic spectra.
 The domains are rows of `experiments/domain_catalog_cheb.m`, mirroring the DST
 catalog; `compute_spectrum_cheb(name, Nvals)` filters by domain and `N` list.
 
+Scripts `experiments/run_fem_eig.sh` and `experiments/run_fem_solvepdeeig.sh`
+run finite-element (PDE Toolbox) computations on the square, rectangle,
+L-shaped, and isosceles-triangle domains — two workflows over the same
+catalog `experiments/domain_catalog_fem.m`: `fem_eig` assembles the stiffness
+and mass matrices and solves the dense generalized problem `eig(K, M)`, while
+`fem_solvepdeeig` uses the high-level `solvepdeeig` solver. Each writes one CSV
+per domain into `results/fem/`; `compute_spectrum_fem_eig(name)` and
+`compute_spectrum_fem_solvepdeeig(name)` filter by domain.
+
 ## Core API (`src/dst`)
 
 The Laplace operator is built by a small family of factory functions, all
@@ -141,14 +150,15 @@ isospectral GWW drums.
 src/dst/                       DST Laplace operator/matrix builders + spectrum runner
 src/domains/                   bounding box and domain indicator functions
 src/fd/                        finite-difference cross-checks
-src/fem/                       finite-element cross-checks (PDE Toolbox)
+src/fem/                       finite-element (PDE Toolbox) spectrum runner (fem_laplace_spectrum)
 src/cheb/                      Chebfun spectral-collocation runner (chebfun_laplace_spectrum)
 src/mps/                       method of particular solutions (Betcke & Trefethen)
 src/wolfram/                   Wolfram region catalog + reportEigenvalues (NDEigensystem)
-experiments/                   spectrum drivers (compute_spectrum_dst, compute_spectrum_mps, compute_spectrum_wolfram, compute_spectrum_cheb) + catalogs + run_dst.sh, run_mps.sh, run_wolfram.sh, run_cheb.sh
+experiments/                   spectrum drivers (compute_spectrum_{dst,mps,wolfram,cheb,fem_eig,fem_solvepdeeig}) + catalogs + run_{dst,mps,wolfram,cheb,fem_eig,fem_solvepdeeig}.sh
 results/dst/                   computed DST spectra, one CSV per (domain, mode)
 results/mps/                   MPS L-shaped spectrum CSV
 results/cheb/                  Chebfun spectra CSV, one per (domain, N)
+results/fem/                   FEM spectra CSV, one per (domain, workflow)
 results/wolfram/               Wolfram Language reference spectra CSV
 test/mat_batched/              equivalence and timing tests for the builders
 ```
