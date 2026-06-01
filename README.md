@@ -70,14 +70,16 @@ function. To add or change a domain, edit a single row of
 full/partial resolutions `M`); the number of eigenvalues `k` and the `eigs`
 parameters (`subspace_dim`, `tolerance`, `max_iterations`) are set in
 `compute_dst_spectra`. From a shell, `experiments/run_dst.sh` runs the DST
-experiments headless (`experiments/run_mps.sh` for MPS,
-`experiments/run_wolfram.sh` for the Wolfram reference).
+experiments headless. 
 
 For a quick, self-contained demonstration on a single domain, the root
 scripts `dst_laplace_full_spectrum.m` (full spectrum via `eig`) and
 `dst_laplace_partial_spectrum.m` (leading eigenvalues via `eigs`) assemble
 and solve one domain inline; edit the bounding box, resolution `M`, and
 indicator `phi` at the top of each.
+
+Script `experiments/run_mps.sh` runs eigenvalue computation for L-shaped domain using the method of particular solutions (MPS), script
+`experiments/run_wolfram.sh` runs eigenvalue computation for various domains. (MPS and Wolfram Language computed eigenvalues are used for comparison. MPS eigenvalues for the L-shaped domain are the "ground truth", MPS computes them with high accuracy.)
 
 > **Note.** The domain selected by the indicator function must be fully
 > embedded in the rectangular bounding box. This is *not* checked in the
