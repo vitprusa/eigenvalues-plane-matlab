@@ -80,6 +80,10 @@ scripts `dst_laplace_full_spectrum.m` (full spectrum via `eig`) and
 and solve one domain inline; edit the bounding box, resolution `M`, and
 indicator `phi` at the top of each.
 
+> **Note.** The domain selected by the indicator function must be fully
+> embedded in the rectangular bounding box. This is *not* checked in the
+> code — it is the user's responsibility.
+
 ### Other methods
 
 Script `experiments/run_mps.sh` runs eigenvalue computation for L-shaped domain using the method of particular solutions (MPS), script
@@ -91,10 +95,6 @@ Script `experiments/run_cheb.sh` runs the Chebyshev spectral-collocation
 and `N`) — a cross-check whose leading eigenvalues match the analytic spectra.
 The domains are rows of `experiments/domain_catalog_cheb.m`, mirroring the DST
 catalog; `compute_spectrum_cheb(name, Nvals)` filters by domain and `N` list.
-
-> **Note.** The domain selected by the indicator function must be fully
-> embedded in the rectangular bounding box. This is *not* checked in the
-> code — it is the user's responsibility.
 
 ## Core API (`src/dst`)
 
