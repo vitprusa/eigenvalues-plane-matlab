@@ -17,10 +17,14 @@
 %   - the accuracy parameter N grows with lammax so higher modes
 %     stay resolved;
 %   - the computed eigenvalues are collected, sorted, and the first K
-%     are returned.
+%     are returned;
+%   - the random number generator is seeded so that the random interior
+%     collocation points, and hence the output, are reproducible.
 
 % --- Parameters ---
 K = 8; % number of eigenvalues wanted
+
+rng(0); % seed the RNG for reproducible interior collocation points
 
 % Upper bound on lambda guaranteed to contain at least K eigenvalues.
 % Weyl's law for the L-shape (area = 3): N(lambda) ~ area*lambda/(4*pi),

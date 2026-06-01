@@ -102,8 +102,10 @@ src/domains/                   bounding box and domain indicator functions
 src/fd/                        finite-difference cross-checks
 src/fem/                       finite-element cross-checks (PDE Toolbox)
 src/cheb/                      Chebyshev (Chebfun) cross-check
-experiments/                   domain_catalog + compute_dst_spectra driver + run.sh
-results/dst/                   computed spectra, one CSV per (domain, mode)
+src/mps/                       method of particular solutions (Betcke & Trefethen)
+experiments/                   spectrum drivers (compute_dst_spectra, compute_L_shaped_spectra_MPS) + run.sh
+results/dst/                   computed DST spectra, one CSV per (domain, mode)
+results/mps/                   MPS L-shaped spectrum CSV
 results/wolfram/               Wolfram Language reference spectra
 test/mat_batched/              equivalence and timing tests for the builders
 ```

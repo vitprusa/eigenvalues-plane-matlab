@@ -1,4 +1,8 @@
-"n","lambda_n"
+# Domain: L_shaped (MPS, method of particular solutions)
+# Computed 2026-06-01 17:16:42
+# Betcke & Trefethen, SIAM Review 47(3):469-491, 2005
+# K = 8, accuracy N = 51, points np = 102, lammax = 70.2655
+n,lambda_n
 1,9.63972384407411
 2,15.1972519264488
 3,19.739208802182

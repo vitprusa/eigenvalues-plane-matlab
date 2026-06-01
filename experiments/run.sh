@@ -1,8 +1,9 @@
 #!/usr/bin/env bash
-# Run the DST-Laplacian eigenvalue experiments for every domain, writing the
-# *-eigenvalues.csv files into results/dst/.
+# Run the eigenvalue experiments and write the CSV outputs into results/:
+#   - compute_dst_spectra            DST-Laplacian spectra -> results/dst/
+#   - compute_L_shaped_spectra_MPS   MPS L-shaped spectrum -> results/mps/
 #
-# To run a single domain or mode, call the driver directly from MATLAB, e.g.
+# To run a subset, call a driver directly from MATLAB, e.g.
 #   compute_dst_spectra("L_shaped")
 #   compute_dst_spectra("L_shaped", "partial")
 set -euo pipefail
@@ -14,4 +15,4 @@ if ! command -v matlab >/dev/null 2>&1; then
 	exit 1
 fi
 
-matlab -batch "addpath('${script_dir}'); compute_dst_spectra()"
+matlab -batch "addpath('${script_dir}'); compute_dst_spectra(); compute_L_shaped_spectra_MPS()"
