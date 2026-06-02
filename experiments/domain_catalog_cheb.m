@@ -17,9 +17,10 @@ function cases = domain_catalog_cheb(name)
     % Start with an empty struct array carrying the right fields.
     cases = repmat(make_case('', [0 0 0 0]), 0, 1);
 
-    % name                 box [a b c d]
-    cases(end+1) = make_case('square',    [0 pi   0 pi]);    % analytic n^2 + m^2
-    cases(end+1) = make_case('rectangle', [0 2*pi 0 pi]);    % analytic m^2/4 + n^2
+    % name                      box [a b c d]
+    cases(end+1) = make_case('square',         [0 pi   0 pi]);     % analytic n^2 + m^2
+    cases(end+1) = make_case('rectangle',      [0 2*pi 0 pi]);     % analytic m^2/4 + n^2
+    cases(end+1) = make_case('small_rectangle', [0 pi/2 0 pi/4]);  % analytic 4 m^2 + 16 n^2
 
     if nargin >= 1 && ~isempty(name)
         match = strcmp({cases.name}, name);

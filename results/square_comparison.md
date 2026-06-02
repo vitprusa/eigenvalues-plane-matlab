@@ -1,0 +1,33 @@
+# square domain — eigenvalue comparison across techniques
+
+First 8 eigenvalues of the Dirichlet Laplacian (-Delta u = lambda u) on the
+square domain, computed by each technique. Values to 5 decimals; the **DOFs**
+row gives the size of each discrete problem and **Time (s)** the measured
+computation time (`tic`/`toc` around each per-domain solve; Wolfram is not timed).
+
+| n | DST full | DST partial | FD | FEM eig | FEM solvepdeeig | Cheb (N=40) | Analytic (exact) |
+|---|---|---|---|---|---|---|---|
+| **DOFs** | 2500 | 40000 | 2500 | 4301 | 18457 § | 1444 | — |
+| **Time (s)** | 4.09 | 69.85 | 0.69 | 11.20 | 6.54 | 0.56 | — |
+| 1 | 2.00000 | 2.00000 | 1.99937 | 2.00000 | 2.00000 | 2.00000 | **2.00000** |
+| 2 | 5.00000 | 5.00000 | 4.99463 | 5.00001 | 5.00000 | 5.00000 | **5.00000** |
+| 3 | 5.00000 | 5.00000 | 4.99463 | 5.00001 | 5.00000 | 5.00000 | **5.00000** |
+| 4 | 8.00000 | 8.00000 | 7.98989 | 8.00004 | 8.00000 | 8.00000 | **8.00000** |
+| 5 | 10.00000 | 10.00000 | 9.97410 | 10.00008 | 10.00000 | 10.00000 | **10.00000** |
+| 6 | 10.00000 | 10.00000 | 9.97410 | 10.00008 | 10.00000 | 10.00000 | **10.00000** |
+| 7 | 13.00000 | 13.00000 | 12.96936 | 13.00018 | 13.00001 | 13.00000 | **13.00000** |
+| 8 | 13.00000 | 13.00000 | 12.96936 | 13.00018 | 13.00001 | 13.00000 | **13.00000** |
+
+**§  FEM solvepdeeig** reports the number of mesh nodes, not the (constrained) degrees of freedom — unlike FEM eig, which records `size(K,1)`.
+
+## Sources
+
+| Column | File |
+|--------|------|
+| DST full | `results/dst/square_full-eigenvalues.csv` |
+| DST partial | `results/dst/square_partial-eigenvalues.csv` |
+| FD | `results/fd/square_fd-eigenvalues.csv` |
+| FEM eig | `results/fem/square_fem_eig-eigenvalues.csv` |
+| FEM solvepdeeig | `results/fem/square_fem_solvepdeeig-eigenvalues.csv` |
+| Cheb (N=40) | `results/cheb/square_N40-eigenvalues.csv` |
+| Analytic (exact) | closed-form spectrum |
