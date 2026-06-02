@@ -40,38 +40,3 @@ FEM eig = constrained DOFs (`size(K,1)`), FEM solvepdeeig = mesh nodes.
 | FEM solvepdeeig | `results/fem/L_shaped_fem_solvepdeeig-eigenvalues.csv` | Hmax = 0.05, `solvepdeeig`, 5653 nodes |
 | Wolfram | `results/wolfram/L-shaped-eigenvalues.csv` | `NDEigensystem`, default adaptive mesh |
 | MPS | `results/mps/L_shaped_eigenvalues_MPS.csv` | method of particular solutions, 51 basis fns |
-
-## Reading the results
-
-MPS is the high-accuracy reference (it matches Betcke & Trefethen to 7-8
-digits). Relative to it:
-
-- **lambda_1** is the hardest mode (re-entrant-corner singularity; the true
-  value is 9.6397238). MPS nails it; DST partial (9.64298) and FEM solvepdeeig
-  (9.64532) are the closest of the rest; FD (9.66133) and DST full (9.67525,
-  coarse M = 49) overshoot the most. All methods converge from above.
-- **lambda_3 = 2*pi^2 ~ 19.73921** and **lambda_8 = 5*pi^2 ~ 49.34802** are
-  captured to machine precision by DST (the uniform grid is aligned so these
-  analytic modes are exact) and by MPS; FD cannot reproduce them exactly.
-- **FD and DST full use the identical 1776 DOFs** (both M = 49 on the same
-  masked L-shaped grid) — an apples-to-apples comparison. At equal size DST
-  exactly captures lambda_3, lambda_8 that FD misses; for the corner-singular
-  lambda_1 the two are comparable.
-- DST partial (M = 299) is the most accurate grid method, at ~38x the DOFs of
-  DST full. FD is uniformly lowest (2nd-order stencil); Wolfram sits slightly
-  high but still within ~0.2%.
-- Chebfun is absent: its tensor-product (`diffmat` + Kronecker) construction
-  handles rectangles only, so it has no L-shaped entry.
-
-## Cost vs. accuracy
-
-- **MPS is the efficiency winner**: highest accuracy in 4.7 s with just 51
-  basis functions — orders of magnitude fewer DOFs than the grid methods.
-- **DST partial buys its accuracy dearly**: 170 s (66 901 DOFs), by far the
-  most expensive — the cost of the `eigs` solve on the fine M = 299 operator.
-- **FD and DST full are the cheapest grid solves** (~1 s at 1776 DOFs); FEM
-  sits between (~2 s). So at equal size DST full matches FD's cost while being
-  more accurate on the smooth modes.
-- Timings are wall-clock for the per-domain solve (assembly + eigensolver),
-  measured with `tic`/`toc`; they exclude MATLAB start-up and I/O and vary
-  run-to-run (the first DST call also absorbs the parallel-pool start-up).
