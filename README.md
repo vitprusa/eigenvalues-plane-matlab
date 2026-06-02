@@ -105,9 +105,10 @@ The domains are rows of `experiments/domain_catalog_cheb.m`, mirroring the DST
 catalog; `compute_spectrum_cheb(name, Nvals)` filters by domain and `N` list.
 
 Scripts `experiments/run_fem_eig.sh` and `experiments/run_fem_solvepdeeig.sh`
-run finite-element (PDE Toolbox) computations on the square, rectangle,
-L-shaped, and isosceles-triangle domains — two workflows over the same
-catalog `experiments/domain_catalog_fem.m`: `fem_eig` assembles the stiffness
+run finite-element (PDE Toolbox) computations on the same nine domains as the
+DST catalog (built as `decsg` geometry, including the ellipse-minus-quadrant
+and the two GWW drums) — two workflows over the same catalog
+`experiments/domain_catalog_fem.m`: `fem_eig` assembles the stiffness
 and mass matrices and solves the dense generalized problem `eig(K, M)`, while
 `fem_solvepdeeig` uses the high-level `solvepdeeig` solver. Each writes one CSV
 per domain into `results/fem/`; `compute_spectrum_fem_eig(name)` and
