@@ -2,7 +2,8 @@
 """Generate per-domain eigenvalue comparison tables.
 
 For every domain in the DST catalog this writes
-results/eigenvalues/<domain>_comparison.md,
+results/eigenvalues_head/<domain>_comparison.md (reading the per-method CSVs
+from results/eigenvalues/),
 comparing the first few Dirichlet-Laplacian eigenvalues from each technique that
 handles the domain (DST full/partial, FD, FEM eig/solvepdeeig, Chebyshev for the
 rectangular domains, Wolfram where it computed the same domain, MPS for the
@@ -10,7 +11,7 @@ L-shape), plus the analytic spectrum where a closed form is known. The DOFs and
 Time rows are read from each CSV's metadata header.
 
 Run after the experiment drivers have produced the results/eigenvalues/*/ CSVs:
-    python3 experiments/make_comparison_tables.py
+    python3 experiments/make_eigenvalues_head_comparison_tables.py
 """
 
 import os
@@ -18,7 +19,8 @@ import re
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(HERE)
-RES = os.path.join(ROOT, "results", "eigenvalues")
+RES = os.path.join(ROOT, "results", "eigenvalues")        # per-method CSV inputs
+OUT = os.path.join(ROOT, "results", "eigenvalues_head")   # comparison-table outputs
 
 NEIG = 8          # eigenvalues shown per table
 CHEB_N = 40       # Chebyshev order used for the Cheb column
@@ -209,9 +211,10 @@ def render(domain, cols):
 
 
 def main():
+    os.makedirs(OUT, exist_ok=True)
     for domain in DOMAINS:
         cols = build_columns(domain)
-        out = os.path.join(RES, f"{domain}_comparison.md")
+        out = os.path.join(OUT, f"{domain}_comparison.md")
         with open(out, "w") as fh:
             fh.write(render(domain, cols))
         present = ", ".join(c["header"] for c in cols)

@@ -162,10 +162,11 @@ src/fem/                       finite-element (PDE Toolbox) spectrum runner (fem
 src/cheb/                      Chebfun spectral-collocation runner (chebfun_laplace_spectrum)
 src/mps/                       method of particular solutions (Betcke & Trefethen)
 src/wolfram/                   Wolfram region catalog + reportEigenvalues (NDEigensystem)
-experiments/                   spectrum drivers (compute_spectrum_{dst,mps,wolfram,cheb,fem_eig,fem_solvepdeeig,fd}) + catalogs + run_{dst,mps,wolfram,cheb,fem_eig,fem_solvepdeeig,fd}.sh
-results/eigenvalues/     first-eigenvalue outputs: a CSV subdir per method
-                               (dst, fd, fem, cheb, mps, wolfram) + the generated
-                               <domain>_comparison.md tables
+experiments/                   spectrum drivers (compute_spectrum_{dst,mps,wolfram,cheb,fem_eig,fem_solvepdeeig,fd}) + catalogs + run_{dst,mps,wolfram,cheb,fem_eig,fem_solvepdeeig,fd}.sh + make_eigenvalues_head_comparison_tables.py
+results/eigenvalues/           per-method spectra CSV, a subdir each (dst, fd, fem,
+                               cheb, mps, wolfram)
+results/eigenvalues_head/      generated <domain>_comparison.md tables (from
+                               experiments/make_eigenvalues_head_comparison_tables.py)
 test/mat_batched/              equivalence and timing tests for the builders
 ```
 
