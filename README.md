@@ -167,8 +167,10 @@ results/eigenvalues/           per-method spectra CSV, a subdir each (dst, fd, f
                                cheb, mps, wolfram)
 results/eigenvalues_head/      generated <domain>_comparison.md tables (from
                                experiments/make_eigenvalues_head_comparison_tables.py)
-results/eigenvalues_dof_sweep/ L-shaped DOF-sweep spectra CSV + plot (from
-                               experiments/compute_L_shaped_dof_sweep.m)
+results/eigenvalues_dof_sweep/ L-shaped and rectangle DOF-sweep spectra CSV +
+                               plots; experiments/compute_*_dof_sweep.m generates
+                               the data (only the missing CSVs),
+                               plot_*_dof_sweep.m draws the figure
 test/mat_batched/              equivalence and timing tests for the builders
 ```
 
