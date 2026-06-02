@@ -4,7 +4,7 @@ function compute_spectrum_fem_eig(name)
 %   compute_spectrum_fem_eig() computes the Dirichlet-Laplacian spectrum for
 %   every domain in DOMAIN_CATALOG_FEM by assembling the stiffness and mass
 %   matrices and solving the dense generalized eigenproblem eig(K, M). It
-%   writes one CSV per domain into results/fem/ as
+%   writes one CSV per domain into results/eigenvalues/fem/ as
 %   <domain>_fem_eig-eigenvalues.csv (columns n, lambda_n) with a metadata
 %   header.
 %
@@ -26,7 +26,7 @@ function compute_spectrum_fem_eig(name)
     run(fullfile(project_root, 'startup.m'));
     addpath(experiments_dir);
 
-    out_dir = fullfile(project_root, 'results', 'fem');
+    out_dir = fullfile(project_root, 'results', 'eigenvalues', 'fem');
     if ~exist(out_dir, 'dir')
         mkdir(out_dir);
     end

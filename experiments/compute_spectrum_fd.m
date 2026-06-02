@@ -3,7 +3,7 @@ function compute_spectrum_fd(name)
 %
 %   compute_spectrum_fd() computes the Dirichlet-Laplacian spectrum for every
 %   domain in DOMAIN_CATALOG_FD with the 5-point finite-difference stencil and
-%   a dense eig, writing one CSV per domain into results/fd/ as
+%   a dense eig, writing one CSV per domain into results/eigenvalues/fd/ as
 %   <domain>_fd-eigenvalues.csv (columns n, lambda_n) with a metadata header.
 %
 %   compute_spectrum_fd(name) restricts to the single domain "name".
@@ -21,7 +21,7 @@ function compute_spectrum_fd(name)
     run(fullfile(project_root, 'startup.m'));
     addpath(experiments_dir);
 
-    out_dir = fullfile(project_root, 'results', 'fd');
+    out_dir = fullfile(project_root, 'results', 'eigenvalues', 'fd');
     if ~exist(out_dir, 'dir')
         mkdir(out_dir);
     end

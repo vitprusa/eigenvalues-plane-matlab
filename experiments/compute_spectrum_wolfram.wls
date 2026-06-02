@@ -3,7 +3,7 @@
 
 (* Driver: compute the reference Dirichlet-Laplacian spectra on the catalog of
    regions with NDEigensystem and write one CSV (columns n, lambda_n) per
-   domain into results/wolfram/. This mirrors the MATLAB experiments drivers:
+   domain into results/eigenvalues/wolfram/. This mirrors the MATLAB drivers:
    the regions and the reportEigenvalues runner live in the core library
    src/wolfram/eigenvalues-various-domains.wls; this file owns the output path
    and the run loop. Run headless with experiments/run_wolfram.sh. *)
@@ -19,7 +19,7 @@ projectRoot = ParentDirectory[thisDir];
 Get[FileNameJoin[{projectRoot, "src", "wolfram", "eigenvalues-various-domains.wls"}]];
 
 (* Output directory for the generated CSVs (created if missing). *)
-outDir = FileNameJoin[{projectRoot, "results", "wolfram"}];
+outDir = FileNameJoin[{projectRoot, "results", "eigenvalues", "wolfram"}];
 If[! DirectoryQ[outDir], CreateDirectory[outDir, CreateIntermediateDirectories -> True]];
 
 nEigenvalues = 40;

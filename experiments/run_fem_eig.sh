@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Run the FEM assembled-matrix (eig(K, M)) eigenvalue experiments for every
-# domain in the catalog, writing one CSV per domain into results/fem/.
+# domain in the catalog, writing one CSV per domain into results/eigenvalues/fem/.
 # Requires the PDE Toolbox.
 #
 # To run a subset, call the driver directly from MATLAB, e.g.

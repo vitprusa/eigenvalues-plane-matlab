@@ -4,7 +4,7 @@ function compute_spectrum_fem_solvepdeeig(name)
 %   compute_spectrum_fem_solvepdeeig() computes the Dirichlet-Laplacian
 %   spectrum for every domain in DOMAIN_CATALOG_FEM with the high-level
 %   solvepdeeig solver over the range [0, 200]. It writes one CSV per domain
-%   into results/fem/ as <domain>_fem_solvepdeeig-eigenvalues.csv (columns n,
+%   into results/eigenvalues/fem/ as <domain>_fem_solvepdeeig-eigenvalues.csv (columns n,
 %   lambda_n) with a metadata header.
 %
 %   compute_spectrum_fem_solvepdeeig(name) restricts to the single domain
@@ -25,7 +25,7 @@ function compute_spectrum_fem_solvepdeeig(name)
     run(fullfile(project_root, 'startup.m'));
     addpath(experiments_dir);
 
-    out_dir = fullfile(project_root, 'results', 'fem');
+    out_dir = fullfile(project_root, 'results', 'eigenvalues', 'fem');
     if ~exist(out_dir, 'dir')
         mkdir(out_dir);
     end

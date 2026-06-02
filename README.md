@@ -72,7 +72,7 @@ Each (domain, mode) pair produces one CSV; the two `M` values come from the
 catalog row.
 
 It computes the eigenvalues for every domain in `domain_catalog_dst` and writes
-one CSV per (domain, mode) into `results/dst/`, each carrying a header that
+one CSV per (domain, mode) into `results/eigenvalues/dst/`, each carrying a header that
 records the bounding box, resolution, grid spacing, dofs, and indicator
 function. To add or change a domain, edit a single row of
 `experiments/domain_catalog_dst.m` (name, bounding box, indicator, and the
@@ -111,14 +111,14 @@ and the two GWW drums) — two workflows over the same catalog
 `experiments/domain_catalog_fem.m`: `fem_eig` assembles the stiffness
 and mass matrices and solves the dense generalized problem `eig(K, M)`, while
 `fem_solvepdeeig` uses the high-level `solvepdeeig` solver. Each writes one CSV
-per domain into `results/fem/`; `compute_spectrum_fem_eig(name)` and
+per domain into `results/eigenvalues/fem/`; `compute_spectrum_fem_eig(name)` and
 `compute_spectrum_fem_solvepdeeig(name)` filter by domain.
 
 Script `experiments/run_fd.sh` runs a finite-difference (5-point stencil)
 computation on the same domains, over `experiments/domain_catalog_fd.m` — the
 same domains as the FEM catalog, but expressed as a bounding box plus an
 indicator mask and a grid resolution `M` (the DST representation). It writes
-one CSV per domain into `results/fd/`; `compute_spectrum_fd(name)` filters by
+one CSV per domain into `results/eigenvalues/fd/`; `compute_spectrum_fd(name)` filters by
 domain.
 
 ## Core API (`src/dst`)
@@ -163,12 +163,9 @@ src/cheb/                      Chebfun spectral-collocation runner (chebfun_lapl
 src/mps/                       method of particular solutions (Betcke & Trefethen)
 src/wolfram/                   Wolfram region catalog + reportEigenvalues (NDEigensystem)
 experiments/                   spectrum drivers (compute_spectrum_{dst,mps,wolfram,cheb,fem_eig,fem_solvepdeeig,fd}) + catalogs + run_{dst,mps,wolfram,cheb,fem_eig,fem_solvepdeeig,fd}.sh
-results/dst/                   computed DST spectra, one CSV per (domain, mode)
-results/mps/                   MPS L-shaped spectrum CSV
-results/cheb/                  Chebfun spectra CSV, one per (domain, N)
-results/fem/                   FEM spectra CSV, one per (domain, workflow)
-results/fd/                    finite-difference spectra CSV, one per domain
-results/wolfram/               Wolfram Language reference spectra CSV
+results/eigenvalues/     first-eigenvalue outputs: a CSV subdir per method
+                               (dst, fd, fem, cheb, mps, wolfram) + the generated
+                               <domain>_comparison.md tables
 test/mat_batched/              equivalence and timing tests for the builders
 ```
 
@@ -176,7 +173,7 @@ The domains (square, rectangle, ellipse minus a quadrant, isosceles triangle,
 small rectangle, H, L-shaped, and the GWW1/GWW2 isospectral drums) are defined
 as rows of `experiments/domain_catalog_dst.m`. `compute_spectrum_dst` runs the
 `dst_laplace_spectrum` runner over the catalog and writes the results to
-`results/dst/`; the source tree holds no generated per-domain scripts.
+`results/eigenvalues/dst/`; the source tree holds no generated per-domain scripts.
 
 The `*.csv` spectra under `results/` are generated outputs and are not tracked
 in git (see `.gitignore`); regenerate them with the experiments drivers (or

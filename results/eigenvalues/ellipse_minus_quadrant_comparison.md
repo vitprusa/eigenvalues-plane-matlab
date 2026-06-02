@@ -24,9 +24,9 @@ computation time (`tic`/`toc` around each per-domain solve; Wolfram is not timed
 
 | Column | File |
 |--------|------|
-| DST full | `results/dst/ellipse_minus_quadrant_full-eigenvalues.csv` |
-| DST partial | `results/dst/ellipse_minus_quadrant_partial-eigenvalues.csv` |
-| FD | `results/fd/ellipse_minus_quadrant_fd-eigenvalues.csv` |
-| FEM eig | `results/fem/ellipse_minus_quadrant_fem_eig-eigenvalues.csv` |
-| FEM solvepdeeig | `results/fem/ellipse_minus_quadrant_fem_solvepdeeig-eigenvalues.csv` |
-| Wolfram | `results/wolfram/ellipse-minus-quadrant-eigenvalues.csv` |
+| DST full | `results/eigenvalues/dst/ellipse_minus_quadrant_full-eigenvalues.csv` |
+| DST partial | `results/eigenvalues/dst/ellipse_minus_quadrant_partial-eigenvalues.csv` |
+| FD | `results/eigenvalues/fd/ellipse_minus_quadrant_fd-eigenvalues.csv` |
+| FEM eig | `results/eigenvalues/fem/ellipse_minus_quadrant_fem_eig-eigenvalues.csv` |
+| FEM solvepdeeig | `results/eigenvalues/fem/ellipse_minus_quadrant_fem_solvepdeeig-eigenvalues.csv` |
+| Wolfram | `results/eigenvalues/wolfram/ellipse-minus-quadrant-eigenvalues.csv` |

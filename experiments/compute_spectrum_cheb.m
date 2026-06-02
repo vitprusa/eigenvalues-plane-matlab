@@ -3,7 +3,7 @@ function compute_spectrum_cheb(name, Nvals)
 %
 %   compute_spectrum_cheb() computes the Dirichlet-Laplacian spectrum for every
 %   domain in DOMAIN_CATALOG_CHEB at each resolution in a default list of
-%   Chebyshev orders, writing one CSV per (domain, N) into results/cheb/.
+%   Chebyshev orders, writing one CSV per (domain, N) into results/eigenvalues/cheb/.
 %
 %   compute_spectrum_cheb(name) restricts to the single domain "name".
 %   compute_spectrum_cheb(name, Nvals) overrides the list of Chebyshev orders N.
@@ -33,7 +33,7 @@ function compute_spectrum_cheb(name, Nvals)
     run(fullfile(project_root, 'startup.m'));
     addpath(experiments_dir);
 
-    out_dir = fullfile(project_root, 'results', 'cheb');
+    out_dir = fullfile(project_root, 'results', 'eigenvalues', 'cheb');
     if ~exist(out_dir, 'dir')
         mkdir(out_dir);
     end

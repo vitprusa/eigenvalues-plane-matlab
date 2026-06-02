@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Run the DST-Laplacian eigenvalue experiments for every domain, writing the
-# *-eigenvalues.csv files into results/dst/.
+# *-eigenvalues.csv files into results/eigenvalues/dst/.
 #
 # To run a subset, call the driver directly from MATLAB, e.g.
 #   compute_spectrum_dst("L_shaped")

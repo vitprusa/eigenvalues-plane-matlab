@@ -24,9 +24,9 @@ computation time (`tic`/`toc` around each per-domain solve; Wolfram is not timed
 
 | Column | File |
 |--------|------|
-| DST full | `results/dst/isosceles_triangle_full-eigenvalues.csv` |
-| DST partial | `results/dst/isosceles_triangle_partial-eigenvalues.csv` |
-| FD | `results/fd/isosceles_triangle_fd-eigenvalues.csv` |
-| FEM eig | `results/fem/isosceles_triangle_fem_eig-eigenvalues.csv` |
-| FEM solvepdeeig | `results/fem/isosceles_triangle_fem_solvepdeeig-eigenvalues.csv` |
+| DST full | `results/eigenvalues/dst/isosceles_triangle_full-eigenvalues.csv` |
+| DST partial | `results/eigenvalues/dst/isosceles_triangle_partial-eigenvalues.csv` |
+| FD | `results/eigenvalues/fd/isosceles_triangle_fd-eigenvalues.csv` |
+| FEM eig | `results/eigenvalues/fem/isosceles_triangle_fem_eig-eigenvalues.csv` |
+| FEM solvepdeeig | `results/eigenvalues/fem/isosceles_triangle_fem_solvepdeeig-eigenvalues.csv` |
 | Analytic (exact) | closed-form spectrum |

@@ -1,14 +1,15 @@
 #!/usr/bin/env python3
 """Generate per-domain eigenvalue comparison tables.
 
-For every domain in the DST catalog this writes results/<domain>_comparison.md,
+For every domain in the DST catalog this writes
+results/eigenvalues/<domain>_comparison.md,
 comparing the first few Dirichlet-Laplacian eigenvalues from each technique that
 handles the domain (DST full/partial, FD, FEM eig/solvepdeeig, Chebyshev for the
 rectangular domains, Wolfram where it computed the same domain, MPS for the
 L-shape), plus the analytic spectrum where a closed form is known. The DOFs and
 Time rows are read from each CSV's metadata header.
 
-Run after the experiment drivers have produced the results/*/ CSVs:
+Run after the experiment drivers have produced the results/eigenvalues/*/ CSVs:
     python3 experiments/make_comparison_tables.py
 """
 
@@ -17,7 +18,7 @@ import re
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(HERE)
-RES = os.path.join(ROOT, "results")
+RES = os.path.join(ROOT, "results", "eigenvalues")
 
 NEIG = 8          # eigenvalues shown per table
 CHEB_N = 40       # Chebyshev order used for the Cheb column
@@ -200,7 +201,7 @@ def render(domain, cols):
     lines.append("|--------|------|")
     for c in cols:
         if c["path"]:
-            lines.append(f"| {c['header']} | `results/{c['path']}` |")
+            lines.append(f"| {c['header']} | `results/eigenvalues/{c['path']}` |")
         else:
             lines.append(f"| {c['header']} | closed-form spectrum |")
     lines.append("")

@@ -3,7 +3,7 @@ function compute_spectrum_dst(name, modes)
 %
 %   compute_spectrum_dst() computes both the full and the partial spectrum for
 %   every domain in DOMAIN_CATALOG_DST and writes one CSV per (domain, mode) into
-%   results/dst/.
+%   results/eigenvalues/dst/.
 %
 %   compute_spectrum_dst(name) restricts the run to the single domain "name".
 %   compute_spectrum_dst(name, modes) further restricts the modes, where modes
@@ -33,7 +33,7 @@ function compute_spectrum_dst(name, modes)
     run(fullfile(project_root, 'startup.m'));
     addpath(experiments_dir);
 
-    out_dir = fullfile(project_root, 'results', 'dst');
+    out_dir = fullfile(project_root, 'results', 'eigenvalues', 'dst');
 
     % Partial-spectrum solver options, shared by all domains.
     opts = struct('k', 10, 'tolerance', 1e-10, ...

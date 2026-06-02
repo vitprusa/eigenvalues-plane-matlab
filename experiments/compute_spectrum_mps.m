@@ -3,7 +3,7 @@ function compute_spectrum_mps()
 %
 %   compute_spectrum_mps() computes the leading Dirichlet-Laplacian
 %   eigenvalues on the L-shaped region by the Method of Particular Solutions
-%   and writes them to results/mps/L_shaped_eigenvalues_MPS.csv with a
+%   and writes them to results/eigenvalues/mps/L_shaped_eigenvalues_MPS.csv with a
 %   metadata header (columns n, lambda_n).
 %
 %   The computation itself is the Betcke & Trefethen "Ldrum" code: this runner
@@ -24,7 +24,7 @@ function compute_spectrum_mps()
     Ldrum_modified;
     mps_time = toc(t_solve);
 
-    out_dir = fullfile(project_root, 'results', 'mps');
+    out_dir = fullfile(project_root, 'results', 'eigenvalues', 'mps');
     if ~exist(out_dir, 'dir')
         mkdir(out_dir);
     end

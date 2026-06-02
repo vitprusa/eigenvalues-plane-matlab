@@ -24,10 +24,10 @@ computation time (`tic`/`toc` around each per-domain solve; Wolfram is not timed
 
 | Column | File |
 |--------|------|
-| DST full | `results/dst/L_shaped_full-eigenvalues.csv` |
-| DST partial | `results/dst/L_shaped_partial-eigenvalues.csv` |
-| FD | `results/fd/L_shaped_fd-eigenvalues.csv` |
-| FEM eig | `results/fem/L_shaped_fem_eig-eigenvalues.csv` |
-| FEM solvepdeeig | `results/fem/L_shaped_fem_solvepdeeig-eigenvalues.csv` |
-| Wolfram | `results/wolfram/L-shaped-eigenvalues.csv` |
-| MPS (ground truth) | `results/mps/L_shaped_eigenvalues_MPS.csv` |
+| DST full | `results/eigenvalues/dst/L_shaped_full-eigenvalues.csv` |
+| DST partial | `results/eigenvalues/dst/L_shaped_partial-eigenvalues.csv` |
+| FD | `results/eigenvalues/fd/L_shaped_fd-eigenvalues.csv` |
+| FEM eig | `results/eigenvalues/fem/L_shaped_fem_eig-eigenvalues.csv` |
+| FEM solvepdeeig | `results/eigenvalues/fem/L_shaped_fem_solvepdeeig-eigenvalues.csv` |
+| Wolfram | `results/eigenvalues/wolfram/L-shaped-eigenvalues.csv` |
+| MPS (ground truth) | `results/eigenvalues/mps/L_shaped_eigenvalues_MPS.csv` |

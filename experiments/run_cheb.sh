@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Run the Chebfun eigenvalue experiments for every domain in the catalog and a
 # sweep of Chebyshev orders N, writing one CSV per (domain, N) into
-# results/cheb/. Requires Chebfun (see startup.m).
+# results/eigenvalues/cheb/. Requires Chebfun (see startup.m).
 #
 # To run a subset, call the driver directly from MATLAB, e.g.
 #   compute_spectrum_cheb("square")

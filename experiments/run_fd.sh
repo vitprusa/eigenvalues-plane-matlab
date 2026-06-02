@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Run the finite-difference eigenvalue experiments for every domain in the
-# catalog, writing one CSV per domain into results/fd/.
+# catalog, writing one CSV per domain into results/eigenvalues/fd/.
 #
 # To run a subset, call the driver directly from MATLAB, e.g.
 #   compute_spectrum_fd("L_shaped")

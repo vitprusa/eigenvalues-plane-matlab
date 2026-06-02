@@ -24,11 +24,11 @@ computation time (`tic`/`toc` around each per-domain solve; Wolfram is not timed
 
 | Column | File |
 |--------|------|
-| DST full | `results/dst/rectangle_full-eigenvalues.csv` |
-| DST partial | `results/dst/rectangle_partial-eigenvalues.csv` |
-| FD | `results/fd/rectangle_fd-eigenvalues.csv` |
-| FEM eig | `results/fem/rectangle_fem_eig-eigenvalues.csv` |
-| FEM solvepdeeig | `results/fem/rectangle_fem_solvepdeeig-eigenvalues.csv` |
-| Cheb (N=40) | `results/cheb/rectangle_N40-eigenvalues.csv` |
-| Wolfram | `results/wolfram/rectangle-eigenvalues.csv` |
+| DST full | `results/eigenvalues/dst/rectangle_full-eigenvalues.csv` |
+| DST partial | `results/eigenvalues/dst/rectangle_partial-eigenvalues.csv` |
+| FD | `results/eigenvalues/fd/rectangle_fd-eigenvalues.csv` |
+| FEM eig | `results/eigenvalues/fem/rectangle_fem_eig-eigenvalues.csv` |
+| FEM solvepdeeig | `results/eigenvalues/fem/rectangle_fem_solvepdeeig-eigenvalues.csv` |
+| Cheb (N=40) | `results/eigenvalues/cheb/rectangle_N40-eigenvalues.csv` |
+| Wolfram | `results/eigenvalues/wolfram/rectangle-eigenvalues.csv` |
 | Analytic (exact) | closed-form spectrum |

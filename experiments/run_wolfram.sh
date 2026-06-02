@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Run the Wolfram Language reference eigenvalue computation, writing the
-# *-eigenvalues.csv files into results/wolfram/.
+# *-eigenvalues.csv files into results/eigenvalues/wolfram/.
 set -euo pipefail
 
 script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"

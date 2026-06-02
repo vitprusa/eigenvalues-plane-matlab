@@ -8,7 +8,7 @@ computation time (`tic`/`toc` around each per-domain solve; Wolfram is not timed
 | n | DST full | DST partial | FD | FEM eig | FEM solvepdeeig | Cheb (N=40) | Analytic (exact) |
 |---|---|---|---|---|---|---|---|
 | **DOFs** | 2500 | 40000 | 2500 | 4301 | 18457 § | 1444 | — |
-| **Time (s)** | 4.09 | 69.85 | 0.69 | 11.20 | 6.54 | 0.56 | — |
+| **Time (s)** | 4.09 | 69.85 | 1.12 | 11.20 | 6.54 | 0.56 | — |
 | 1 | 2.00000 | 2.00000 | 1.99937 | 2.00000 | 2.00000 | 2.00000 | **2.00000** |
 | 2 | 5.00000 | 5.00000 | 4.99463 | 5.00001 | 5.00000 | 5.00000 | **5.00000** |
 | 3 | 5.00000 | 5.00000 | 4.99463 | 5.00001 | 5.00000 | 5.00000 | **5.00000** |
@@ -24,10 +24,10 @@ computation time (`tic`/`toc` around each per-domain solve; Wolfram is not timed
 
 | Column | File |
 |--------|------|
-| DST full | `results/dst/square_full-eigenvalues.csv` |
-| DST partial | `results/dst/square_partial-eigenvalues.csv` |
-| FD | `results/fd/square_fd-eigenvalues.csv` |
-| FEM eig | `results/fem/square_fem_eig-eigenvalues.csv` |
-| FEM solvepdeeig | `results/fem/square_fem_solvepdeeig-eigenvalues.csv` |
-| Cheb (N=40) | `results/cheb/square_N40-eigenvalues.csv` |
+| DST full | `results/eigenvalues/dst/square_full-eigenvalues.csv` |
+| DST partial | `results/eigenvalues/dst/square_partial-eigenvalues.csv` |
+| FD | `results/eigenvalues/fd/square_fd-eigenvalues.csv` |
+| FEM eig | `results/eigenvalues/fem/square_fem_eig-eigenvalues.csv` |
+| FEM solvepdeeig | `results/eigenvalues/fem/square_fem_solvepdeeig-eigenvalues.csv` |
+| Cheb (N=40) | `results/eigenvalues/cheb/square_N40-eigenvalues.csv` |
 | Analytic (exact) | closed-form spectrum |

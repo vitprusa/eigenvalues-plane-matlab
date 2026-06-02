@@ -24,10 +24,10 @@ computation time (`tic`/`toc` around each per-domain solve; Wolfram is not timed
 
 | Column | File |
 |--------|------|
-| DST full | `results/dst/small_rectangle_full-eigenvalues.csv` |
-| DST partial | `results/dst/small_rectangle_partial-eigenvalues.csv` |
-| FD | `results/fd/small_rectangle_fd-eigenvalues.csv` |
-| FEM eig | `results/fem/small_rectangle_fem_eig-eigenvalues.csv` |
-| FEM solvepdeeig | `results/fem/small_rectangle_fem_solvepdeeig-eigenvalues.csv` |
-| Cheb (N=40) | `results/cheb/small_rectangle_N40-eigenvalues.csv` |
+| DST full | `results/eigenvalues/dst/small_rectangle_full-eigenvalues.csv` |
+| DST partial | `results/eigenvalues/dst/small_rectangle_partial-eigenvalues.csv` |
+| FD | `results/eigenvalues/fd/small_rectangle_fd-eigenvalues.csv` |
+| FEM eig | `results/eigenvalues/fem/small_rectangle_fem_eig-eigenvalues.csv` |
+| FEM solvepdeeig | `results/eigenvalues/fem/small_rectangle_fem_solvepdeeig-eigenvalues.csv` |
+| Cheb (N=40) | `results/eigenvalues/cheb/small_rectangle_N40-eigenvalues.csv` |
 | Analytic (exact) | closed-form spectrum |
