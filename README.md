@@ -170,6 +170,8 @@ experiments/eigenvalues_dof_sweep/ DOF-sweep drivers and plots (compute_*_dof_sw
                                plot_*_dof_sweep.m, load_dof_sweep, run_*_dof_sweep.sh)
 experiments/grid_visualisation/ DST grid + domain-mask figures (plot_grid_visualisation.m,
                                run_grid_visualisation.sh)
+experiments/eigenvalues_weyl/  Weyl-asymptotics visual check (plot_weyl_asymptotics.m,
+                               run_weyl_asymptotics.sh)
 results/eigenvalues/           per-method spectra CSV, a subdir each (dst, fd, fem,
                                cheb, mps, wolfram)
 results/eigenvalues_head/      generated <domain>_comparison.md tables (from
@@ -181,6 +183,8 @@ results/eigenvalues_dof_sweep/ L-shaped, rectangle, and isosceles-triangle
                                plot_*_dof_sweep.m draws the figure
 results/grid_visualisation/    per-domain <domain>_grid.png showing the DST grid and
                                domain mask (from experiments/grid_visualisation/)
+results/eigenvalues_weyl/      per-domain <domain>_weyl.png checking lambda_n/n -> 4*pi/A
+                               plus weyl_areas.md (from experiments/eigenvalues_weyl/)
 test/mat_batched/              equivalence and timing tests for the builders
 test/laplace_action/           Laplace-operator action on a known function
 test/manufactured_solution/    BVP solve via the method of manufactured solutions
