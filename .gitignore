@@ -1,1 +1,7 @@
 *.asv
+
+# Generated test report
+test/mat_batched/report.md
+
+# Generated spectra (recompute with the experiments drivers / Wolfram script)
+results/**/*.csv
