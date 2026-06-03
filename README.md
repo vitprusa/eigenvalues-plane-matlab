@@ -182,6 +182,8 @@ results/eigenvalues_dof_sweep/ L-shaped, rectangle, and isosceles-triangle
 results/grid_visualisation/    per-domain <domain>_grid.png showing the DST grid and
                                domain mask (from experiments/grid_visualisation/)
 test/mat_batched/              equivalence and timing tests for the builders
+test/laplace_action/           Laplace-operator action on a known function
+test/manufactured_solution/    BVP solve via the method of manufactured solutions
 ```
 
 The domains (square, rectangle, ellipse minus a quadrant, isosceles triangle,
@@ -196,17 +198,35 @@ in git (see `.gitignore`); regenerate them with the experiments drivers (or
 
 ## Tests
 
-The batched builders and operators are checked for equivalence against the
-reference implementations and benchmarked under `test/mat_batched`. Run the
-whole suite and produce a markdown report with:
+The tests live under `test/`, one self-contained scenario per subdirectory:
+
+- `test/mat_batched/` — the batched builders and operators are checked for
+  equivalence against the reference implementations and benchmarked.
+- `test/laplace_action/` — applies the masked DST Laplace operator
+  (`make_dst_laplace_op`) on the rectangle to the analytic mode
+  `u = sin(mm*x) sin(nn*y)` and compares against its exact Laplacian
+  `-(mm^2 + nn^2) u`. A pure sine mode fits the grid, so the match is at
+  floating-point round-off.
+- `test/manufactured_solution/` — a method-of-manufactured-solutions BVP
+  check on the L-shaped domain: a polynomial `u` that vanishes on the
+  boundary is chosen, the discrete problem `L u = laplace u` is solved with
+  the sparse DST Laplace matrix, and the recovered `u` is compared against
+  the manufactured one. Being a polynomial rather than a sine mode, it
+  carries a genuine discretisation error, so the test refines the grid and
+  verifies the (second-order) convergence.
+
+Each subdirectory has its own `run_tests.sh` that auto-discovers every
+`check_*.m` in that folder, runs each through MATLAB, writes a markdown
+report, and exits non-zero if any test errors. For example:
 
 ```bash
-test/mat_batched/run_tests.sh           # writes test/mat_batched/report.md
+test/mat_batched/run_tests.sh             # writes test/mat_batched/report.md
+test/laplace_action/run_tests.sh          # writes test/laplace_action/report.md
+test/manufactured_solution/run_tests.sh   # writes test/manufactured_solution/report.md
 ```
 
-The runner auto-discovers every `check_*.m` in that folder, runs each through
-MATLAB, and exits non-zero if any test errors. Set `MATLAB_BIN` to override
-the `matlab` executable, or pass a path to choose the report location.
+Set `MATLAB_BIN` to override the `matlab` executable, or pass a path to
+choose the report location.
 
 ## Authors
 
