@@ -31,13 +31,18 @@ function plot_rectangle_dof_sweep()
     labels = struct('dst', 'DST', 'fd', 'FD', 'fem', 'FEM', 'cheb', 'Cheb');
     styles = {':', '-.', '--', '-'};
 
-    fig = figure('Visible', 'off', 'Position', [100 100 1000 720]);
+    % Render all text (labels, legend, tick labels) with the LaTeX
+    % interpreter, i.e. in the standard LaTeX Computer Modern font.
+    fig = figure('Visible', 'off', 'Position', [100 100 1000 720], ...
+        'defaultAxesTickLabelInterpreter', 'latex', ...
+        'defaultTextInterpreter',          'latex', ...
+        'defaultLegendInterpreter',        'latex');
 
     main = axes(fig);
     draw_all(main, results, methods, analytic, colors, labels, styles, [], true);
-    xlabel(main, 'eigenvalue index n');
-    ylabel(main, '\lambda_n');
-    title(main, 'Rectangle [0, 2\pi] \times [0, \pi] — eigenvalue DOF sweep');
+    xlabel(main, 'eigenvalue index $n$');
+    ylabel(main, '$\lambda_n$');
+    title(main, 'Rectangle $[0, 2\pi] \times [0, \pi]$ --- eigenvalue DOF sweep');
     % One column per method (DST, FD, FEM, Cheb) plus a column for the analytic.
     legend(main, 'Location', 'northwest', 'NumColumns', numel(methods) + 1, 'FontSize', 7);
     grid(main, 'on'); box(main, 'on');
@@ -51,7 +56,7 @@ function plot_rectangle_dof_sweep()
     draw_all(inset, results, methods, analytic, colors, labels, styles, 600);
     grid(inset, 'on'); box(inset, 'on');
     ylim(inset, [0, 2 * analytic(min(600, numel(analytic)))]);
-    title(inset, 'indices n \leq 600', 'FontSize', 8);
+    title(inset, 'indices $n \leq 600$', 'FontSize', 8);
     set(inset, 'FontSize', 7);
 
     png = fullfile(out_dir, 'rectangle_dof_sweep.png');

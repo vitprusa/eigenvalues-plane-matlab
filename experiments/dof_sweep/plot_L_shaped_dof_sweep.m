@@ -20,20 +20,25 @@ function plot_L_shaped_dof_sweep()
     labels = struct('dst', 'DST', 'fd', 'FD', 'fem', 'FEM');
     styles = {':', '-.', '--', '-'};
 
-    fig = figure('Visible', 'off', 'Position', [100 100 950 680]);
+    % Render all text (labels, legend, tick labels) with the LaTeX
+    % interpreter, i.e. in the standard LaTeX Computer Modern font.
+    fig = figure('Visible', 'off', 'Position', [100 100 950 680], ...
+        'defaultAxesTickLabelInterpreter', 'latex', ...
+        'defaultTextInterpreter',          'latex', ...
+        'defaultLegendInterpreter',        'latex');
 
     main = axes(fig);
     draw_curves(main, results, methods, colors, labels, styles, []);
-    xlabel(main, 'eigenvalue index n');
-    ylabel(main, '\lambda_n');
-    title(main, 'L-shaped domain — eigenvalue DOF sweep (DST, FD, FEM)');
+    xlabel(main, 'eigenvalue index $n$');
+    ylabel(main, '$\lambda_n$');
+    title(main, 'L-shaped domain --- eigenvalue DOF sweep (DST, FD, FEM)');
     legend(main, 'Location', 'southeast', 'NumColumns', 3, 'FontSize', 8);
     grid(main, 'on'); box(main, 'on');
 
     inset = axes(fig, 'Position', [0.18 0.50 0.384 0.384], 'Color', 'w');
     draw_curves(inset, results, methods, colors, labels, styles, 1000);
     grid(inset, 'on'); box(inset, 'on');
-    title(inset, 'indices n \leq 1000', 'FontSize', 8);
+    title(inset, 'indices $n \leq 1000$', 'FontSize', 8);
     set(inset, 'FontSize', 7);
 
     png = fullfile(out_dir, 'L_shaped_dof_sweep.png');
