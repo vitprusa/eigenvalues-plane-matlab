@@ -21,7 +21,11 @@ function [evals, info] = fem_laplace_spectrum(entry, method)
 %   Outputs:
 %     evals - eigenvalues of -Laplacian, ascending. The low modes are the
 %             accurate ones.
-%     info  - struct with fields method, Hmax, dofs, n_nodes.
+%     info  - struct with fields method, Hmax, dofs, n_nodes, time. For both
+%             methods dofs is the number of free (unconstrained) degrees of
+%             freedom -- size(K,1) for "eig", size(B,2) of the nullspace basis
+%             for "solvepdeeig" -- while n_nodes is the raw mesh-node count.
+%             time excludes the extra "solvepdeeig" nullspace assembly.
 %
 %   Requires the PDE Toolbox.
 %
@@ -52,13 +56,19 @@ function [evals, info] = fem_laplace_spectrum(entry, method)
             Mmat = B' * FEM_raw.M * B;
             evals = sort(real(eig(full(K), full(Mmat))), 'ascend');
             dofs = size(K, 1);
+            elapsed = toc(t0);
 
         case "solvepdeeig"
             Hmax = entry.Hmax_solvepdeeig;
             generateMesh(model, 'Hmax', Hmax, 'GeometricOrder', 'quadratic');
             result = solvepdeeig(model, [0, 200]);
             evals = sort(real(result.Eigenvalues), 'ascend');
-            dofs = size(model.Mesh.Nodes, 2);
+            elapsed = toc(t0);   % stop timing before the extra DOF-count assembly
+            % True (free) DOF count via the nullspace basis, matching the "eig"
+            % path's size(K,1). This assembly is deliberately excluded from the
+            % reported time, which covers only the solvepdeeig solve.
+            FEM_ns = assembleFEMatrices(model, 'nullspace');
+            dofs = size(FEM_ns.B, 2);
 
         otherwise
             error('fem_laplace_spectrum:badMethod', ...
@@ -66,5 +76,5 @@ function [evals, info] = fem_laplace_spectrum(entry, method)
     end
 
     info = struct('method', method, 'Hmax', Hmax, 'dofs', dofs, ...
-                  'n_nodes', size(model.Mesh.Nodes, 2), 'time', toc(t0));
+                  'n_nodes', size(model.Mesh.Nodes, 2), 'time', elapsed);
 end

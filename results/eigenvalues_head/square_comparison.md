@@ -7,8 +7,8 @@ computation time (`tic`/`toc` around each per-domain solve; Wolfram is not timed
 
 | n | DST full | DST partial | FD | FEM eig | FEM solvepdeeig | Cheb (N=40) | Analytic (exact) |
 |---|---|---|---|---|---|---|---|
-| **DOFs** | 2500 | 40000 | 2500 | 4301 | 18457 § | 1444 | — |
-| **Time (s)** | 4.09 | 69.85 | 1.12 | 11.20 | 6.54 | 0.56 | — |
+| **DOFs** | 2500 | 40000 | 2500 | 4301 | 17953 | 1444 | — |
+| **Time (s)** | 4.09 | 69.85 | 1.12 | 11.20 | 6.24 | 0.56 | — |
 | 1 | 2.00000 | 2.00000 | 1.99937 | 2.00000 | 2.00000 | 2.00000 | **2.00000** |
 | 2 | 5.00000 | 5.00000 | 4.99463 | 5.00001 | 5.00000 | 5.00000 | **5.00000** |
 | 3 | 5.00000 | 5.00000 | 4.99463 | 5.00001 | 5.00000 | 5.00000 | **5.00000** |
@@ -17,8 +17,6 @@ computation time (`tic`/`toc` around each per-domain solve; Wolfram is not timed
 | 6 | 10.00000 | 10.00000 | 9.97410 | 10.00008 | 10.00000 | 10.00000 | **10.00000** |
 | 7 | 13.00000 | 13.00000 | 12.96936 | 13.00018 | 13.00001 | 13.00000 | **13.00000** |
 | 8 | 13.00000 | 13.00000 | 12.96936 | 13.00018 | 13.00001 | 13.00000 | **13.00000** |
-
-**§  FEM solvepdeeig** reports the number of mesh nodes, not the (constrained) degrees of freedom — unlike FEM eig, which records `size(K,1)`.
 
 ## Sources
 

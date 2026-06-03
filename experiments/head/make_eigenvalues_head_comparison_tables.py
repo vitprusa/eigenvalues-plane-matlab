@@ -91,7 +91,7 @@ def analytic(domain):
 def column(header, relpath, kind):
     """Build a column dict from a CSV, or None if the CSV is missing.
 
-    kind: 'grid' (dofs), 'sp' (FEM solvepdeeig -> mesh-node dofs, footnote §),
+    kind: 'grid' (dofs), 'sp' (FEM solvepdeeig -> free dofs via nullspace basis),
           'cheb', 'wolfram' (no dofs/time, footnote ‡), 'mps' (basis, footnote †).
     """
     data = read_csv(relpath)
@@ -105,8 +105,6 @@ def fmt_dofs(col):
         return "— ‡"
     if col["kind"] == "mps":
         return f"{col['dofs']} †"
-    if col["kind"] == "sp":
-        return f"{col['dofs']} §"
     if col["kind"] == "analytic":
         return "—"
     return str(col["dofs"]) if col["dofs"] is not None else "—"
@@ -190,11 +188,9 @@ def render(domain, cols):
     if any(c["kind"] == "wolfram" for c in cols):
         notes.append("**‡  Wolfram** `NDEigensystem` builds its own internal adaptive "
                      "mesh, so its DOF count is not exposed.")
-    notes.append("**§  FEM solvepdeeig** reports the number of mesh nodes, not the "
-                 "(constrained) degrees of freedom — unlike FEM eig, which records "
-                 "`size(K,1)`.")
-    lines.append(" ".join(notes))
-    lines.append("")
+    if notes:
+        lines.append(" ".join(notes))
+        lines.append("")
 
     # Sources.
     lines.append("## Sources")

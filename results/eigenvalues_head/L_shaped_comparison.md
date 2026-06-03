@@ -7,8 +7,8 @@ computation time (`tic`/`toc` around each per-domain solve; Wolfram is not timed
 
 | n | DST full | DST partial | FD | FEM eig | FEM solvepdeeig | Wolfram | MPS (ground truth) |
 |---|---|---|---|---|---|---|---|
-| **DOFs** | 1776 | 66901 | 1776 | 2051 | 5653 § | — ‡ | 51 † |
-| **Time (s)** | 1.01 | 170.04 | 0.20 | 0.63 | 0.50 | — | 4.72 |
+| **DOFs** | 1776 | 66901 | 1776 | 2051 | 5333 | — ‡ | 51 † |
+| **Time (s)** | 1.01 | 170.04 | 0.20 | 0.63 | 0.48 | — | 4.72 |
 | 1 | 9.67525 | 9.64298 | 9.66133 | 9.64999 | 9.64532 | 9.65934 | **9.63972** |
 | 2 | 15.19657 | 15.19725 | 15.17674 | 15.19754 | 15.19732 | 15.19878 | **15.19725** |
 | 3 | 19.73921 | 19.73921 | 19.71325 | 19.73946 | 19.73925 | 19.74141 | **19.73921** |
@@ -18,7 +18,7 @@ computation time (`tic`/`toc` around each per-domain solve; Wolfram is not timed
 | 7 | 44.94498 | 44.94846 | 44.72497 | 44.95245 | 44.94922 | 44.97286 | **44.94849** |
 | 8 | 49.34802 | 49.34802 | 49.12767 | 49.35193 | 49.34860 | 49.37750 | **49.34802** |
 
-**†  MPS** is not a mesh method — the size is the number of Fourier–Bessel basis functions, not DOFs. **‡  Wolfram** `NDEigensystem` builds its own internal adaptive mesh, so its DOF count is not exposed. **§  FEM solvepdeeig** reports the number of mesh nodes, not the (constrained) degrees of freedom — unlike FEM eig, which records `size(K,1)`.
+**†  MPS** is not a mesh method — the size is the number of Fourier–Bessel basis functions, not DOFs. **‡  Wolfram** `NDEigensystem` builds its own internal adaptive mesh, so its DOF count is not exposed.
 
 ## Sources
 

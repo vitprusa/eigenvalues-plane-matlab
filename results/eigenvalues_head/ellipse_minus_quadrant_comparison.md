@@ -7,8 +7,8 @@ computation time (`tic`/`toc` around each per-domain solve; Wolfram is not timed
 
 | n | DST full | DST partial | FD | FEM eig | FEM solvepdeeig | Wolfram |
 |---|---|---|---|---|---|---|
-| **DOFs** | 649 | 11686 | 769 | 2143 | 6435 § | — ‡ |
-| **Time (s)** | 0.35 | 6.27 | 0.03 | 0.61 | 0.46 | — |
+| **DOFs** | 649 | 11686 | 769 | 2143 | 6095 | — ‡ |
+| **Time (s)** | 0.35 | 6.27 | 0.03 | 0.61 | 0.79 | — |
 | 1 | 5.66750 | 5.80665 | 5.38900 | 5.87254 | 5.87067 | 5.87631 |
 | 2 | 11.20836 | 11.41222 | 10.14887 | 11.53448 | 11.53023 | 11.54380 |
 | 3 | 14.63226 | 14.99032 | 13.83892 | 15.14225 | 15.14113 | 15.14708 |
@@ -18,7 +18,7 @@ computation time (`tic`/`toc` around each per-domain solve; Wolfram is not timed
 | 7 | 26.80042 | 27.28047 | 25.43114 | 27.50782 | 27.50173 | 27.53449 |
 | 8 | 28.46907 | 29.51387 | 27.33256 | 29.92590 | 29.91975 | 29.95455 |
 
-**‡  Wolfram** `NDEigensystem` builds its own internal adaptive mesh, so its DOF count is not exposed. **§  FEM solvepdeeig** reports the number of mesh nodes, not the (constrained) degrees of freedom — unlike FEM eig, which records `size(K,1)`.
+**‡  Wolfram** `NDEigensystem` builds its own internal adaptive mesh, so its DOF count is not exposed.
 
 ## Sources
 
