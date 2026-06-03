@@ -44,7 +44,7 @@ function eigenvalues_rectangle_match(M, margin)
         M = 19;
     end
     if nargin < 2 || isempty(margin)
-        margin = 4;     % how far the analytic table reaches past the modes
+        margin = 11;    % table reaches Mx+margin = 30 rows past the resolved modes
     end
 
     % This file lives in experiments/eigenvalues_indexing/; put the project
