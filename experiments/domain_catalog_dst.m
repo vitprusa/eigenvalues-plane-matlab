@@ -29,7 +29,7 @@ function cases = domain_catalog_dst(name)
     cases(end+1) = make_case('isosceles_triangle',     [0 pi 0 pi],   @(x, y) indicator_isosceles_triangle(x, y, 0, pi, 0),          50, 200);
     cases(end+1) = make_case('small_rectangle',        [0 pi 0 pi], @(x, y) indicator_rectangle(x, y, 0, pi/2, 0, pi/4),           47, 199);  % M+1 multiple of 4: edges pi/2, pi/4 on grid
     cases(end+1) = make_case('L_shaped',               [-1 1 -1 1], @(x, y) indicator_L_shaped(x, y, -1, 0, 1, -1, 0, 1),          49, 299);  % M+1 even: re-entrant corner at origin on grid
-    cases(end+1) = make_case('ellipse_minus_quadrant', [-2 2 -1 1], @(x, y) indicator_ellipse_minus_quadrant(x, y, -2, 0, 2, 0),   50, 200);
+    cases(end+1) = make_case('ellipse_minus_quadrant', [-2 2 -1 1], @(x, y) indicator_ellipse_minus_quadrant(x, y, -2, 0, 2, 0),   47, 199);  % M+1 divisible by 4: x=0 and y=0 cut edges on grid
     cases(end+1) = make_case('H',                      [-1 2 -2 1], @(x, y) indicator_H(x, y),                                     50, 200);
     cases(end+1) = make_case('gww1',                   [-3 3 -3 3], @(x, y) indicator_gww1(x, y, -3, -1, 1, 3, -1, 1),             50, 200);  % isospectral with gww2
     cases(end+1) = make_case('gww2',                   [-3 3 -3 3], @(x, y) indicator_gww2(x, y, -3, -1, 1, 3, -1, 1, 3),          50, 200);  % isospectral with gww1
