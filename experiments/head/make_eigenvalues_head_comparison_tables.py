@@ -11,14 +11,14 @@ L-shape), plus the analytic spectrum where a closed form is known. The DOFs and
 Time rows are read from each CSV's metadata header.
 
 Run after the experiment drivers have produced the results/eigenvalues/*/ CSVs:
-    python3 experiments/make_eigenvalues_head_comparison_tables.py
+    python3 experiments/head/make_eigenvalues_head_comparison_tables.py
 """
 
 import os
 import re
 
 HERE = os.path.dirname(os.path.abspath(__file__))
-ROOT = os.path.dirname(HERE)
+ROOT = os.path.dirname(os.path.dirname(HERE))
 RES = os.path.join(ROOT, "results", "eigenvalues")        # per-method CSV inputs
 OUT = os.path.join(ROOT, "results", "eigenvalues_head")   # comparison-table outputs
 
