@@ -173,8 +173,9 @@ results/eigenvalues/           per-method spectra CSV, a subdir each (dst, fd, f
                                cheb, mps, wolfram)
 results/eigenvalues_head/      generated <domain>_comparison.md tables (from
                                experiments/eigenvalues_head/make_eigenvalues_head_comparison_tables.py)
-results/eigenvalues_dof_sweep/ L-shaped and rectangle DOF-sweep spectra CSV +
-                               plots; experiments/eigenvalues_dof_sweep/compute_*_dof_sweep.m
+results/eigenvalues_dof_sweep/ L-shaped, rectangle, and isosceles-triangle
+                               DOF-sweep spectra CSV + plots;
+                               experiments/eigenvalues_dof_sweep/compute_*_dof_sweep.m
                                generates the data (only the missing CSVs),
                                plot_*_dof_sweep.m draws the figure
 results/grid_visualisation/    per-domain <domain>_grid.png showing the DST grid and
