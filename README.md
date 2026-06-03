@@ -194,9 +194,12 @@ as rows of `experiments/domain_catalog_dst.m`. `compute_spectrum_dst` runs the
 `dst_laplace_spectrum` runner over the catalog and writes the results to
 `results/eigenvalues/dst/`; the source tree holds no generated per-domain scripts.
 
-The `*.csv` spectra under `results/` are generated outputs and are not tracked
-in git (see `.gitignore`); regenerate them with the experiments drivers (or
-`experiments/run_wolfram.sh` for the reference spectra).
+The repository also tracks the generated artifacts, so the results are
+available without rerunning anything: the per-method spectra `*.csv` under
+`results/` and the test reports under `test/`. They can be regenerated with the
+experiments drivers (or `experiments/run_wolfram.sh` for the reference spectra)
+and the `test/*/run_tests.sh` harnesses; only MATLAB autosave files (`*.asv`)
+are ignored.
 
 ## Tests
 

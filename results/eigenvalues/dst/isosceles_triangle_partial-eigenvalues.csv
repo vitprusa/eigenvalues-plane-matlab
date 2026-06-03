@@ -1,0 +1,17 @@
+# Domain: isosceles_triangle (partial spectrum)
+# Bounding box [a, b] x [c, d] = [0, 3.14159] x [0, 3.14159]
+# Resolution M = 200, grid spacing h = 0.0156298, dofs = 19900
+# Computation time: 19.012 s
+# Indicator function phi = @(x,y)indicator_isosceles_triangle(x,y,0,pi,0)
+# eigs: k = 10, tolerance = 1e-10, subspace_dim = 100, max_iterations = 300
+n,lambda_n
+1,4.99999940329327
+2,9.99999575604929
+3,12.9999983420474
+4,16.9999850765244
+5,19.9999904480587
+6,24.9999967491681
+7,25.9999617849268
+8,28.9999707387697
+9,33.9999830111673
+10,36.9999186980683

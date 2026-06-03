@@ -1,0 +1,17 @@
+# Domain: small_rectangle (partial spectrum)
+# Bounding box [a, b] x [c, d] = [0, 3.14159] x [0, 3.14159]
+# Resolution M = 199, grid spacing h = 0.015708, dofs = 4851
+# Computation time: 1.910 s
+# Indicator function phi = @(x,y)indicator_rectangle(x,y,0,pi/2,0,pi/4)
+# eigs: k = 10, tolerance = 1e-10, subspace_dim = 100, max_iterations = 300
+n,lambda_n
+1,19.9999999999932
+2,31.999999999986
+3,51.999999999994
+4,67.9999999999982
+5,80.000000000001
+6,80.0000000000023
+7,99.9999999999968
+8,115.999999999998
+9,127.999999999999
+10,147.999999999998
