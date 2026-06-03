@@ -1,23 +1,19 @@
 # Method of manufactured solutions — test report
 
-- Generated: 2026-06-03 14:22:48 CEST
-- Host: `mroz`
-- Project root: `/home/vitek/Documents/Science/Work/Articles_in_progress/Discrete versus continuous/eigenvalues-plane-matlab`
-- MATLAB: `matlab`
 - Tests run: 1 (0 failed)
 
 ## Summary
 
 | Test | Status | Duration |
 |------|--------|----------|
-| `check_bvp_L_shaped` | ✅ PASS | 65.6s |
+| `check_bvp_L_shaped` | ✅ PASS | 64.9s |
 
 ## Details
 
 ### `check_bvp_L_shaped`
 
 - Status: **✅ PASS**
-- Duration: 65.6s
+- Duration: 64.9s
 
 ```
 L-shaped domain, manufactured solution u = x(x-pi)(x-b) y(y-pi)(y-e)

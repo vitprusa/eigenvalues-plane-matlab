@@ -20,7 +20,6 @@ function write_fem_csv(csv_file, evals, c, info)
         error('write_fem_csv:cannotOpen', 'Could not open %s for writing.', csv_file);
     end
     fprintf(fid, '# Domain: %s (FEM, %s)\n', c.name, info.method);
-    fprintf(fid, '# Computed %s\n', datestr(now, 'yyyy-mm-dd HH:MM:SS'));
     fprintf(fid, '# Hmax = %g, dofs = %d, mesh nodes = %d\n', info.Hmax, info.dofs, info.n_nodes);
     if isfield(info, 'time')
         fprintf(fid, '# Computation time: %.3f s\n', info.time);

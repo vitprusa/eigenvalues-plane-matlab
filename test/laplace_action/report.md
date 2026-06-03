@@ -1,23 +1,19 @@
 # DST Laplace action — test report
 
-- Generated: 2026-06-03 14:08:56 CEST
-- Host: `mroz`
-- Project root: `/home/vitek/Documents/Science/Work/Articles_in_progress/Discrete versus continuous/eigenvalues-plane-matlab`
-- MATLAB: `matlab`
 - Tests run: 1 (0 failed)
 
 ## Summary
 
 | Test | Status | Duration |
 |------|--------|----------|
-| `check_laplace_action_rectangle` | ✅ PASS | 25.6s |
+| `check_laplace_action_rectangle` | ✅ PASS | 25.5s |
 
 ## Details
 
 ### `check_laplace_action_rectangle`
 
 - Status: **✅ PASS**
-- Duration: 25.6s
+- Duration: 25.5s
 
 ```
 rectangle [0,pi]^2  M=20  dofs=400  mode (mm,nn)=(5,1)

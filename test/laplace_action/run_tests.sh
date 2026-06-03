@@ -84,10 +84,6 @@ done
 {
     echo "# DST Laplace action — test report"
     echo
-    echo "- Generated: $(date '+%Y-%m-%d %H:%M:%S %Z')"
-    echo "- Host: \`$(hostname)\`"
-    echo "- Project root: \`$PROJECT_ROOT\`"
-    echo "- MATLAB: \`$MATLAB_BIN\`"
     echo "- Tests run: ${#names[@]} (${total_fail} failed)"
     echo
     echo "## Summary"

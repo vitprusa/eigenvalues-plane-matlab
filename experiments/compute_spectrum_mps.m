@@ -35,7 +35,6 @@ function compute_spectrum_mps()
         error('compute_spectrum_mps:cannotOpen', 'Could not open %s for writing.', csv_file);
     end
     fprintf(fid, '# Domain: L_shaped (MPS, method of particular solutions)\n');
-    fprintf(fid, '# Computed %s\n', datestr(now, 'yyyy-mm-dd HH:MM:SS'));
     fprintf(fid, '# Betcke & Trefethen, SIAM Review 47(3):469-491, 2005\n');
     fprintf(fid, '# K = %d, accuracy N = %d, points np = %d, lammax = %g\n', K, N, np, lammax);
     fprintf(fid, '# Computation time: %.3f s\n', mps_time);

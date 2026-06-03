@@ -70,7 +70,6 @@ function write_sweep_csv(csv_file, evals, dofs, res, method)
         error('compute_L_shaped_dof_sweep:cannotOpen', 'Could not open %s.', csv_file);
     end
     fprintf(fid, '# Domain: L_shaped (%s, dense eig full spectrum)\n', method);
-    fprintf(fid, '# Computed %s\n', datestr(now, 'yyyy-mm-dd HH:MM:SS'));
     fprintf(fid, '# Resolution %s, dofs = %d\n', res, dofs);
     fclose(fid);
     n        = (1:numel(evals))';

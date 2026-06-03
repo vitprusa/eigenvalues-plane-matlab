@@ -58,7 +58,6 @@ function write_cheb_csv(csv_file, evals, c, info)
     end
     fprintf(fid, '# Domain: %s [%g, %g] x [%g, %g] (Chebfun spectral collocation)\n', ...
         c.name, box(1), box(2), box(3), box(4));
-    fprintf(fid, '# Computed %s\n', datestr(now, 'yyyy-mm-dd HH:MM:SS'));
     fprintf(fid, '# N = %d Chebyshev points per direction, dofs = %d\n', info.N, info.dofs);
     if isfield(info, 'time')
         fprintf(fid, '# Computation time: %.3f s\n', info.time);

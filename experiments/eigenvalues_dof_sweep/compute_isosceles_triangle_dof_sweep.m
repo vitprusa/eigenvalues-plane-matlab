@@ -74,7 +74,6 @@ function compute_isosceles_triangle_dof_sweep()
         analytic = v(1:min(8000, numel(v)));
         fid = fopen(csv_file, 'w');
         fprintf(fid, '# Domain: isosceles_triangle (analytic ground truth, lambda = m^2 + n^2, m > n >= 1)\n');
-        fprintf(fid, '# Computed %s\n', datestr(now, 'yyyy-mm-dd HH:MM:SS'));
         fclose(fid);
         n        = (1:numel(analytic))';
         lambda_n = analytic(:);
@@ -91,7 +90,6 @@ function write_sweep_csv(csv_file, evals, dofs, res, method)
         error('compute_isosceles_triangle_dof_sweep:cannotOpen', 'Could not open %s.', csv_file);
     end
     fprintf(fid, '# Domain: isosceles_triangle (%s, dense eig full spectrum)\n', method);
-    fprintf(fid, '# Computed %s\n', datestr(now, 'yyyy-mm-dd HH:MM:SS'));
     fprintf(fid, '# Resolution %s, dofs = %d\n', res, dofs);
     fclose(fid);
     n        = (1:numel(evals))';

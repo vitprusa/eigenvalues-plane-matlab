@@ -22,7 +22,6 @@ function write_fd_csv(csv_file, evals, c, info)
     end
     fprintf(fid, '# Domain: %s [%g, %g] x [%g, %g] (finite differences, 5-point stencil)\n', ...
         c.name, box(1), box(2), box(3), box(4));
-    fprintf(fid, '# Computed %s\n', datestr(now, 'yyyy-mm-dd HH:MM:SS'));
     fprintf(fid, '# M = %d, grid spacing h = %g, dofs = %d\n', info.M, info.h, info.dofs);
     if isfield(info, 'time')
         fprintf(fid, '# Computation time: %.3f s\n', info.time);

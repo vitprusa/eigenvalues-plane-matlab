@@ -1,8 +1,6 @@
-# eigenvalues-plane-matlab
+# Discrete sine transform (DST) based discretisation of Laplace operator
 
-FFT-based method for the discretisation of second-order differential
-operators, used to compute the eigenvalues of the Dirichlet Laplacian on
-two-dimensional domains.
+Discrete sine transform (DST) based method for the discretisation of the Dirichlet Laplacian operator on generic two-dimensional domains.
 
 ## Overview
 
@@ -31,12 +29,12 @@ DST results.
 ## Requirements
 
 - MATLAB.
-- **Signal Processing Toolbox** — provides `dst`/`idst`.
-- **Parallel Computing Toolbox** — the assembly uses `parfor`; it still runs
-  without the toolbox, just serially.
-- **PDE Toolbox** — only for the FEM scripts in `src/fem`.
-- **Chebfun** — only for the Chebyshev script in `src/cheb`; expected in
-  `fullfile(userpath, 'chebfun')` (see `startup.m`).
+  - **Signal Processing Toolbox** — provides `dst`/`idst`.
+  - **Parallel Computing Toolbox** — the assembly uses `parfor`; it still runs
+    without the toolbox, just serially.
+  - **PDE Toolbox** — only for the FEM scripts in `src/fem`.
+  - **Chebfun** — only for the Chebyshev script in `src/cheb`; expected in
+    `fullfile(userpath, 'chebfun')` (see `startup.m`).
 - Wolfram Language (`wolframscript`) — only in case you need yet another software for eigenvalues computation.
 
 ## Getting started
