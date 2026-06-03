@@ -93,33 +93,34 @@ indicator `phi` at the top of each.
 
 ### Other methods
 
-Script `experiments/run_mps.sh` runs eigenvalue computation for L-shaped domain using the method of particular solutions (MPS). MPS eigenvalues for the L-shaped domain are the "ground truth", MPS computes them with high accuracy. 
-
-Script `experiments/run_wolfram.sh` runs eigenvalue computation for various domains using default `NDEigenvalues`/`NDEigensystem` solver in Wolfram Language. Wolfram Language computed eigenvalues are used for comparison.
-
-Script `experiments/run_cheb.sh` runs the Chebyshev spectral-collocation
-(Chebfun) computation for the square [0, pi] x [0, pi] and the rectangle
-[0, 2*pi] x [0, pi], sweeping several Chebyshev orders `N` (one CSV per domain
-and `N`) — a cross-check whose leading eigenvalues match the analytic spectra.
-The domains are rows of `experiments/domain_catalog_cheb.m`, mirroring the DST
-catalog; `compute_spectrum_cheb(name, Nvals)` filters by domain and `N` list.
-
-Scripts `experiments/run_fem_eig.sh` and `experiments/run_fem_solvepdeeig.sh`
-run finite-element (PDE Toolbox) computations on the same nine domains as the
-DST catalog (built as `decsg` geometry, including the ellipse-minus-quadrant
-and the two GWW drums) — two workflows over the same catalog
-`experiments/domain_catalog_fem.m`: `fem_eig` assembles the stiffness
-and mass matrices and solves the dense generalized problem `eig(K, M)`, while
-`fem_solvepdeeig` uses the high-level `solvepdeeig` solver. Each writes one CSV
-per domain into `results/eigenvalues/fem/`; `compute_spectrum_fem_eig(name)` and
-`compute_spectrum_fem_solvepdeeig(name)` filter by domain.
-
-Script `experiments/run_fd.sh` runs a finite-difference (5-point stencil)
-computation on the same domains, over `experiments/domain_catalog_fd.m` — the
-same domains as the FEM catalog, but expressed as a bounding box plus an
-indicator mask and a grid resolution `M` (the DST representation). It writes
-one CSV per domain into `results/eigenvalues/fd/`; `compute_spectrum_fd(name)` filters by
-domain.
+1. Script `experiments/run_mps.sh` runs eigenvalue computation for L-shaped
+   domain using the **method of particular solutions** (MPS). MPS eigenvalues
+   for the L-shaped domain are the "ground truth", MPS computes them with high
+   accuracy.
+2. Script `experiments/run_wolfram.sh` runs eigenvalue computation for various
+   domains using default `NDEigenvalues`/`NDEigensystem` solver in **Wolfram
+   Language**. Wolfram Language computed eigenvalues are used for comparison.
+3. Script `experiments/run_cheb.sh` runs the **Chebyshev spectral-collocation
+   (Chebfun)** computation for the square [0, pi] x [0, pi] and the rectangle
+   [0, 2*pi] x [0, pi], sweeping several Chebyshev orders `N` (one CSV per domain
+   and `N`) — a cross-check whose leading eigenvalues match the analytic spectra.
+   The domains are rows of `experiments/domain_catalog_cheb.m`, mirroring the DST
+   catalog; `compute_spectrum_cheb(name, Nvals)` filters by domain and `N` list.
+4. Scripts `experiments/run_fem_eig.sh` and `experiments/run_fem_solvepdeeig.sh`
+   run **finite-element** (PDE Toolbox) computations on the same nine domains as
+   the DST catalog (built as `decsg` geometry, including the ellipse-minus-quadrant
+   and the two GWW drums) — two workflows over the same catalog
+   `experiments/domain_catalog_fem.m`: `fem_eig` assembles the stiffness
+   and mass matrices and solves the dense generalized problem `eig(K, M)`, while
+   `fem_solvepdeeig` uses the high-level `solvepdeeig` solver. Each writes one CSV
+   per domain into `results/eigenvalues/fem/`; `compute_spectrum_fem_eig(name)` and
+   `compute_spectrum_fem_solvepdeeig(name)` filter by domain.
+5. Script `experiments/run_fd.sh` runs a **finite-difference** (5-point stencil)
+   computation on the same domains, over `experiments/domain_catalog_fd.m` — the
+   same domains as the FEM catalog, but expressed as a bounding box plus an
+   indicator mask and a grid resolution `M` (the DST representation). It writes
+   one CSV per domain into `results/eigenvalues/fd/`; `compute_spectrum_fd(name)`
+   filters by domain.
 
 ## Core API (`src/dst`)
 
