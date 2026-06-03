@@ -1,6 +1,6 @@
 # Domain: rectangle [0, 6.28319] x [0, 3.14159] (finite differences, 5-point stencil)
 # M = 49, grid spacing h = 0.125664, dofs = 1176
-# Computation time: 0.060 s
+# Computation time: 0.052 s
 n,lambda_n
 1,1.24860250935666
 2,1.9973694904763

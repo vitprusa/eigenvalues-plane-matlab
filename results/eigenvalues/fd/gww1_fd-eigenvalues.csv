@@ -1,6 +1,6 @@
 # Domain: gww1 [-3, 3] x [-3, 3] (finite differences, 5-point stencil)
 # M = 50, grid spacing h = 0.117647, dofs = 936
-# Computation time: 0.032 s
+# Computation time: 0.031 s
 n,lambda_n
 1,2.54405782979729
 2,3.65667676868627

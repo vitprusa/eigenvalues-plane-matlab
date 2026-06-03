@@ -1,6 +1,6 @@
 # Domain: ellipse_minus_quadrant [-2, 2] x [-1, 1] (finite differences, 5-point stencil)
 # M = 50, grid spacing h = 0.0784314, dofs = 769
-# Computation time: 0.029 s
+# Computation time: 0.024 s
 n,lambda_n
 1,5.38900007160709
 2,10.1488743194791

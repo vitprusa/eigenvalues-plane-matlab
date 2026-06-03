@@ -1,6 +1,6 @@
 # Domain: square (FEM, eig)
 # Hmax = 0.1, dofs = 4301, mesh nodes = 4549
-# Computation time: 11.201 s
+# Computation time: 9.169 s
 n,lambda_n
 1,2.00000066709805
 2,5.00001039296917

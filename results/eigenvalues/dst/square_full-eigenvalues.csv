@@ -1,7 +1,7 @@
 # Domain: square (full spectrum)
 # Bounding box [a, b] x [c, d] = [0, 3.14159] x [0, 3.14159]
 # Resolution M = 50, grid spacing h = 0.0615999, dofs = 2500
-# Computation time: 4.087 s
+# Computation time: 5.188 s
 # Indicator function phi = @(x,y)indicator_rectangle(x,y,0,pi,0,pi)
 n,lambda_n
 1,1.99999999999864

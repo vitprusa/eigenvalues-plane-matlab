@@ -1,6 +1,6 @@
 # Domain: L_shaped [-1, 1] x [-1, 1] (finite differences, 5-point stencil)
 # M = 49, grid spacing h = 0.04, dofs = 1776
-# Computation time: 0.197 s
+# Computation time: 0.168 s
 n,lambda_n
 1,9.66133128680488
 2,15.176735847587

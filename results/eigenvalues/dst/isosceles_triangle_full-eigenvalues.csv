@@ -1,7 +1,7 @@
 # Domain: isosceles_triangle (full spectrum)
 # Bounding box [a, b] x [c, d] = [0, 3.14159] x [0, 3.14159]
 # Resolution M = 50, grid spacing h = 0.0615999, dofs = 1225
-# Computation time: 0.375 s
+# Computation time: 0.341 s
 # Indicator function phi = @(x,y)indicator_isosceles_triangle(x,y,0,pi,0)
 n,lambda_n
 1,4.99996338638446

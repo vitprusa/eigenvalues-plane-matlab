@@ -1,6 +1,6 @@
 # Domain: gww1 (FEM, solvepdeeig)
 # Hmax = 0.1, dofs = 6193, mesh nodes = 6601
-# Computation time: 1.559 s
+# Computation time: 1.102 s
 n,lambda_n
 1,2.53927350222
 2,3.65684282283164

@@ -1,6 +1,6 @@
 # Domain: rectangle (FEM, solvepdeeig)
 # Hmax = 0.07, dofs = 18351, mesh nodes = 18891
-# Computation time: 5.020 s
+# Computation time: 3.557 s
 n,lambda_n
 1,1.250000035258
 2,2.00000014447222

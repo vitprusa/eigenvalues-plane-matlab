@@ -1,6 +1,6 @@
 # Domain: H (FEM, eig)
 # Hmax = 0.08, dofs = 4843, mesh nodes = 5255
-# Computation time: 11.025 s
+# Computation time: 10.874 s
 n,lambda_n
 1,7.74679751377224
 2,8.564578002696

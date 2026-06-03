@@ -6,14 +6,14 @@
 
 | Test | Status | Duration |
 |------|--------|----------|
-| `check_bvp_L_shaped` | ✅ PASS | 64.9s |
+| `check_bvp_L_shaped` | ✅ PASS | 69.0s |
 
 ## Details
 
 ### `check_bvp_L_shaped`
 
 - Status: **✅ PASS**
-- Duration: 64.9s
+- Duration: 69.0s
 
 ```
 L-shaped domain, manufactured solution u = x(x-pi)(x-b) y(y-pi)(y-e)

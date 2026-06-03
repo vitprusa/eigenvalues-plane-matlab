@@ -1,6 +1,6 @@
 # Domain: small_rectangle (FEM, solvepdeeig)
 # Hmax = 0.03, dofs = 6081, mesh nodes = 6393
-# Computation time: 0.351 s
+# Computation time: 0.332 s
 n,lambda_n
 1,20.0000050227527
 2,32.000020793812

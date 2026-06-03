@@ -1,6 +1,6 @@
 # Domain: isosceles_triangle (FEM, solvepdeeig)
 # Hmax = 0.05, dofs = 8896, mesh nodes = 9326
-# Computation time: 0.810 s
+# Computation time: 0.862 s
 n,lambda_n
 1,5.00000060480076
 2,10.0000048095494

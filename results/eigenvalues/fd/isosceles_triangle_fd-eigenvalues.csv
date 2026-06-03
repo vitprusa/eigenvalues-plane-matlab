@@ -1,6 +1,6 @@
 # Domain: isosceles_triangle [0, 3.14159] x [0, 3.14159] (finite differences, 5-point stencil)
 # M = 50, grid spacing h = 0.0615999, dofs = 1225
-# Computation time: 0.061 s
+# Computation time: 0.079 s
 n,lambda_n
 1,4.99462699751433
 2,9.97409980723081

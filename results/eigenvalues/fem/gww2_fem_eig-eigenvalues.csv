@@ -1,6 +1,6 @@
 # Domain: gww2 (FEM, eig)
 # Hmax = 0.15, dofs = 2672, mesh nodes = 2942
-# Computation time: 1.388 s
+# Computation time: 1.413 s
 n,lambda_n
 1,2.54030516481013
 2,3.65789061045962

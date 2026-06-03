@@ -1,6 +1,6 @@
 # Domain: L_shaped (FEM, solvepdeeig)
 # Hmax = 0.05, dofs = 5333, mesh nodes = 5653
-# Computation time: 0.485 s
+# Computation time: 0.444 s
 n,lambda_n
 1,9.64532392455078
 2,15.1973224349183

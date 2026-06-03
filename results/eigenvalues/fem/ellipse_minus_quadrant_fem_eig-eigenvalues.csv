@@ -1,6 +1,6 @@
 # Domain: ellipse_minus_quadrant (FEM, eig)
 # Hmax = 0.1, dofs = 2143, mesh nodes = 2347
-# Computation time: 0.606 s
+# Computation time: 0.616 s
 n,lambda_n
 1,5.87253980084183
 2,11.534476226163

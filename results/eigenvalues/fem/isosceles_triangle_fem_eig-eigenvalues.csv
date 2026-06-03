@@ -1,6 +1,6 @@
 # Domain: isosceles_triangle (FEM, eig)
 # Hmax = 0.1, dofs = 2115, mesh nodes = 2327
-# Computation time: 0.532 s
+# Computation time: 0.543 s
 n,lambda_n
 1,5.0000102975381
 2,10.0000819686607

@@ -1,6 +1,6 @@
 # Domain: square [0, 3.14159] x [0, 3.14159] (Chebfun spectral collocation)
 # N = 20 Chebyshev points per direction, dofs = 324
-# Computation time: 0.019 s
+# Computation time: 0.021 s
 n,lambda_n
 1,1.99999999999949
 2,4.9999999999997

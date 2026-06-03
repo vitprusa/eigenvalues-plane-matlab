@@ -1,7 +1,7 @@
 # Domain: L_shaped (full spectrum)
 # Bounding box [a, b] x [c, d] = [-1, 1] x [-1, 1]
 # Resolution M = 49, grid spacing h = 0.04, dofs = 1776
-# Computation time: 1.013 s
+# Computation time: 1.003 s
 # Indicator function phi = @(x,y)indicator_L_shaped(x,y,-1,0,1,-1,0,1)
 n,lambda_n
 1,9.6752504780555

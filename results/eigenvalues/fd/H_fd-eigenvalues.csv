@@ -1,6 +1,6 @@
 # Domain: H [-1, 2] x [-2, 1] (finite differences, 5-point stencil)
 # M = 50, grid spacing h = 0.0588235, dofs = 1888
-# Computation time: 0.221 s
+# Computation time: 0.280 s
 n,lambda_n
 1,7.78327368984106
 2,8.59776016633497

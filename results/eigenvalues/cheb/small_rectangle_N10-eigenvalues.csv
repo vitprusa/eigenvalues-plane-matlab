@@ -1,6 +1,6 @@
 # Domain: small_rectangle [0, 1.5708] x [0, 0.785398] (Chebfun spectral collocation)
 # N = 10 Chebyshev points per direction, dofs = 64
-# Computation time: 0.002 s
+# Computation time: 0.001 s
 n,lambda_n
 1,19.9999997119439
 2,31.9999586664074

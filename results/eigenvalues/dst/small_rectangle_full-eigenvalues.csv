@@ -1,7 +1,7 @@
 # Domain: small_rectangle (full spectrum)
 # Bounding box [a, b] x [c, d] = [0, 3.14159] x [0, 3.14159]
 # Resolution M = 47, grid spacing h = 0.0654498, dofs = 253
-# Computation time: 0.019 s
+# Computation time: 0.012 s
 # Indicator function phi = @(x,y)indicator_rectangle(x,y,0,pi/2,0,pi/4)
 n,lambda_n
 1,20.0000000000016

@@ -1,6 +1,6 @@
 # Domain: small_rectangle [0, 3.14159] x [0, 3.14159] (finite differences, 5-point stencil)
 # M = 47, grid spacing h = 0.0654498, dofs = 253
-# Computation time: 0.008 s
+# Computation time: 0.011 s
 n,lambda_n
 1,19.9031149848112
 2,31.8176466004327

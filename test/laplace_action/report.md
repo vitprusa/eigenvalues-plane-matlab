@@ -6,14 +6,14 @@
 
 | Test | Status | Duration |
 |------|--------|----------|
-| `check_laplace_action_rectangle` | ✅ PASS | 25.5s |
+| `check_laplace_action_rectangle` | ✅ PASS | 23.5s |
 
 ## Details
 
 ### `check_laplace_action_rectangle`
 
 - Status: **✅ PASS**
-- Duration: 25.5s
+- Duration: 23.5s
 
 ```
 rectangle [0,pi]^2  M=20  dofs=400  mode (mm,nn)=(5,1)
