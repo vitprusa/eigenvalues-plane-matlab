@@ -47,8 +47,10 @@ function eigenvalues_rectangle_match(M, margin)
         margin = 4;     % how far the analytic table reaches past the modes
     end
 
-    % This file lives in experiments/; put the project sources on the path.
-    experiments_dir = fileparts(mfilename('fullpath'));
+    % This file lives in experiments/eigenvalues_indexing/; put the project
+    % sources on the path.
+    script_dir      = fileparts(mfilename('fullpath'));
+    experiments_dir = fileparts(script_dir);
     project_root    = fileparts(experiments_dir);
     run(fullfile(project_root, 'startup.m'));
 
@@ -135,7 +137,7 @@ function eigenvalues_rectangle_match(M, margin)
     end
 
     % --- 5. Save the table to results/ as markdown ----------------------
-    out_dir = fullfile(project_root, 'results', 'eigenvalues_rectangle_match');
+    out_dir = fullfile(project_root, 'results', 'eigenvalues_indexing');
     if ~exist(out_dir, 'dir')
         mkdir(out_dir);
     end
