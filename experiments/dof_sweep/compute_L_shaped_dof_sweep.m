@@ -11,8 +11,8 @@ function compute_L_shaped_dof_sweep()
 %
 %   Requires the PDE Toolbox (for the FEM part).
 
-    experiments_dir = fileparts(mfilename('fullpath'));
-    project_root    = fileparts(experiments_dir);
+    dof_sweep_dir = fileparts(mfilename('fullpath'));
+    project_root  = fileparts(fileparts(dof_sweep_dir));
     run(fullfile(project_root, 'startup.m'));
 
     out_dir = fullfile(project_root, 'results', 'eigenvalues_dof_sweep');

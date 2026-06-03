@@ -8,8 +8,10 @@ function plot_rectangle_dof_sweep()
 %   physical band (the spurious high modes run off the top), and a lower-right
 %   inset zooms to indices n <= 600.
 
-    experiments_dir = fileparts(mfilename('fullpath'));
-    addpath(experiments_dir);   % read_eigs_csv, load_dof_sweep
+    dof_sweep_dir   = fileparts(mfilename('fullpath'));
+    experiments_dir = fileparts(dof_sweep_dir);
+    addpath(dof_sweep_dir);     % load_dof_sweep
+    addpath(experiments_dir);   % read_eigs_csv
     project_root = fileparts(experiments_dir);
     out_dir = fullfile(project_root, 'results', 'eigenvalues_dof_sweep');
 

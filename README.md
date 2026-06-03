@@ -162,14 +162,16 @@ src/fem/                       finite-element (PDE Toolbox) spectrum runner (fem
 src/cheb/                      Chebfun spectral-collocation runner (chebfun_laplace_spectrum)
 src/mps/                       method of particular solutions (Betcke & Trefethen)
 src/wolfram/                   Wolfram region catalog + reportEigenvalues (NDEigensystem)
-experiments/                   spectrum drivers (compute_spectrum_{dst,mps,wolfram,cheb,fem_eig,fem_solvepdeeig,fd}) + catalogs + run_{dst,mps,wolfram,cheb,fem_eig,fem_solvepdeeig,fd}.sh + make_eigenvalues_head_comparison_tables.py
+experiments/                   spectrum drivers (compute_spectrum_{dst,mps,wolfram,cheb,fem_eig,fem_solvepdeeig,fd}) + catalogs + run_{dst,mps,wolfram,cheb,fem_eig,fem_solvepdeeig,fd}.sh + make_eigenvalues_head_comparison_tables.py + read_eigs_csv
+experiments/dof_sweep/         DOF-sweep drivers and plots (compute_*_dof_sweep.m,
+                               plot_*_dof_sweep.m, load_dof_sweep, run_*_dof_sweep.sh)
 results/eigenvalues/           per-method spectra CSV, a subdir each (dst, fd, fem,
                                cheb, mps, wolfram)
 results/eigenvalues_head/      generated <domain>_comparison.md tables (from
                                experiments/make_eigenvalues_head_comparison_tables.py)
 results/eigenvalues_dof_sweep/ L-shaped and rectangle DOF-sweep spectra CSV +
-                               plots; experiments/compute_*_dof_sweep.m generates
-                               the data (only the missing CSVs),
+                               plots; experiments/dof_sweep/compute_*_dof_sweep.m
+                               generates the data (only the missing CSVs),
                                plot_*_dof_sweep.m draws the figure
 test/mat_batched/              equivalence and timing tests for the builders
 ```

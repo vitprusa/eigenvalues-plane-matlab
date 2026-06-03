@@ -6,8 +6,10 @@ function plot_L_shaped_dof_sweep()
 %   eigenvalue index vs eigenvalue with all curves (full spectra), plus an
 %   upper-left inset zooming to indices n <= 1000.
 
-    experiments_dir = fileparts(mfilename('fullpath'));
-    addpath(experiments_dir);   % read_eigs_csv, load_dof_sweep
+    dof_sweep_dir   = fileparts(mfilename('fullpath'));
+    experiments_dir = fileparts(dof_sweep_dir);
+    addpath(dof_sweep_dir);     % load_dof_sweep
+    addpath(experiments_dir);   % read_eigs_csv
     project_root = fileparts(experiments_dir);
     out_dir = fullfile(project_root, 'results', 'eigenvalues_dof_sweep');
 
