@@ -32,7 +32,7 @@ function plot_L_shaped_dof_sweep()
     xlabel(main, 'eigenvalue index $n$');
     ylabel(main, '$\lambda_n$');
     title(main, 'L-shaped domain --- eigenvalue DOF sweep (DST, FD, FEM)');
-    legend(main, 'Location', 'southeast', 'NumColumns', 3, 'FontSize', 8);
+    legend(main, 'Location', 'southeast', 'NumColumns', 3, 'FontSize', 8, 'Box', 'off');
     grid(main, 'on'); box(main, 'on');
 
     inset = axes(fig, 'Position', [0.18 0.50 0.384 0.384], 'Color', 'w');

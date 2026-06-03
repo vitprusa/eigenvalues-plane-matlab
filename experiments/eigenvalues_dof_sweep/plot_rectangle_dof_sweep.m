@@ -44,7 +44,7 @@ function plot_rectangle_dof_sweep()
     ylabel(main, '$\lambda_n$');
     title(main, 'Rectangle $[0, 2\pi] \times [0, \pi]$ --- eigenvalue DOF sweep');
     % One column per method (DST, FD, FEM, Cheb) plus a column for the analytic.
-    legend(main, 'Location', 'northwest', 'NumColumns', numel(methods) + 1, 'FontSize', 7);
+    legend(main, 'Location', 'northwest', 'NumColumns', numel(methods) + 1, 'FontSize', 7, 'Box', 'off');
     grid(main, 'on'); box(main, 'on');
     % Clip y to the physical band; the spurious high modes (Cheb, FEM) run off
     % the top of the axes.
