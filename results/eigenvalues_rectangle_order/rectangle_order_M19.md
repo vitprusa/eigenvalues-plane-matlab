@@ -1,6 +1,6 @@
 # Rectangle DST eigenvalue ordering
 
-Full DST-Laplacian spectrum of the rectangle $[0, 6.2832] \times [0, 3.1416]$ at resolution $M = 19$ (dofs $= 171$). Each cell holds the **position** of the analytic eigenvalue $\lambda_{m,n} = (m\pi/L_x)^2 + (n\pi/L_y)^2 = m^2/4 + n^2$ in the magnitude-ordered sequence of all analytic eigenvalues (1 = smallest).
+Full DST-Laplacian spectrum of the rectangle $[0, 2\pi] \times [0, \pi]$ at resolution $M = 19$ (dofs $= 171$). Each cell holds the **position** of the analytic eigenvalue $\lambda_{m,n} = (m\pi/L_x)^2 + (n\pi/L_y)^2 = m^2/4 + n^2$ in the magnitude-ordered sequence of all analytic eigenvalues (1 = smallest).
 
 The grid resolves $M_x = 19$ modes in $x$ and $M_y = 9$ modes in $y$. Cells matched to a computed eigenvalue (to round-off) are shown in **bold**; the unresolved border ($m > M_x$ or $n > M_y$) is in normal weight. Rows are indexed by $m$, columns by $n$. The bold cells are not positions $1 \dots M_x M_y$: some unresolved border modes outrank resolved ones.
 

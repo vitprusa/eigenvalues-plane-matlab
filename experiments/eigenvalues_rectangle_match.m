@@ -191,9 +191,9 @@ function write_markdown(md_file, lambda_tab, matched, mm, nn, meta)
 
     fprintf(fid, '# Rectangle DST eigenvalue match\n\n');
     fprintf(fid, ['Full DST-Laplacian spectrum of the rectangle ', ...
-        '$[0, %.4f] \\times [0, %.4f]$ at resolution $M = %d$ ', ...
+        '$[0, %s] \\times [0, %s]$ at resolution $M = %d$ ', ...
         '(dofs $= %d$), matched against the analytic Dirichlet eigenvalues\n\n'], ...
-        meta.Lx, meta.Ly, meta.M, meta.dofs);
+        pi_label(meta.Lx), pi_label(meta.Ly), meta.M, meta.dofs);
     fprintf(fid, ['$$\\lambda_{m,n} = (m\\pi/L_x)^2 + (n\\pi/L_y)^2 ', ...
         '= m^2/4 + n^2, \\qquad m, n = 1, 2, \\dots$$\n\n']);
     fprintf(fid, ['The grid resolves $M_x = %d$ modes in $x$ and ', ...
@@ -232,4 +232,21 @@ function write_markdown(md_file, lambda_tab, matched, mm, nn, meta)
     fprintf(fid, ['\nMatched %d of %d table cells to computed eigenvalues. ', ...
         'Computed eigenvalues: %d total, %d unmatched.\n'], ...
         meta.n_matched, meta.n_cells, meta.n_computed, meta.n_unmatched);
+end
+
+
+function s = pi_label(v)
+%PI_LABEL LaTeX label for a length that is an integer multiple of pi.
+%   Renders pi as "\pi" and k*pi as "k\pi"; falls back to a decimal otherwise.
+    k = v / pi;
+    if abs(k - round(k)) < 1e-9
+        k = round(k);
+        if k == 1
+            s = '\pi';
+        else
+            s = sprintf('%d\\pi', k);
+        end
+    else
+        s = sprintf('%.4f', v);
+    end
 end

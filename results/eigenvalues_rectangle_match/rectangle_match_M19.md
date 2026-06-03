@@ -1,6 +1,6 @@
 # Rectangle DST eigenvalue match
 
-Full DST-Laplacian spectrum of the rectangle $[0, 6.2832] \times [0, 3.1416]$ at resolution $M = 19$ (dofs $= 171$), matched against the analytic Dirichlet eigenvalues
+Full DST-Laplacian spectrum of the rectangle $[0, 2\pi] \times [0, \pi]$ at resolution $M = 19$ (dofs $= 171$), matched against the analytic Dirichlet eigenvalues
 
 $$\lambda_{m,n} = (m\pi/L_x)^2 + (n\pi/L_y)^2 = m^2/4 + n^2, \qquad m, n = 1, 2, \dots$$
 
