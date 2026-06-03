@@ -167,6 +167,8 @@ experiments/head/              make_eigenvalues_head_comparison_tables.py (per-d
                                comparison tables)
 experiments/dof_sweep/         DOF-sweep drivers and plots (compute_*_dof_sweep.m,
                                plot_*_dof_sweep.m, load_dof_sweep, run_*_dof_sweep.sh)
+experiments/grid_visualisation/ DST grid + domain-mask figures (plot_grid_visualisation.m,
+                               run_grid_visualisation.sh)
 results/eigenvalues/           per-method spectra CSV, a subdir each (dst, fd, fem,
                                cheb, mps, wolfram)
 results/eigenvalues_head/      generated <domain>_comparison.md tables (from
@@ -175,6 +177,8 @@ results/eigenvalues_dof_sweep/ L-shaped and rectangle DOF-sweep spectra CSV +
                                plots; experiments/dof_sweep/compute_*_dof_sweep.m
                                generates the data (only the missing CSVs),
                                plot_*_dof_sweep.m draws the figure
+results/grid_visualisation/    per-domain <domain>_grid.png showing the DST grid and
+                               domain mask (from experiments/grid_visualisation/)
 test/mat_batched/              equivalence and timing tests for the builders
 ```
 
