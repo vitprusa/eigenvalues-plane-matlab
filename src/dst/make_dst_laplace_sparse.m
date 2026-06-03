@@ -127,3 +127,63 @@ function [I, J, V] = block_triplets(d, B)
     J = C(:);
     V = B(:);
 end
+
+% -------------------------------------------------------------------------
+% NOTES
+% -------------------------------------------------------------------------
+%
+% What this file does
+% -------------------
+% It assembles the discrete Dirichlet Laplacian as an explicit SPARSE matrix
+% L over the interior degrees of freedom (DOFs) of a masked domain. It is the
+% shared core behind MAKE_DST_LAPLACE_MAT_BATCHED (which densifies L) and
+% MAKE_DST_LAPLACE_OP_BATCHED (which wraps L as a matvec).
+%
+% The idea it exploits: the DST Laplacian acts as a 1-D second-derivative
+% operator applied independently to every column (d^2/dx^2) and every row
+% (d^2/dy^2), and within each line, separately on each contiguous run of
+% interior points. On a run of N points that operator is a *fixed* dense NxN
+% map depending only on N and the spacing h. So the whole Laplacian is just
+% these small blocks scattered onto global DOF indices and summed -- exactly
+% sparse triplet assembly. This gives L only ~O(M^3) nonzeros instead of
+% O(M^4).
+%
+% Pipeline:
+%   1. Pull global_mask, h, dofs from MAKE_DST_LAPLACE_OP (operator handle
+%      discarded).
+%   2. Build dof_index: column-major DOF number for each interior point.
+%   3. For each column, then each row: MASK_BLOCKS finds contiguous interior
+%      runs; BLOCK_TRIPLETS emits L(d_r,d_c) += B(r,c) for each run's DOFs.
+%   4. One sparse(...) call sums coinciding x/y contributions into L.
+%
+% The containers.Map block cache
+% ------------------------------
+% The per-block matrix is produced by BLOCK_MATRIX(N, h, block_cache):
+%
+%     s    = (pi/((N+1)*h))^2;
+%     kvec = -((1:N).^2)';
+%     B    = s * idst(kvec .* dst(eye(N)));   % matrix of dst_d2_chunk, one shot
+%
+% Because dst/idst act column-wise, transforming eye(N) yields the entire NxN
+% block in a single call rather than column by column.
+%
+% The cache wrapping it:
+%   - Keyed by the block length N -- the size of one maximal contiguous
+%     interior run in a column or row, *not* the full column.
+%   - Lazy fill: on each run, isKey(block_cache, N) is checked; a hit returns
+%     the stored B_N, a miss computes it once and stores it. So the cache
+%     holds exactly the distinct run-lengths present in the domain -- nothing
+%     in between.
+%   - x/y sharing: the same B_N serves both the column (x) and row (y) loops,
+%     because h is equal in both directions.
+%   - How many entries in practice: geometry-dependent, but small. A rectangle
+%     yields a *single* entry B_M reused for all 2M slices; an L-shape yields a
+%     handful (two column heights + two row widths). The largest possible N is
+%     bounded by ~M, but the cache never stores the full sequence 1..M -- only
+%     the few lengths that actually occur.
+%
+% Net effect: the cache eliminates redundant recomputation of identical dense
+% blocks -- the dominant cost -- turning assembly into "build each distinct
+% block once, scatter many times", which is what makes the sparse build cheap
+% enough to reach M = 191 in the manufactured-solution test without ever
+% forming a dense matrix.
