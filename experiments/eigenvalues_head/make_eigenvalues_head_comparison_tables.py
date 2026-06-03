@@ -11,7 +11,7 @@ L-shape), plus the analytic spectrum where a closed form is known. The DOFs and
 Time rows are read from each CSV's metadata header.
 
 Run after the experiment drivers have produced the results/eigenvalues/*/ CSVs:
-    python3 experiments/head/make_eigenvalues_head_comparison_tables.py
+    python3 experiments/eigenvalues_head/make_eigenvalues_head_comparison_tables.py
 """
 
 import os
