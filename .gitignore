@@ -1,1 +1,16 @@
 *.asv
+
+# Editor backups
+*~
+
+# LaTeX / AUCTeX build artifacts
+auto/
+*.aux
+*.log
+*.out
+*.toc
+*.synctex.gz
+*.fls
+*.fdb_latexmk
+*.bbl
+*.blg
