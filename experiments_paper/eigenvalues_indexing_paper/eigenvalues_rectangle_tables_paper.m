@@ -222,7 +222,8 @@ end
 function write_tabular(fid, data, matched, mm, nn, colspec, fmt)
 %WRITE_TABULAR Emit one tabular for DATA indexed by m (rows) and n (cols).
 %   Matched cells are wrapped in \textbf{...}. fmt maps a value to its string.
-    fprintf(fid, '    \\begin{tabular}{%s}\n', colspec);
+    % \small scopes to the tabular (grouped) so the subcaptions stay normal size.
+    fprintf(fid, '    {\\small\n    \\begin{tabular}{%s}\n', colspec);
     fprintf(fid, '      \\toprule\n');
 
     % Header row: n indices across the top.
@@ -248,7 +249,7 @@ function write_tabular(fid, data, matched, mm, nn, colspec, fmt)
     end
 
     fprintf(fid, '      \\bottomrule\n');
-    fprintf(fid, '    \\end{tabular}');
+    fprintf(fid, '    \\end{tabular}}');
 end
 
 
