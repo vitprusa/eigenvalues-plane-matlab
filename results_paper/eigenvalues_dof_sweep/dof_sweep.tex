@@ -12,19 +12,18 @@
 
 \begin{figure}[htbp]
   \centering
-  \subfloat[Rectangle, length $2\pi$, height $\pi$.]{%
+  \subfloat[Rectangular domain, \texttt{rectangle}.]{%
     \includegraphics[width=0.85\textwidth]{rectangle_dof_sweep}}
   \\
-  \subfloat[Right isosceles triangle, legs length~$\pi$.]{%
+  \subfloat[Right isosceles triangle domain, \texttt{isosceles\_triangle}.]{%
     \includegraphics[width=0.85\textwidth]{isosceles_triangle_dof_sweep}}
-  \caption{Eigenvalue DOF-sweep spectra.}
+  \caption{Eigenvalues of Laplace operator, zero Dirichlet boundary conditions. Comparison of analytical (exact) eigenvalues of the continuous eigenvalue problem and eigenvalues computed using various discretisations of Laplace operator; \texttt{FEM} -- finite element method, \texttt{FD} -- finite differences method, \texttt{Cheb} -- Chebyshev spectral collocation method, \texttt{DST} -- discrete sine transform method.}
   \label{fig:dof_sweep}
 \end{figure}
 
 \begin{figure}[htbp]
   \centering
   \includegraphics[width=0.85\textwidth]{L_shaped_dof_sweep}
-  \caption{Eigenvalue DOF-sweep spectra for the L-shaped domain (square domain
-    $2 \times 2$ minus a $1 \times 1$ top right corner).}
+  \caption{Eigenvalues of Laplace operator, zero Dirichlet boundary conditions, L-shaped domain \texttt{L\_shaped}. Eigenvalues computed using various discretisations of Laplace operator; \texttt{FEM} -- finite element method, \texttt{FD} -- finite differences method, \texttt{DST} -- discrete sine transform method.}
   \label{fig:dof_sweep_L_shaped}
 \end{figure}
