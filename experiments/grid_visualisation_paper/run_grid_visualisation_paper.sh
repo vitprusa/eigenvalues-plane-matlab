@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Draw the DST grid + domain mask for each DST-catalog domain (at M_full) into
-# results-paper/grid-visualisation/. Paper variant: no title, and M and dofs are
+# results_paper/grid_visualisation/. Paper variant: no title, and M and dofs are
 # encoded in the output file name. Pass a domain name to restrict the run, e.g.
 #   ./run_grid_visualisation_paper.sh L_shaped
 set -euo pipefail

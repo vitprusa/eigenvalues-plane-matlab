@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Generate the rectangle eigenvalue-indexing LaTeX snippet (values + ordering
-# tables) into results-paper/eigenvalues_indexing/. Defaults to M = 9; pass a
+# tables) into results_paper/eigenvalues_indexing/. Defaults to M = 9; pass a
 # resolution to override, e.g. ./run_eigenvalues_indexing_paper.sh 19
 set -euo pipefail
 

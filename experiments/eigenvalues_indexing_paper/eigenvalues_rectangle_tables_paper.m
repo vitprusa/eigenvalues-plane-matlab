@@ -24,7 +24,7 @@ function eigenvalues_rectangle_tables_paper(M, margin)
 %
 %   In both tables the cells the grid resolves (matched to a computed eigenvalue
 %   to round-off) are set in bold and the unresolved border in normal weight.
-%   The snippet goes to results-paper/eigenvalues_indexing/rectangle_tables_M<M>.tex.
+%   The snippet goes to results_paper/eigenvalues_indexing/rectangle_tables_M<M>.tex.
 %
 %   The default M = 9 reproduces the worked example in the markdown results
 %   (Mx = 9, My = 4, table m = 1..14, n = 1..9).
@@ -113,7 +113,7 @@ function eigenvalues_rectangle_tables_paper(M, margin)
         'n_unmatched', n_unmatched);
 
     % --- 5. Write the LaTeX snippet with both tables --------------------
-    out_dir = fullfile(project_root, 'results-paper', 'eigenvalues_indexing');
+    out_dir = fullfile(project_root, 'results_paper', 'eigenvalues_indexing');
     if ~exist(out_dir, 'dir')
         mkdir(out_dir);
     end

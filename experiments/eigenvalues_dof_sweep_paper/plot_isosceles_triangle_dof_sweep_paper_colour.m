@@ -9,7 +9,7 @@ function plot_isosceles_triangle_dof_sweep_paper_colour()
 %   line. Reads the existing CSVs from results/eigenvalues_dof_sweep/ (produced
 %   by COMPUTE_ISOSCELES_TRIANGLE_DOF_SWEEP) and writes
 %   isosceles_triangle_dof_sweep_colour.png into
-%   results-paper/eigenvalues_dof_sweep/. The domain name is carried by the file
+%   results_paper/eigenvalues_dof_sweep/. The domain name is carried by the file
 %   name in place of the removed title.
 
     paper_dir       = fileparts(mfilename('fullpath'));
@@ -19,7 +19,7 @@ function plot_isosceles_triangle_dof_sweep_paper_colour()
     addpath(experiments_dir);   % read_eigs_csv
     project_root = fileparts(experiments_dir);
     data_dir = fullfile(project_root, 'results', 'eigenvalues_dof_sweep');
-    out_dir  = fullfile(project_root, 'results-paper', 'eigenvalues_dof_sweep');
+    out_dir  = fullfile(project_root, 'results_paper', 'eigenvalues_dof_sweep');
     if ~exist(out_dir, 'dir')
         mkdir(out_dir);
     end

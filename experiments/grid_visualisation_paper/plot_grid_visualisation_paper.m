@@ -4,7 +4,7 @@ function plot_grid_visualisation_paper(name)
 %   plot_grid_visualisation_paper() draws one figure per domain in
 %   DOMAIN_CATALOG_DST, using the SAME bounding box, grid spacing, and mask as
 %   the DST "full" spectrum (resolution M_full), and writes a PNG into
-%   results-paper/grid-visualisation/.
+%   results_paper/grid_visualisation/.
 %
 %   plot_grid_visualisation_paper(name) restricts the run to the single domain
 %   "name" (e.g. "L_shaped"). Pass "" or [] to keep all domains.
@@ -37,7 +37,7 @@ function plot_grid_visualisation_paper(name)
     run(fullfile(project_root, 'startup.m'));
     addpath(experiments_dir);   % domain_catalog_dst
 
-    out_dir = fullfile(project_root, 'results-paper', 'grid-visualisation');
+    out_dir = fullfile(project_root, 'results_paper', 'grid_visualisation');
     if ~exist(out_dir, 'dir')
         mkdir(out_dir);
     end

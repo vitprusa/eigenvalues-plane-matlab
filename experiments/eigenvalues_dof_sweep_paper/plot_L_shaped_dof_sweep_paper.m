@@ -7,7 +7,7 @@ function plot_L_shaped_dof_sweep_paper()
 %   square, triangle, diamond for the successive DOFs), with a few markers
 %   placed along each curve. Reads the existing CSVs from
 %   results/eigenvalues_dof_sweep/ (produced by COMPUTE_L_SHAPED_DOF_SWEEP) and
-%   writes L_shaped_dof_sweep.png into results-paper/eigenvalues_dof_sweep/. The
+%   writes L_shaped_dof_sweep.png into results_paper/eigenvalues_dof_sweep/. The
 %   domain name is carried by the file name in place of the removed title.
 
     paper_dir       = fileparts(mfilename('fullpath'));
@@ -17,7 +17,7 @@ function plot_L_shaped_dof_sweep_paper()
     addpath(experiments_dir);   % read_eigs_csv
     project_root = fileparts(experiments_dir);
     data_dir = fullfile(project_root, 'results', 'eigenvalues_dof_sweep');
-    out_dir  = fullfile(project_root, 'results-paper', 'eigenvalues_dof_sweep');
+    out_dir  = fullfile(project_root, 'results_paper', 'eigenvalues_dof_sweep');
     if ~exist(out_dir, 'dir')
         mkdir(out_dir);
     end

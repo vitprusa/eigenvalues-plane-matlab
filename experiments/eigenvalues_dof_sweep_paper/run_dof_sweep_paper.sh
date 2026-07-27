@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Regenerate the paper DOF-sweep figures (no titles) from the existing CSVs in
 # results/eigenvalues_dof_sweep/, writing PNGs into
-# results-paper/eigenvalues_dof_sweep/. No recompute: the CSVs must already be
+# results_paper/eigenvalues_dof_sweep/. No recompute: the CSVs must already be
 # present (run the compute_* scripts in experiments/eigenvalues_dof_sweep first
 # if they are not).
 set -euo pipefail
