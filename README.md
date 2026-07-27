@@ -179,6 +179,10 @@ experiments_paper/eigenvalues_dof_sweep_paper/ paper DOF-sweep plots, black-and-
                                (marker per DOF level) and colour variants, no title
 experiments_paper/eigenvalues_indexing_paper/ rectangle eigenvalue match/order tables
                                as a booktabs LaTeX snippet (eigenvalues_rectangle_tables_paper.m)
+experiments_paper/eigenvalues_head_paper/ self-computing eigenvalue-comparison tables
+                               (make_eigenvalues_head_paper_tables.m): recomputes DST/FD/FEM/Cheb
+                               at four DOF resolutions each, times every run, writes new CSVs and
+                               one booktabs LaTeX table per domain
 results/eigenvalues/           per-method spectra CSV, a subdir each (dst, fd, fem,
                                cheb, mps, wolfram)
 results/eigenvalues_head/      generated <domain>_comparison.md tables (from
@@ -199,6 +203,10 @@ results_paper/grid_visualisation/ paper grid PNGs (<domain>_grid_M<M>_dofs<DOF>.
 results_paper/eigenvalues_dof_sweep/ paper DOF-sweep PNGs (black-and-white and _colour) plus
                                dof_sweep.tex, dof_sweep_colour.tex, methods_description_table.tex
 results_paper/eigenvalues_indexing/ rectangle match/order tables snippet (rectangle_tables_M9.tex)
+results_paper/eigenvalues_head/ self-computed comparison spectra CSV
+                               (<domain>_<method>_<k>-eigenvalues.csv, with dof + time metadata)
+                               plus one <domain>_eigenvalues_head.tex table per domain
+                               (rectangle, isosceles_triangle, L_shaped)
 test/mat_batched/              equivalence and timing tests for the builders
 test/laplace_action/           Laplace-operator action on a known function
 test/manufactured_solution/    BVP solve via the method of manufactured solutions
