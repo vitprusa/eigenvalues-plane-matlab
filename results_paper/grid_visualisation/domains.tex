@@ -1,6 +1,7 @@
 % Domain grid visualisations (DST grid + interior degrees of freedom).
 %
 % Requires in the preamble:
+%   \usepackage{amsmath}
 %   \usepackage{graphicx}
 %   \usepackage{subfig}
 %
@@ -13,26 +14,26 @@
 
 \begin{figure}[htbp]
   \centering
-  \subfloat[Rectangle, length $2\pi$, height $\pi$, $M = 49$, DOF $= 1176$.]{%
+  \subfloat[Domain \texttt{rectangle}, $M = 49$, $\text{DOF} = 1176$.]{%
     \includegraphics[width=0.4\textwidth]{rectangle_grid_M49_dofs1176}}
   \qquad
-  \subfloat[Ellipse, horizontal semi-axis length $2$, vertical semi-axis length $1$, minus the fourth quadrant, $M = 47$, DOF $= 649$.]{%
+  \subfloat[Domain \texttt{ellipse\_minus\_quadrant}, $M = 47$, $\text{DOF} = 649$.]{%
     \includegraphics[width=0.4\textwidth]{ellipse_minus_quadrant_grid_M47_dofs649}}
   \\
-  \subfloat[Right isosceles triangle, legs length~$\pi$, $M = 50$, DOF $= 1225$.]{%
+  \subfloat[Domain \texttt{isosceles\_triangle}, $M = 50$, $\text{DOF} = 1225$.]{%
     \includegraphics[width=0.4\textwidth]{isosceles_triangle_grid_M50_dofs1225}}
   \qquad
-  \subfloat[L-shaped domain, square domain $2 \times 2$ minus a $1 \times 1$ top right corner, $M = 49$, DOF $= 1776$.]{%
+  \subfloat[Domain \texttt{L\_shaped}, $M = 49$, $\text{DOF} = 1776$.]{%
     \includegraphics[width=0.4\textwidth]{L_shaped_grid_M49_dofs1776}}
   \\
-  \subfloat[GWW drum 1, unit building blocks, $M = 50$, DOF $= 936$.]{%
+  \subfloat[Domain \texttt{gww1}, $M = 50$, $\text{DOF} = 936$.]{%
     \includegraphics[width=0.4\textwidth]{gww1_grid_M50_dofs936}}
   \qquad
-  \subfloat[GWW drum 2, unit building blocks, $M = 50$, DOF $= 936$.]{%
+  \subfloat[Domain \texttt{gww2}, $M = 50$, $\text{DOF} = 936$.]{%
     \includegraphics[width=0.4\textwidth]{gww2_grid_M50_dofs936}}
   \\
-  \subfloat[Letter H, seven unit squares in a $3 \times 3$ square domain, $M = 50$, DOF $= 1888$.]{%
+  \subfloat[Domain \texttt{H\_shaped}, $M = 50$, $\text{DOF} = 1888$.]{%
     \includegraphics[width=0.4\textwidth]{H_grid_M50_dofs1888}}
-  \caption{Domains and DST grids visualisations.}
+  \caption{Visualisation of domains listed in Table~\ref{tab:domains_description} and sample grids for \texttt{DST} based discretisation.}
   \label{fig:domains}
 \end{figure}
