@@ -65,7 +65,7 @@ function draw_curves(ax, results, methods, colors, labels, styles, nmax)
             si = mod(k - 1, numel(styles)) + 1;
             lw = 1.2 + 0.9 * floor((k - 1) / numel(styles));
             plot(ax, idx, r.evals(idx), styles{si}, 'Color', colors.(m), 'LineWidth', lw, ...
-                'DisplayName', sprintf('%s (dof = %d)', labels.(m), r.dofs));
+                'DisplayName', sprintf('%s (DOF = %d)', labels.(m), r.dofs));
         end
     end
     hold(ax, 'off');
