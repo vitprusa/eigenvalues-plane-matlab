@@ -1,0 +1,26 @@
+% Geometrical description of the computational domains drawn by
+% experiments/grid_visualisation_paper/ (domains registered in
+% experiments/domain_catalog_dst.m). Domain names are the catalog identifiers,
+% also used in the figure file names.
+%
+% Requires in the preamble:
+%   \usepackage{booktabs}
+
+\begin{table}[htbp]
+  \centering
+  \begin{tabular}{l p{0.68\linewidth}}
+    \toprule
+    Domain name & Description \\
+    \midrule
+    \texttt{rectangle} & Rectangle $[0, 2\pi] \times [0, \pi]$. \\
+    \texttt{isosceles\_triangle} & Right isosceles triangle; legs of length $\pi$. \\
+    \texttt{L\_shaped} & L-shaped domain; letter ``L'' built from three unit squares in the box $[-1, 1] \times [-1, 1]$. \\
+    \texttt{ellipse\_minus\_quadrant} & Ellipse $\frac{x^2}{4} + y^2 \le 1$ with the lower-right quadrant removed. \\
+    \texttt{H\_shaped} & H-shaped domain; letter ``H'' built from seven unit squares in the box $[-1, 2] \times [-2, 1]$. \\
+    \texttt{gww1} & First Gordon--Webb--Wolpert isospectral drum; a non-convex polygon assembled from unit right-isosceles-triangle blocks in the box $[-3, 3] \times [-3, 3]$. \\
+    \texttt{gww2} & Second Gordon--Webb--Wolpert isospectral drum; the isospectral partner of \texttt{gww1}, of equal area and spectrum but different shape. \\
+    \bottomrule
+  \end{tabular}
+  \caption{Domains.}
+  \label{tab:domains_description}
+\end{table}
