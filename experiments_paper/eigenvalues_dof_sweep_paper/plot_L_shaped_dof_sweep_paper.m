@@ -11,11 +11,11 @@ function plot_L_shaped_dof_sweep_paper()
 %   domain name is carried by the file name in place of the removed title.
 
     paper_dir       = fileparts(mfilename('fullpath'));
-    experiments_dir = fileparts(paper_dir);
+    project_root    = fileparts(fileparts(paper_dir));
+    experiments_dir = fullfile(project_root, 'experiments');
     orig_dir        = fullfile(experiments_dir, 'eigenvalues_dof_sweep');
     addpath(orig_dir);          % load_dof_sweep
     addpath(experiments_dir);   % read_eigs_csv
-    project_root = fileparts(experiments_dir);
     data_dir = fullfile(project_root, 'results', 'eigenvalues_dof_sweep');
     out_dir  = fullfile(project_root, 'results_paper', 'eigenvalues_dof_sweep');
     if ~exist(out_dir, 'dir')

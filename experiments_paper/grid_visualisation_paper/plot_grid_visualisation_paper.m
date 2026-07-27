@@ -32,8 +32,8 @@ function plot_grid_visualisation_paper(name)
     end
 
     gv_dir          = fileparts(mfilename('fullpath'));
-    experiments_dir = fileparts(gv_dir);
-    project_root    = fileparts(experiments_dir);
+    project_root    = fileparts(fileparts(gv_dir));
+    experiments_dir = fullfile(project_root, 'experiments');
     run(fullfile(project_root, 'startup.m'));
     addpath(experiments_dir);   % domain_catalog_dst
 

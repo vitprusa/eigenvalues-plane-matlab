@@ -38,7 +38,7 @@ function eigenvalues_rectangle_tables_paper(M, margin)
         margin = 5;     % table reaches Mx+margin = 14 rows, My+margin = 9 cols
     end
 
-    % This file lives in experiments/eigenvalues_indexing_paper/; put the
+    % This file lives in experiments_paper/eigenvalues_indexing_paper/; put the
     % project sources on the path.
     script_dir      = fileparts(mfilename('fullpath'));
     experiments_dir = fileparts(script_dir);
