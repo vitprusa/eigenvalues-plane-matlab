@@ -1,0 +1,61 @@
+% Rectangle DST eigenvalue indexing tables (values and ordering), M = 9.
+%
+% Requires in the preamble:
+%   \usepackage{booktabs}
+%   \usepackage{subfig}
+%
+% The full DST-Laplacian spectrum of the 2:1 rectangle [0, 2pi] x [0, pi] at
+% resolution M = 9 (dofs = 36) is matched against the analytic Dirichlet
+% eigenvalues lambda_{m,n} = m^2/4 + n^2. The grid resolves Mx = 9 modes in x
+% and My = 4 modes in y; matched (resolved) cells are set in bold.
+
+\begin{table}
+  \centering
+  \subfloat[Computed eigenvalues in \textbf{bold}. The computational grid resolves $M_x = 9$ modes in the horizontal direction $x$ and $M_y = 4$ modes in the vertical direction $y$, total number of computed eigenvalues is $M_x \times M_y = \text{DOF}$. Computed eigenvalues match---up to round-off error---the corresponding analytic eigenvalues, which are computed for all pairs $(m, n)$ and are shown in normal weight.]{%
+    \begin{tabular}{r|rrrrrrrrr}
+      \toprule
+      $m \backslash n$ & 1 & 2 & 3 & 4 & 5 & 6 & 7 & 8 & 9 \\
+      \midrule
+      1 & \textbf{1.25} & \textbf{4.25} & \textbf{9.25} & \textbf{16.25} & 25.25 & 36.25 & 49.25 & 64.25 & 81.25 \\
+      2 & \textbf{2.00} & \textbf{5.00} & \textbf{10.00} & \textbf{17.00} & 26.00 & 37.00 & 50.00 & 65.00 & 82.00 \\
+      3 & \textbf{3.25} & \textbf{6.25} & \textbf{11.25} & \textbf{18.25} & 27.25 & 38.25 & 51.25 & 66.25 & 83.25 \\
+      4 & \textbf{5.00} & \textbf{8.00} & \textbf{13.00} & \textbf{20.00} & 29.00 & 40.00 & 53.00 & 68.00 & 85.00 \\
+      5 & \textbf{7.25} & \textbf{10.25} & \textbf{15.25} & \textbf{22.25} & 31.25 & 42.25 & 55.25 & 70.25 & 87.25 \\
+      6 & \textbf{10.00} & \textbf{13.00} & \textbf{18.00} & \textbf{25.00} & 34.00 & 45.00 & 58.00 & 73.00 & 90.00 \\
+      7 & \textbf{13.25} & \textbf{16.25} & \textbf{21.25} & \textbf{28.25} & 37.25 & 48.25 & 61.25 & 76.25 & 93.25 \\
+      8 & \textbf{17.00} & \textbf{20.00} & \textbf{25.00} & \textbf{32.00} & 41.00 & 52.00 & 65.00 & 80.00 & 97.00 \\
+      9 & \textbf{21.25} & \textbf{24.25} & \textbf{29.25} & \textbf{36.25} & 45.25 & 56.25 & 69.25 & 84.25 & 101.25 \\
+      10 & 26.00 & 29.00 & 34.00 & 41.00 & 50.00 & 61.00 & 74.00 & 89.00 & 106.00 \\
+      11 & 31.25 & 34.25 & 39.25 & 46.25 & 55.25 & 66.25 & 79.25 & 94.25 & 111.25 \\
+      12 & 37.00 & 40.00 & 45.00 & 52.00 & 61.00 & 72.00 & 85.00 & 100.00 & 117.00 \\
+      13 & 43.25 & 46.25 & 51.25 & 58.25 & 67.25 & 78.25 & 91.25 & 106.25 & 123.25 \\
+      14 & 50.00 & 53.00 & 58.00 & 65.00 & 74.00 & 85.00 & 98.00 & 113.00 & 130.00 \\
+      \bottomrule
+    \end{tabular}
+  }
+  \\
+  \subfloat[Sequential position of analytical eigenvalues $\lambda_{m,n}$ in the magnitude-ordered sequence of all analytic eigenvalues.]{%
+    \begin{tabular}{r|rrrrrrrrr}
+      \toprule
+      $m \backslash n$ & 1 & 2 & 3 & 4 & 5 & 6 & 7 & 8 & 9 \\
+      \midrule
+      1 & \textbf{1} & \textbf{4} & \textbf{10} & \textbf{19} & 33 & 47 & 66 & 87 & 113 \\
+      2 & \textbf{2} & \textbf{5} & \textbf{11} & \textbf{21} & 34 & 49 & 67 & 88 & 116 \\
+      3 & \textbf{3} & \textbf{7} & \textbf{14} & \textbf{24} & 36 & 52 & 70 & 93 & 118 \\
+      4 & \textbf{6} & \textbf{9} & \textbf{15} & \textbf{25} & 38 & 54 & 74 & 96 & 120 \\
+      5 & \textbf{8} & \textbf{13} & \textbf{18} & \textbf{29} & 41 & 58 & 76 & 99 & 124 \\
+      6 & \textbf{12} & \textbf{16} & \textbf{23} & \textbf{31} & 44 & 60 & 80 & 102 & 128 \\
+      7 & \textbf{17} & \textbf{20} & \textbf{27} & \textbf{37} & 51 & 65 & 86 & 107 & 133 \\
+      8 & \textbf{22} & \textbf{26} & \textbf{32} & \textbf{43} & 56 & 72 & 89 & 111 & 136 \\
+      9 & \textbf{28} & \textbf{30} & \textbf{40} & \textbf{48} & 62 & 78 & 98 & 119 & 146 \\
+      10 & 35 & 39 & 45 & 57 & 68 & 84 & 105 & 126 & 151 \\
+      11 & 42 & 46 & 53 & 63 & 77 & 94 & 110 & 134 & 159 \\
+      12 & 50 & 55 & 61 & 73 & 85 & 100 & 121 & 141 & 168 \\
+      13 & 59 & 64 & 71 & 82 & 95 & 109 & 130 & 154 & 178 \\
+      14 & 69 & 75 & 81 & 90 & 106 & 122 & 139 & 162 & 188 \\
+      \bottomrule
+    \end{tabular}
+  }
+  \caption{Analytical/numerical eigenvalues of Laplace operator on the rectangular domain $[0, 2\pi] \times [0, \pi]$, zero Dirichlet boundary condition. The analytical eigenvalues of the continuous eigenvalue problem are given by the formula~$\lambda_{m,n} = \frac{m^2}{4} + n^2$. (Eigenvalues indexed by~$(m, n)$, rows are indexed by~$m$, columns by~$n$.) Numerical eigenvalues computed using the \texttt{DST} based discretisation, $M = 9$, $\text{DOF} = 36$.}
+  \label{tab:rectangle_indexing_M9}
+\end{table}
