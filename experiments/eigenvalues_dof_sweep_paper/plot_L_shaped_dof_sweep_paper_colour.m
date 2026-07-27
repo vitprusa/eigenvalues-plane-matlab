@@ -39,8 +39,8 @@ function plot_L_shaped_dof_sweep_paper_colour()
 
     main = axes(fig);
     draw_curves(main, results, methods, colors, labels, styles, []);
-    xlabel(main, 'eigenvalue index $n$');
-    ylabel(main, '$\lambda_n$');
+    xlabel(main, 'eigenvalue index $k$');
+    ylabel(main, '$\lambda_k$');
     % No title: the domain is identified by the output file name.
     legend(main, 'Location', 'southeast', 'NumColumns', 3, 'FontSize', 8, 'Box', 'off');
     grid(main, 'on'); box(main, 'on');
@@ -48,7 +48,7 @@ function plot_L_shaped_dof_sweep_paper_colour()
     inset = axes(fig, 'Position', [0.18 0.50 0.384 0.384], 'Color', 'w');
     draw_curves(inset, results, methods, colors, labels, styles, 1000);
     grid(inset, 'on'); box(inset, 'on');
-    title(inset, 'indices $n \leq 1000$', 'FontSize', 8);
+    title(inset, 'indices $k \leq 1000$', 'FontSize', 8);
     set(inset, 'FontSize', 7);
 
     png = fullfile(out_dir, 'L_shaped_dof_sweep_colour.png');

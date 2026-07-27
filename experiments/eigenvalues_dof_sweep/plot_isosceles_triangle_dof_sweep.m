@@ -41,8 +41,8 @@ function plot_isosceles_triangle_dof_sweep()
 
     main = axes(fig);
     draw_all(main, results, methods, analytic, colors, labels, styles, [], true);
-    xlabel(main, 'eigenvalue index $n$');
-    ylabel(main, '$\lambda_n$');
+    xlabel(main, 'eigenvalue index $k$');
+    ylabel(main, '$\lambda_k$');
     title(main, 'Right isosceles triangle (legs $\pi$) --- eigenvalue DOF sweep');
     % One column per method (DST, FD, FEM) plus a column for the analytic.
     legend(main, 'Location', 'northwest', 'NumColumns', numel(methods) + 1, 'FontSize', 7, 'Box', 'off');
@@ -56,7 +56,7 @@ function plot_isosceles_triangle_dof_sweep()
     draw_all(inset, results, methods, analytic, colors, labels, styles, 600);
     grid(inset, 'on'); box(inset, 'on');
     ylim(inset, [0, 2 * analytic(min(600, numel(analytic)))]);
-    title(inset, 'indices $n \leq 600$', 'FontSize', 8);
+    title(inset, 'indices $k \leq 600$', 'FontSize', 8);
     set(inset, 'FontSize', 7);
 
     png = fullfile(out_dir, 'isosceles_triangle_dof_sweep.png');
