@@ -1,0 +1,21 @@
+% Brief description of the discretisation methods compared in the DOF-sweep
+% experiments (see experiments/compute_spectrum_*.m and src/<method>/).
+%
+% Requires in the preamble:
+%   \usepackage{booktabs}
+
+\begin{table}
+  \centering
+  \begin{tabular}{l p{0.72\linewidth}}
+    \toprule
+    Discretisation method & Description \\
+    \midrule
+    \texttt{FEM} & Finite element method. Conforming Galerkin discretisation with quadratic ($P_2$) triangular Lagrange elements on an unstructured mesh as implemented with the \texttt{MATLAB} \texttt{PDE Toolbox}, \lstinline{assembleFEMatrices} function; constrained degrees of freedom removed via the null space basis technique. \\
+    \texttt{Cheb} & Chebyshev spectral collocation method. Second-derivative differentiation matrices at Chebyshev points in each direction (interior points only, for homogeneous Dirichlet conditions) as implemented in \texttt{chebfun} library, see \cite{driscoll.ta.hale.n.ea:chebfun}, \lstinline{diffmat} function, combined into the two-dimensional Laplacian by a Kronecker sum. (Rectangular domain only.) \\
+    \texttt{FD} & Finite difference method. Standard second-order five-point Laplacian stencil on a uniform grid, own implementation. \\
+    \texttt{DST} & Discrete sine transform method. \\
+    \bottomrule
+  \end{tabular}
+  \caption{Discretisation  of the Laplace operator with zero Dirichlet boundary conditions.}
+  \label{tab:methods_description}
+\end{table}
