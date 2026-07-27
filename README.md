@@ -170,6 +170,15 @@ experiments/grid_visualisation/ DST grid + domain-mask figures (plot_grid_visual
                                run_grid_visualisation.sh)
 experiments/eigenvalues_weyl/  Weyl-asymptotics visual check (plot_weyl_asymptotics.m,
                                run_weyl_asymptotics.sh)
+experiments_paper/             article (paper) variants of the figure/table experiments:
+                               same computation, but no plot titles, catalog domain/method
+                               names in the labels, and output to results_paper/
+experiments_paper/grid_visualisation_paper/ paper grid + domain-mask figures
+                               (M and DOF encoded in the file name, no title)
+experiments_paper/eigenvalues_dof_sweep_paper/ paper DOF-sweep plots, black-and-white
+                               (marker per DOF level) and colour variants, no title
+experiments_paper/eigenvalues_indexing_paper/ rectangle eigenvalue match/order tables
+                               as a booktabs LaTeX snippet (eigenvalues_rectangle_tables_paper.m)
 results/eigenvalues/           per-method spectra CSV, a subdir each (dst, fd, fem,
                                cheb, mps, wolfram)
 results/eigenvalues_head/      generated <domain>_comparison.md tables (from
@@ -183,6 +192,13 @@ results/grid_visualisation/    per-domain <domain>_grid.png showing the DST grid
                                domain mask (from experiments/grid_visualisation/)
 results/eigenvalues_weyl/      per-domain <domain>_weyl.png checking lambda_n/n -> 4*pi/A
                                plus weyl_areas.md (from experiments/eigenvalues_weyl/)
+results_paper/                 article (paper) figures and LaTeX table/figure snippets
+                               produced by experiments_paper/
+results_paper/grid_visualisation/ paper grid PNGs (<domain>_grid_M<M>_dofs<DOF>.png) plus
+                               domains.tex and domains_description_table.tex
+results_paper/eigenvalues_dof_sweep/ paper DOF-sweep PNGs (black-and-white and _colour) plus
+                               dof_sweep.tex, dof_sweep_colour.tex, methods_description_table.tex
+results_paper/eigenvalues_indexing/ rectangle match/order tables snippet (rectangle_tables_M9.tex)
 test/mat_batched/              equivalence and timing tests for the builders
 test/laplace_action/           Laplace-operator action on a known function
 test/manufactured_solution/    BVP solve via the method of manufactured solutions
@@ -196,10 +212,13 @@ as rows of `experiments/domain_catalog_dst.m`. `compute_spectrum_dst` runs the
 
 The repository also tracks the generated artifacts, so the results are
 available without rerunning anything: the per-method spectra `*.csv` under
-`results/` and the test reports under `test/`. They can be regenerated with the
-experiments drivers (or `experiments/run_wolfram.sh` for the reference spectra)
-and the `test/*/run_tests.sh` harnesses; only MATLAB autosave files (`*.asv`)
-are ignored.
+`results/`, the article (paper) figures and LaTeX table/figure snippets under
+`results_paper/`, and the test reports under `test/`. They can be regenerated
+with the experiments drivers (or `experiments/run_wolfram.sh` for the reference
+spectra), the `experiments_paper/` runners for the paper figures and snippets,
+and the `test/*/run_tests.sh` harnesses; MATLAB autosave files (`*.asv`), editor
+backups (`*~`), and LaTeX build artifacts (`auto/`, `*.log`, `*.aux`, ...) are
+ignored.
 
 ## Tests
 
