@@ -33,6 +33,7 @@ function make_eigenvalues_head_paper_tables(name)
     here         = fileparts(mfilename('fullpath'));
     project_root = fileparts(fileparts(here));
     run(fullfile(project_root, 'startup.m'));
+    addpath(fullfile(project_root, 'experiments'));   % domain_catalog_dst / _fem
 
     out_dir = fullfile(project_root, 'results_paper', 'eigenvalues_head');
     if ~exist(out_dir, 'dir')
@@ -44,7 +45,8 @@ function make_eigenvalues_head_paper_tables(name)
         cfgs = cfgs(strcmp({cfgs.name}, name));
         if isempty(cfgs)
             error('head_paper:unknownDomain', ...
-                'Unknown domain "%s" (known: rectangle, isosceles_triangle, L_shaped).', name);
+                ['Unknown domain "%s" (known: rectangle, isosceles_triangle, ', ...
+                 'L_shaped, ellipse_minus_quadrant, H, gww1, gww2).'], name);
         end
     end
     for i = 1:numel(cfgs)
@@ -100,6 +102,36 @@ function cfgs = domain_configs(project_root)
         'M_grid', [15 25 35 49], 'Hmax_fem', [0.20 0.13 0.09 0.06], ...
         'has_cheb', false, 'N_cheb', [], ...
         'truth_kind', 'mps', 'analytic_fun', [], 'mps_path', mps);
+
+    % --- Non-analytic domains: ellipse-minus-quadrant, H, GWW1, GWW2 ---------
+    % No closed-form spectrum, no Cheb (non-rectangular) and no MPS/Wolfram
+    % reference here, so the table just compares DST/FD/FEM at three DOF levels
+    % each. Box and indicator come from DOMAIN_CATALOG_DST, the FEM decsg
+    % geometry from DOMAIN_CATALOG_FEM; the DST/FD grid resolutions M keep the
+    % domain edges on grid lines (M+1 divisible by 4 for the ellipse, by 3 for
+    % H, by 6 for the 6-wide GWW box).
+    % Columns: catalog name (for the DST/FEM lookups), output name (file names,
+    % \texttt label and \label -- H uses H_shaped), pretty caption name,
+    % DST/FD grid resolutions, FEM mesh sizes.
+    extra = { ...
+        'ellipse_minus_quadrant', 'ellipse_minus_quadrant', 'ellipse-minus-quadrant', [23 35 47], [0.20 0.13 0.09]; ...
+        'H',                      'H_shaped',               'H-shaped',              [20 35 50], [0.18 0.12 0.08]; ...
+        'gww1',                   'gww1',                   'GWW1 isospectral drum', [23 35 47], [0.30 0.20 0.13]; ...
+        'gww2',                   'gww2',                   'GWW2 isospectral drum', [23 35 47], [0.30 0.20 0.13]  ...
+    };
+    for i = 1:size(extra, 1)
+        cat_nm = extra{i, 1};
+        out_nm = extra{i, 2};
+        dstc = domain_catalog_dst(cat_nm);
+        femc = domain_catalog_fem(cat_nm);
+        cfgs(end+1) = struct( ...
+            'name', out_nm, 'pretty', extra{i, 3}, ...
+            'box', dstc.box, 'phi', dstc.phi, ...
+            'gd', femc.gd, 'ns', femc.ns, 'sf', femc.sf, ...
+            'M_grid', extra{i, 4}, 'Hmax_fem', extra{i, 5}, ...
+            'has_cheb', false, 'N_cheb', [], ...
+            'truth_kind', 'none', 'analytic_fun', [], 'mps_path', ''); %#ok<AGROW>
+    end
 end
 
 
@@ -130,7 +162,7 @@ function rows = compute_domain(cfg, out_dir, NEIG)
     for mi = 1:size(methods, 1)
         disp_m = methods{mi, 1};
         low    = methods{mi, 2};
-        for k = 1:4
+        for k = 1:numel(cfg.M_grid)
             csv = fullfile(out_dir, sprintf('%s_%s_%d-eigenvalues.csv', ...
                            cfg.name, low, k));
             if exist(csv, 'file')
@@ -303,12 +335,19 @@ function write_latex(tex, cfg, rows, NEIG)
     else
         cheb_note = '';
     end
-    if strcmp(cfg.truth_kind, 'analytic')
-        truth_phrase = 'the analytic eigenvalues (exact)';
-    else
-        truth_phrase = ['the reference eigenvalues from the method of particular ', ...
-                        'solutions (\texttt{MPS})'];
+    switch cfg.truth_kind
+        case 'analytic'
+            leading = 'Analytical/numerical';
+            comparison_clause = '; compared with the analytic eigenvalues (exact)';
+        case 'mps'
+            leading = 'Analytical/numerical';
+            comparison_clause = ['; compared with the reference eigenvalues from the ', ...
+                'method of particular solutions (\texttt{MPS})'];
+        otherwise   % 'none': no closed-form or reference spectrum available
+            leading = 'Numerical';
+            comparison_clause = '';
     end
+    nlev = numel(cfg.M_grid);
 
     % Method list in \texttt, e.g. "\texttt{DST}, \texttt{FD}, \texttt{FEM} and
     % \texttt{Cheb}" (Cheb only for the rectangular domains).
@@ -328,7 +367,7 @@ function write_latex(tex, cfg, rows, NEIG)
     % Header comment.
     fprintf(fid, ['%% Eigenvalue comparison for the %s domain \\texttt{%s}: DST, FD, ', ...
         'FEM%s,\n'], cfg.pretty, latex_name(cfg.name), cheb_note);
-    fprintf(fid, '%% four DOF runs each, first %d eigenvalues, self-computed with timing.\n', NEIG);
+    fprintf(fid, '%% %d DOF runs each, first %d eigenvalues, self-computed with timing.\n', nlev, NEIG);
     fprintf(fid, '%%\n%% Requires in the preamble:\n');
     fprintf(fid, ['%%   \\usepackage{booktabs}\n%%   \\usepackage{multirow}\n', ...
                   '%%   \\usepackage{amsmath}\n%%   \\usepackage{listings}\n\n']);
@@ -386,13 +425,13 @@ function write_latex(tex, cfg, rows, NEIG)
     end
 
     fprintf(fid, '    \\bottomrule\n  \\end{tabular}}\n');
-    fprintf(fid, ['  \\caption{Analytical/numerical eigenvalues of Laplace ', ...
-        'operator on the %s domain \\texttt{%s}. Numerical eigenvalues computed ', ...
-        'by each discretisation %s with varying degrees of freedom (DOF); ', ...
-        'compared with %s. Timing shows the time for the matrix assembly and ', ...
-        'full spectrum computation using \\texttt{MATLAB}''s \\lstinline{eig} ', ...
-        'function with the default settings.}\n'], ...
-        cfg.pretty, latex_name(cfg.name), method_list, truth_phrase);
+    fprintf(fid, ['  \\caption{%s eigenvalues of Laplace operator on the %s ', ...
+        'domain \\texttt{%s}. Numerical eigenvalues computed by each ', ...
+        'discretisation %s with varying degrees of freedom (DOF)%s. Timing ', ...
+        'shows the time for the matrix assembly and full spectrum computation ', ...
+        'using \\texttt{MATLAB}''s \\lstinline{eig} function with the default ', ...
+        'settings.}\n'], ...
+        leading, cfg.pretty, latex_name(cfg.name), method_list, comparison_clause);
     fprintf(fid, '  \\label{tab:eigenvalues_head_%s}\n', cfg.name);
     fprintf(fid, '\\end{table}\n');
 end

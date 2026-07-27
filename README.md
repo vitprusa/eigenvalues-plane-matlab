@@ -180,9 +180,10 @@ experiments_paper/eigenvalues_dof_sweep_paper/ paper DOF-sweep plots, black-and-
 experiments_paper/eigenvalues_indexing_paper/ rectangle eigenvalue match/order tables
                                as a booktabs LaTeX snippet (eigenvalues_rectangle_tables_paper.m)
 experiments_paper/eigenvalues_head_paper/ self-computing eigenvalue-comparison tables
-                               (make_eigenvalues_head_paper_tables.m): recomputes DST/FD/FEM/Cheb
-                               at four DOF resolutions each, times every run, writes new CSVs and
-                               one booktabs LaTeX table per domain
+                               (make_eigenvalues_head_paper_tables.m): recomputes DST/FD/FEM
+                               (and Cheb for the rectangle) at a few DOF resolutions each (four
+                               for the analytic/MPS domains, three for the rest), times every
+                               run, writes new CSVs and one booktabs LaTeX table per domain
 results/eigenvalues/           per-method spectra CSV, a subdir each (dst, fd, fem,
                                cheb, mps, wolfram)
 results/eigenvalues_head/      generated <domain>_comparison.md tables (from
@@ -206,7 +207,8 @@ results_paper/eigenvalues_indexing/ rectangle match/order tables snippet (rectan
 results_paper/eigenvalues_head/ self-computed comparison spectra CSV
                                (<domain>_<method>_<k>-eigenvalues.csv, with dof + time metadata)
                                plus one <domain>_eigenvalues_head.tex table per domain
-                               (rectangle, isosceles_triangle, L_shaped)
+                               (rectangle, isosceles_triangle, L_shaped,
+                               ellipse_minus_quadrant, H_shaped, gww1, gww2)
 test/mat_batched/              equivalence and timing tests for the builders
 test/laplace_action/           Laplace-operator action on a known function
 test/manufactured_solution/    BVP solve via the method of manufactured solutions

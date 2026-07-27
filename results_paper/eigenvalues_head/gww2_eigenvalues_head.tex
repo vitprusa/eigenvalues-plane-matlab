@@ -1,0 +1,32 @@
+% Eigenvalue comparison for the GWW2 isospectral drum domain \texttt{gww2}: DST, FD, FEM,
+% 3 DOF runs each, first 8 eigenvalues, self-computed with timing.
+%
+% Requires in the preamble:
+%   \usepackage{booktabs}
+%   \usepackage{multirow}
+%   \usepackage{amsmath}
+%   \usepackage{listings}
+
+\begin{table}[htbp]
+  \centering
+  {\small
+  \begin{tabular}{lrrrrrrrrrr}
+    \toprule
+    Method & DOF & Time (s) & $\lambda_{1}$ & $\lambda_{2}$ & $\lambda_{3}$ & $\lambda_{4}$ & $\lambda_{5}$ & $\lambda_{6}$ & $\lambda_{7}$ & $\lambda_{8}$ \\
+    \midrule
+    \multirow{3}{*}{\texttt{DST}} & 189 & 0.02 & 2.57456 & 3.68735 & 5.24560 & 6.53574 & 7.30996 & 9.22352 & 10.60562 & 11.52613 \\
+     & 451 & 0.05 & 2.55982 & 3.67563 & 5.21790 & 6.54088 & 7.28674 & 9.22265 & 10.61162 & 11.53942 \\
+     & 825 & 0.23 & 2.55301 & 3.66970 & 5.20485 & 6.54108 & 7.27516 & 9.21980 & 10.60956 & 11.54203 \\
+    \midrule
+    \multirow{3}{*}{\texttt{FD}} & 189 & 0.00 & 2.54342 & 3.63801 & 5.13776 & 6.37385 & 7.11875 & 8.91412 & 10.11953 & 11.00243 \\
+     & 451 & 0.03 & 2.54510 & 3.65263 & 5.16791 & 6.46710 & 7.19915 & 9.08162 & 10.38945 & 11.30208 \\
+     & 825 & 0.10 & 2.54430 & 3.65627 & 5.17580 & 6.49903 & 7.22486 & 9.13944 & 10.48293 & 11.40742 \\
+    \midrule
+    \multirow{3}{*}{\texttt{FEM}} & 671 & 0.18 & 2.54384 & 3.66178 & 5.18756 & 6.54277 & 7.26097 & 9.21966 & 10.61232 & 11.55375 \\
+     & 1495 & 0.25 & 2.54131 & 3.65895 & 5.18226 & 6.53948 & 7.25473 & 9.21333 & 10.60254 & 11.54480 \\
+     & 3561 & 4.89 & 2.53989 & 3.65747 & 5.17939 & 6.53847 & 7.25176 & 9.21120 & 10.59954 & 11.54252 \\
+    \bottomrule
+  \end{tabular}}
+  \caption{Numerical eigenvalues of Laplace operator on the GWW2 isospectral drum domain \texttt{gww2}. Numerical eigenvalues computed by each discretisation \texttt{DST}, \texttt{FD} and \texttt{FEM} with varying degrees of freedom (DOF). Timing shows the time for the matrix assembly and full spectrum computation using \texttt{MATLAB}'s \lstinline{eig} function with the default settings.}
+  \label{tab:eigenvalues_head_gww2}
+\end{table}

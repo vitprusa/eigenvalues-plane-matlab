@@ -1,0 +1,32 @@
+% Eigenvalue comparison for the H-shaped domain \texttt{H\_shaped}: DST, FD, FEM,
+% 3 DOF runs each, first 8 eigenvalues, self-computed with timing.
+%
+% Requires in the preamble:
+%   \usepackage{booktabs}
+%   \usepackage{multirow}
+%   \usepackage{amsmath}
+%   \usepackage{listings}
+
+\begin{table}[htbp]
+  \centering
+  {\small
+  \begin{tabular}{lrrrrrrrrrr}
+    \toprule
+    Method & DOF & Time (s) & $\lambda_{1}$ & $\lambda_{2}$ & $\lambda_{3}$ & $\lambda_{4}$ & $\lambda_{5}$ & $\lambda_{6}$ & $\lambda_{7}$ & $\lambda_{8}$ \\
+    \midrule
+    \multirow{3}{*}{\texttt{DST}} & 288 & 0.38 & 7.98775 & 8.78935 & 14.04359 & 14.04634 & 14.28113 & 17.72238 & 19.73921 & 24.93706 \\
+     & 913 & 0.27 & 7.85657 & 8.66706 & 13.98721 & 13.99057 & 14.30159 & 17.71992 & 19.73921 & 24.86844 \\
+     & 1888 & 1.67 & 7.81056 & 8.62413 & 13.96576 & 13.96935 & 14.30475 & 17.71624 & 19.73921 & 24.84034 \\
+    \midrule
+    \multirow{3}{*}{\texttt{FD}} & 288 & 0.02 & 7.85500 & 8.65959 & 13.83041 & 13.83443 & 14.03719 & 17.41355 & 19.41010 & 24.25948 \\
+     & 913 & 0.13 & 7.80645 & 8.61845 & 13.91138 & 13.91524 & 14.21673 & 17.61258 & 19.62672 & 24.63140 \\
+     & 1888 & 0.91 & 7.78327 & 8.59776 & 13.92665 & 13.93050 & 14.26203 & 17.66211 & 19.68310 & 24.72015 \\
+    \midrule
+    \multirow{3}{*}{\texttt{FEM}} & 895 & 2.10 & 7.77373 & 8.58980 & 13.95118 & 13.95498 & 14.31230 & 17.71976 & 19.74636 & 24.83180 \\
+     & 2087 & 0.91 & 7.75740 & 8.57437 & 13.94037 & 13.94422 & 14.30753 & 17.71200 & 19.74051 & 24.80855 \\
+     & 4843 & 12.91 & 7.74680 & 8.56458 & 13.93484 & 13.93874 & 14.30607 & 17.70911 & 19.73946 & 24.79879 \\
+    \bottomrule
+  \end{tabular}}
+  \caption{Numerical eigenvalues of Laplace operator on the H-shaped domain \texttt{H\_shaped}. Numerical eigenvalues computed by each discretisation \texttt{DST}, \texttt{FD} and \texttt{FEM} with varying degrees of freedom (DOF). Timing shows the time for the matrix assembly and full spectrum computation using \texttt{MATLAB}'s \lstinline{eig} function with the default settings.}
+  \label{tab:eigenvalues_head_H_shaped}
+\end{table}
