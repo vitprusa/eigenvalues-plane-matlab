@@ -1,0 +1,37 @@
+% Eigenvalue comparison for the right isosceles triangle domain \texttt{isosceles\_triangle}: DST, FD, FEM,
+% four DOF runs each, first 8 eigenvalues, self-computed with timing.
+%
+% Requires in the preamble:
+%   \usepackage{booktabs}
+%   \usepackage{multirow}
+%   \usepackage{amsmath}
+%   \usepackage{listings}
+
+\begin{table}[htbp]
+  \centering
+  {\small
+  \begin{tabular}{lrrrrrrrrrr}
+    \toprule
+    Method & DOF & Time (s) & $\lambda_{1}$ & $\lambda_{2}$ & $\lambda_{3}$ & $\lambda_{4}$ & $\lambda_{5}$ & $\lambda_{6}$ & $\lambda_{7}$ & $\lambda_{8}$ \\
+    \midrule
+    Analytic (exact) & --- & --- & \textbf{5.00000} & \textbf{10.00000} & \textbf{13.00000} & \textbf{17.00000} & \textbf{20.00000} & \textbf{25.00000} & \textbf{26.00000} & \textbf{29.00000} \\
+    \midrule
+    \multirow{4}{*}{\texttt{DST}} & 105 & 0.02 & 4.99879 & 9.99116 & 12.99649 & 16.96781 & 19.97903 & 24.99266 & 25.91371 & 28.93269 \\
+     & 300 & 0.03 & 4.99972 & 9.99800 & 12.99922 & 16.99288 & 19.99542 & 24.99842 & 25.98147 & 28.98572 \\
+     & 595 & 0.20 & 4.99990 & 9.99925 & 12.99971 & 16.99736 & 19.99831 & 24.99942 & 25.99318 & 28.99476 \\
+     & 1225 & 0.39 & 4.99996 & 9.99974 & 12.99990 & 16.99908 & 19.99941 & 24.99980 & 25.99763 & 28.99818 \\
+    \midrule
+    \multirow{4}{*}{\texttt{FD}} & 105 & 0.01 & 4.94565 & 9.73955 & 12.69162 & 16.19105 & 19.14312 & 23.93702 & 24.05223 & 27.00430 \\
+     & 300 & 0.00 & 4.97936 & 9.90066 & 12.88245 & 16.68973 & 19.67152 & 24.59283 & 25.24756 & 28.22935 \\
+     & 595 & 0.02 & 4.98922 & 9.94808 & 12.93857 & 16.83756 & 19.82805 & 24.78691 & 25.60524 & 28.59573 \\
+     & 1225 & 0.07 & 4.99463 & 9.97410 & 12.96936 & 16.91890 & 19.91416 & 24.89363 & 25.80268 & 28.79793 \\
+    \midrule
+    \multirow{4}{*}{\texttt{FEM}} & 511 & 0.19 & 5.00017 & 10.00134 & 13.00285 & 17.00656 & 20.01037 & 25.01954 & 26.02277 & 29.03079 \\
+     & 1231 & 0.18 & 5.00003 & 10.00024 & 13.00052 & 17.00116 & 20.00189 & 25.00366 & 26.00413 & 29.00573 \\
+     & 2664 & 1.73 & 5.00001 & 10.00005 & 13.00011 & 17.00026 & 20.00041 & 25.00080 & 26.00092 & 29.00125 \\
+     & 6075 & 25.32 & 5.00000 & 10.00001 & 13.00002 & 17.00005 & 20.00008 & 25.00016 & 26.00018 & 29.00025 \\
+    \bottomrule
+  \end{tabular}}
+  \caption{Analytical/numerical eigenvalues of Laplace operator on the right isosceles triangle domain \texttt{isosceles\_triangle}. Numerical eigenvalues computed by each discretisation \texttt{DST}, \texttt{FD} and \texttt{FEM} with varying degrees of freedom (DOF); compared with the analytic eigenvalues (exact). Timing shows the time for the matrix assembly and full spectrum computation using \texttt{MATLAB}'s \lstinline{eig} function with the default settings.}
+  \label{tab:eigenvalues_head_isosceles_triangle}
+\end{table}
