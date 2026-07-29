@@ -188,7 +188,7 @@ experiments_paper/eigenvalues_head_paper/ self-computing eigenvalue-comparison t
                                everywhere, except the three FEM meshes of the non-analytic
                                domains, whose fourth DST/FD grid is sized to ~3000 dofs to
                                match the finest FEM mesh), times every run, writes new CSVs
-                               and one booktabs LaTeX table per domain
+                               and two booktabs LaTeX tables per domain (upright and transposed)
 experiments_paper/eigenvalues_convergence/ ground-state convergence test
                                (make_eigenvalues_convergence.m): lambda_1 with DST/FD/FEM
                                over thirteen resolutions from ~100 to ~10000 dofs, plotted as
@@ -216,9 +216,12 @@ results_paper/eigenvalues_dof_sweep/ paper DOF-sweep PNGs (black-and-white and _
 results_paper/eigenvalues_indexing/ rectangle match/order tables snippet (rectangle_tables_M9.tex)
 results_paper/eigenvalues_head/ self-computed comparison spectra CSV
                                (<domain>_<method>_<k>-eigenvalues.csv, with dof + time metadata)
-                               plus one <domain>_eigenvalues_head.tex table per domain
-                               (rectangle, isosceles_triangle, L_shaped,
-                               ellipse_minus_quadrant, H_shaped, gww1, gww2)
+                               plus, per domain (rectangle, isosceles_triangle, L_shaped,
+                               ellipse_minus_quadrant, H_shaped, gww1, gww2), two booktabs
+                               tables of the same data, both \scriptsize and four decimals:
+                               <domain>_eigenvalues_head.tex (one row per run, eigenvalues
+                               across) and <domain>_eigenvalues_head_transposed.tex (one
+                               row per eigenvalue, runs across)
 results_paper/eigenvalues_convergence/ per-domain
                                <domain>_convergence.csv (method, resolution, dofs,
                                lambda_1, timing), <domain>_convergence.png and the

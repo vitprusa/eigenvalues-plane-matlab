@@ -1,0 +1,33 @@
+% Eigenvalue comparison for the rectangular domain \texttt{rectangle}: DST, FD, FEM, Cheb,
+% 4 DOF runs each, first 8 eigenvalues, self-computed with timing.
+% Transposed layout: one column per run, one row per eigenvalue.
+%
+% Requires in the preamble:
+%   \usepackage{booktabs}
+%   \usepackage{amsmath}
+%   \usepackage{listings}
+
+\begin{table}[htbp]
+  \centering
+  {\scriptsize
+  \setlength{\tabcolsep}{3pt}
+  \begin{tabular}{lrrrrrrrrrrrrrrrrr}
+    \toprule
+    & \multicolumn{1}{c}{Analytic} & \multicolumn{4}{c}{\texttt{DST}} & \multicolumn{4}{c}{\texttt{FD}} & \multicolumn{4}{c}{\texttt{FEM}} & \multicolumn{4}{c}{\texttt{Cheb}} \\
+    \cmidrule(lr){2-2} \cmidrule(lr){3-6} \cmidrule(lr){7-10} \cmidrule(lr){11-14} \cmidrule(lr){15-18}
+    DOF & --- & 105 & 300 & 595 & 1176 & 105 & 300 & 595 & 1176 & 663 & 1333 & 2653 & 5201 & 64 & 324 & 784 & 1444 \\
+    Time (s) & --- & 0.25 & 0.08 & 0.09 & 0.30 & 0.01 & 0.01 & 0.04 & 0.14 & 2.64 & 0.36 & 1.72 & 15.60 & 0.06 & 0.02 & 0.11 & 0.43 \\
+    \midrule
+    $\lambda_{1}$ & \textbf{1.2500} & 1.2500 & 1.2500 & 1.2500 & 1.2500 & 1.2364 & 1.2448 & 1.2473 & 1.2486 & 1.2500 & 1.2500 & 1.2500 & 1.2500 & 1.2500 & 1.2500 & 1.2500 & 1.2500 \\
+    $\lambda_{2}$ & \textbf{2.0000} & 2.0000 & 2.0000 & 2.0000 & 2.0000 & 1.9744 & 1.9903 & 1.9949 & 1.9974 & 2.0001 & 2.0000 & 2.0000 & 2.0000 & 2.0000 & 2.0000 & 2.0000 & 2.0000 \\
+    $\lambda_{3}$ & \textbf{3.2500} & 3.2500 & 3.2500 & 3.2500 & 3.2500 & 3.1729 & 3.2206 & 3.2346 & 3.2420 & 3.2504 & 3.2501 & 3.2500 & 3.2500 & 3.2506 & 3.2500 & 3.2500 & 3.2500 \\
+    $\lambda_{4}$ & \textbf{4.2500} & 4.2500 & 4.2500 & 4.2500 & 4.2500 & 4.0478 & 4.1724 & 4.2094 & 4.2289 & 4.2510 & 4.2503 & 4.2501 & 4.2500 & 4.2500 & 4.2500 & 4.2500 & 4.2500 \\
+    $\lambda_{5}$ & \textbf{5.0000} & 5.0000 & 5.0000 & 5.0000 & 5.0000 & 4.7858 & 4.9179 & 4.9570 & 4.9777 & 5.0016 & 5.0004 & 5.0001 & 5.0000 & 4.9798 & 5.0000 & 5.0000 & 5.0000 \\
+    $\lambda_{6}$ & \textbf{5.0000} & 5.0000 & 5.0000 & 5.0000 & 5.0000 & 4.7858 & 4.9179 & 4.9570 & 4.9777 & 5.0016 & 5.0004 & 5.0001 & 5.0000 & 5.0000 & 5.0000 & 5.0000 & 5.0000 \\
+    $\lambda_{7}$ & \textbf{6.2500} & 6.2500 & 6.2500 & 6.2500 & 6.2500 & 5.9843 & 6.1482 & 6.1967 & 6.2223 & 6.2531 & 6.2508 & 6.2502 & 6.2501 & 6.2506 & 6.2500 & 6.2500 & 6.2500 \\
+    $\lambda_{8}$ & \textbf{7.2500} & 7.2500 & 7.2500 & 7.2500 & 7.2500 & 6.7511 & 7.0573 & 7.1489 & 7.1974 & 7.2546 & 7.2512 & 7.2503 & 7.2501 & 7.6103 & 7.2500 & 7.2500 & 7.2500 \\
+    \bottomrule
+  \end{tabular}}
+  \caption{Analytical/numerical eigenvalues of Laplace operator on the rectangular domain \texttt{rectangle}. Numerical eigenvalues computed by each discretisation \texttt{DST}, \texttt{FD}, \texttt{FEM} and \texttt{Cheb} with varying degrees of freedom (DOF); compared with the analytic eigenvalues (exact). Timing shows the time for the matrix assembly and full spectrum computation using \texttt{MATLAB}'s \lstinline{eig} function with the default settings.}
+  \label{tab:eigenvalues_head_rectangle_transposed}
+\end{table}

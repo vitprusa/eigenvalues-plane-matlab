@@ -14,9 +14,14 @@ function make_eigenvalues_head_paper_tables(name)
 %       (a NEW location; the existing results/eigenvalues[_dof_sweep]/ CSVs are
 %       never touched), each carrying the dof count and the measured time in its
 %       metadata header, and
-%     - one LaTeX snippet <domain>_eigenvalues_head.tex holding a transposed
-%       booktabs table: rows are the ground-truth reference plus each method's
-%       DOF runs, columns are DOF, Time (s) and the first eight eigenvalues.
+%     - one LaTeX snippet <domain>_eigenvalues_head.tex holding a booktabs
+%       table: rows are the ground-truth reference plus each method's DOF runs,
+%       columns are DOF, Time (s) and the first eight eigenvalues, and
+%     - <domain>_eigenvalues_head_transposed.tex, the same data with the axes
+%       swapped -- one column per run, one row per eigenvalue index, so that a
+%       single eigenvalue reads across all discretisations.
+%   Both are \scriptsize and print four decimals, so that the two tables of a
+%   domain match and the widest of them stays inside the text width.
 %
 %   The ground truth is the analytic spectrum where a closed form is known
 %   (rectangle, isosceles triangle) or the MPS reference (all other domains);
@@ -64,6 +69,9 @@ function make_eigenvalues_head_paper_tables(name)
         rows = compute_domain(cfg, out_dir, NEIG);
         tex  = fullfile(out_dir, sprintf('%s_eigenvalues_head.tex', cfg.name));
         write_latex(tex, cfg, rows, NEIG);
+        fprintf('Wrote %s\n', tex);
+        tex = fullfile(out_dir, sprintf('%s_eigenvalues_head_transposed.tex', cfg.name));
+        write_latex_transposed(tex, cfg, rows, NEIG);
         fprintf('Wrote %s\n', tex);
     end
 end
@@ -159,13 +167,13 @@ function rows = compute_domain(cfg, out_dir, NEIG)
     switch cfg.truth_kind
         case 'analytic'
             gt = cfg.analytic_fun();
-            rows(end+1) = mk('Analytic (exact)', 'truth', '---', '---', ...
+            rows(end+1) = mk('Analytic', 'truth', '---', '---', ...
                              gt(1:NEIG), true);
         case 'mps'
             % The published MPS references may list fewer than NEIG
             % eigenvalues; the missing table cells are then left blank.
             gt = read_two_col(cfg.mps_path);
-            rows(end+1) = mk('\texttt{MPS} (reference)', 'truth', '---', '---', ...
+            rows(end+1) = mk('\texttt{MPS}', 'truth', '---', '---', ...
                              gt(1:min(NEIG, numel(gt))), true);
     end
 
@@ -352,43 +360,12 @@ function write_latex(tex, cfg, rows, NEIG)
     end
     closer = onCleanup(@() fclose(fid));
 
-    if cfg.has_cheb
-        cheb_note = ', Cheb';
-    else
-        cheb_note = '';
-    end
-    switch cfg.truth_kind
-        case 'analytic'
-            leading = 'Analytical/numerical';
-            comparison_clause = '; compared with the analytic eigenvalues (exact)';
-        case 'mps'
-            leading = 'Analytical/numerical';
-            comparison_clause = ['; compared with the reference eigenvalues from the ', ...
-                'method of particular solutions (\texttt{MPS})'];
-        otherwise   % 'none': no closed-form or reference spectrum available
-            leading = 'Numerical';
-            comparison_clause = '';
-    end
-    nlev = numel(cfg.M_grid);
-    nfem = numel(cfg.Hmax_fem);
-    if nfem == nlev
-        lev_note = sprintf('%d DOF runs each', nlev);
-    else
-        lev_note = sprintf('%d DOF runs each (FEM: %d)', nlev, nfem);
-    end
-
-    % Method list in \texttt, e.g. "\texttt{DST}, \texttt{FD}, \texttt{FEM} and
-    % \texttt{Cheb}" (Cheb only for the rectangular domains).
-    mnames = {'DST', 'FD', 'FEM'};
-    if cfg.has_cheb
-        mnames{end+1} = 'Cheb';
-    end
-    tt = cellfun(@(m) sprintf('\\texttt{%s}', m), mnames, 'UniformOutput', false);
-    if numel(tt) == 1
-        method_list = tt{1};
-    else
-        method_list = sprintf('%s and %s', strjoin(tt(1:end-1), ', '), tt{end});
-    end
+    t = caption_bits(cfg);
+    cheb_note         = t.cheb_note;
+    leading           = t.leading;
+    comparison_clause = t.comparison_clause;
+    lev_note          = t.lev_note;
+    method_list       = t.method_list;
 
     colspec = ['lrr', repmat('r', 1, NEIG)];
 
@@ -401,8 +378,9 @@ function write_latex(tex, cfg, rows, NEIG)
                   '%%   \\usepackage{amsmath}\n%%   \\usepackage{listings}\n\n']);
 
     fprintf(fid, '\\begin{table}[htbp]\n  \\centering\n');
-    % \small scopes to the tabular (grouped) so the caption stays at normal size.
-    fprintf(fid, '  {\\small\n  \\begin{tabular}{%s}\n', colspec);
+    % \scriptsize scopes to the tabular (grouped) so the caption stays at normal
+    % size; both layouts use it so that the two tables of a domain match.
+    fprintf(fid, '  {\\scriptsize\n  \\begin{tabular}{%s}\n', colspec);
     fprintf(fid, '    \\toprule\n');
     fprintf(fid, '    Method & DOF & Time (s)');
     for i = 1:NEIG
@@ -438,7 +416,7 @@ function write_latex(tex, cfg, rows, NEIG)
             fprintf(fid, '    %s & %s & %s', firstcell, row.dof, row.time);
             for i = 1:NEIG
                 if i <= numel(row.eigs)
-                    s = sprintf('%.5f', row.eigs(i));
+                    s = sprintf('%.4f', row.eigs(i));
                     if row.bold
                         s = sprintf('\\textbf{%s}', s);
                     end
@@ -464,6 +442,155 @@ function write_latex(tex, cfg, rows, NEIG)
         'settings.}\n'], ...
         leading, cfg.pretty, latex_name(cfg.name), method_list, comparison_clause);
     fprintf(fid, '  \\label{tab:eigenvalues_head_%s}\n', cfg.name);
+    fprintf(fid, '\\end{table}\n');
+end
+
+
+function t = caption_bits(cfg)
+%CAPTION_BITS Shared caption/header wording for both table layouts.
+    if cfg.has_cheb
+        t.cheb_note = ', Cheb';
+    else
+        t.cheb_note = '';
+    end
+    switch cfg.truth_kind
+        case 'analytic'
+            t.leading = 'Analytical/numerical';
+            t.comparison_clause = '; compared with the analytic eigenvalues (exact)';
+        case 'mps'
+            t.leading = 'Analytical/numerical';
+            t.comparison_clause = ['; compared with the reference eigenvalues from the ', ...
+                'method of particular solutions (\texttt{MPS})'];
+        otherwise   % 'none': no closed-form or reference spectrum available
+            t.leading = 'Numerical';
+            t.comparison_clause = '';
+    end
+    nlev = numel(cfg.M_grid);
+    nfem = numel(cfg.Hmax_fem);
+    if nfem == nlev
+        t.lev_note = sprintf('%d DOF runs each', nlev);
+    else
+        t.lev_note = sprintf('%d DOF runs each (FEM: %d)', nlev, nfem);
+    end
+
+    % Method list in \texttt, e.g. "\texttt{DST}, \texttt{FD}, \texttt{FEM} and
+    % \texttt{Cheb}" (Cheb only for the rectangular domains).
+    mnames = {'DST', 'FD', 'FEM'};
+    if cfg.has_cheb
+        mnames{end+1} = 'Cheb';
+    end
+    tt = cellfun(@(m) sprintf('\\texttt{%s}', m), mnames, 'UniformOutput', false);
+    if numel(tt) == 1
+        t.method_list = tt{1};
+    else
+        t.method_list = sprintf('%s and %s', strjoin(tt(1:end-1), ', '), tt{end});
+    end
+end
+
+
+function write_latex_transposed(tex, cfg, rows, NEIG)
+%WRITE_LATEX_TRANSPOSED Transposed booktabs table: one row per eigenvalue.
+%
+%   The same data as WRITE_LATEX with the axes swapped -- one column per run
+%   (the reference plus every method/DOF level), one row per eigenvalue index,
+%   so that a single eigenvalue can be read across all discretisations. The
+%   method name spans its DOF runs as a \multicolumn group head, the DOF and
+%   timing become the two leading body rows, and the reference column stays
+%   bold. Four decimals and \scriptsize, as in WRITE_LATEX, which is also what
+%   keeps the thirteen to seventeen numeric columns inside the text width.
+    fid = fopen(tex, 'w');
+    if fid == -1
+        error('head_paper:tex', 'Could not open %s for writing.', tex);
+    end
+    closer = onCleanup(@() fclose(fid));
+
+    t = caption_bits(cfg);
+    ncol = numel(rows);
+    colspec = ['l', repmat('r', 1, ncol)];
+
+    % Contiguous column groups: the single truth column, then one per method.
+    starts = 1;
+    for i = 2:ncol
+        if ~strcmp(rows(i).group, rows(i - 1).group)
+            starts(end + 1) = i; %#ok<AGROW>
+        end
+    end
+    stops = [starts(2:end) - 1, ncol];
+
+    % Header comment.
+    fprintf(fid, ['%% Eigenvalue comparison for the %s domain \\texttt{%s}: DST, FD, ', ...
+        'FEM%s,\n'], cfg.pretty, latex_name(cfg.name), t.cheb_note);
+    fprintf(fid, ['%% %s, first %d eigenvalues, self-computed with timing.\n', ...
+        '%% Transposed layout: one column per run, one row per eigenvalue.\n'], ...
+        t.lev_note, NEIG);
+    fprintf(fid, '%%\n%% Requires in the preamble:\n');
+    fprintf(fid, ['%%   \\usepackage{booktabs}\n', ...
+                  '%%   \\usepackage{amsmath}\n%%   \\usepackage{listings}\n\n']);
+
+    % \scriptsize throughout, as in WRITE_LATEX. Measured with pdflatex against
+    % the article preamble (amsart, a4paper, geometry scale=0.9, so \textwidth =
+    % 537.75pt): at that size 3pt column separation is the widest that still
+    % holds the seventeen runs of the rectangle -- the only domain with Cheb --
+    % inside the text width, so every table takes it and they stay uniform. A
+    % narrower page (a plain article \textwidth of 345pt, say) fits none of them.
+    fprintf(fid, '\\begin{table}[htbp]\n  \\centering\n');
+    % The size and \tabcolsep changes scope to the tabular (grouped) so that the
+    % caption keeps the normal body size.
+    fprintf(fid, '  {\\scriptsize\n  \\setlength{\\tabcolsep}{3pt}\n');
+    fprintf(fid, '  \\begin{tabular}{%s}\n    \\toprule\n', colspec);
+
+    % Group head: method name spanning its DOF runs, underlined by \cmidrule.
+    fprintf(fid, '   ');
+    for g = 1:numel(starts)
+        lab = rows(starts(g)).method_label;
+        if ~strcmp(rows(starts(g)).group, 'truth')
+            lab = sprintf('\\texttt{%s}', lab);
+        end
+        fprintf(fid, ' & \\multicolumn{%d}{c}{%s}', stops(g) - starts(g) + 1, lab);
+    end
+    fprintf(fid, ' \\\\\n   ');
+    for g = 1:numel(starts)
+        fprintf(fid, ' \\cmidrule(lr){%d-%d}', starts(g) + 1, stops(g) + 1);
+    end
+    fprintf(fid, '\n');
+
+    % Run metadata, then the eigenvalues.
+    fprintf(fid, '    DOF');
+    fprintf(fid, ' & %s', rows.dof);
+    fprintf(fid, ' \\\\\n    Time (s)');
+    fprintf(fid, ' & %s', rows.time);
+    fprintf(fid, ' \\\\\n    \\midrule\n');
+
+    for i = 1:NEIG
+        fprintf(fid, '    $\\lambda_{%d}$', i);
+        for j = 1:ncol
+            row = rows(j);
+            if i <= numel(row.eigs)
+                s = sprintf('%.4f', row.eigs(i));
+                if row.bold
+                    s = sprintf('\\textbf{%s}', s);
+                end
+            else
+                % Not available (e.g. the published MPS references list fewer
+                % than NEIG eigenvalues); same marker as the DOF and Time cells
+                % of the reference column.
+                s = '---';
+            end
+            fprintf(fid, ' & %s', s);
+        end
+        fprintf(fid, ' \\\\\n');
+    end
+
+    fprintf(fid, '    \\bottomrule\n  \\end{tabular}}\n');
+    fprintf(fid, ['  \\caption{%s eigenvalues of Laplace operator on the %s ', ...
+        'domain \\texttt{%s}. Numerical eigenvalues computed by each ', ...
+        'discretisation %s with varying degrees of freedom (DOF)%s. Timing ', ...
+        'shows the time for the matrix assembly and full spectrum computation ', ...
+        'using \\texttt{MATLAB}''s \\lstinline{eig} function with the default ', ...
+        'settings.}\n'], ...
+        t.leading, cfg.pretty, latex_name(cfg.name), t.method_list, t.comparison_clause);
+    % Distinct label: both layouts may be \input into the same document.
+    fprintf(fid, '  \\label{tab:eigenvalues_head_%s_transposed}\n', cfg.name);
     fprintf(fid, '\\end{table}\n');
 end
 

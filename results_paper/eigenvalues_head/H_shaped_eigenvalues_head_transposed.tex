@@ -1,0 +1,33 @@
+% Eigenvalue comparison for the H-shaped domain \texttt{H\_shaped}: DST, FD, FEM,
+% 4 DOF runs each (FEM: 3), first 8 eigenvalues, self-computed with timing.
+% Transposed layout: one column per run, one row per eigenvalue.
+%
+% Requires in the preamble:
+%   \usepackage{booktabs}
+%   \usepackage{amsmath}
+%   \usepackage{listings}
+
+\begin{table}[htbp]
+  \centering
+  {\scriptsize
+  \setlength{\tabcolsep}{3pt}
+  \begin{tabular}{lrrrrrrrrrrrr}
+    \toprule
+    & \multicolumn{1}{c}{\texttt{MPS}} & \multicolumn{4}{c}{\texttt{DST}} & \multicolumn{4}{c}{\texttt{FD}} & \multicolumn{3}{c}{\texttt{FEM}} \\
+    \cmidrule(lr){2-2} \cmidrule(lr){3-6} \cmidrule(lr){7-10} \cmidrule(lr){11-13}
+    DOF & --- & 288 & 913 & 1888 & 2920 & 288 & 913 & 1888 & 2920 & 895 & 2087 & 4843 \\
+    Time (s) & --- & 0.38 & 0.27 & 1.67 & 6.03 & 0.02 & 0.13 & 0.91 & 1.11 & 2.10 & 0.91 & 12.91 \\
+    \midrule
+    $\lambda_{1}$ & \textbf{7.7331} & 7.9878 & 7.8566 & 7.8106 & 7.7915 & 7.8550 & 7.8065 & 7.7833 & 7.7725 & 7.7737 & 7.7574 & 7.7468 \\
+    $\lambda_{2}$ & \textbf{8.5517} & 8.7893 & 8.6671 & 8.6241 & 8.6063 & 8.6596 & 8.6185 & 8.5978 & 8.5880 & 8.5898 & 8.5744 & 8.5646 \\
+    $\lambda_{3}$ & \textbf{13.9276} & 14.0436 & 13.9872 & 13.9658 & 13.9566 & 13.8304 & 13.9114 & 13.9266 & 13.9304 & 13.9512 & 13.9404 & 13.9348 \\
+    $\lambda_{4}$ & --- & 14.0463 & 13.9906 & 13.9693 & 13.9603 & 13.8344 & 13.9152 & 13.9305 & 13.9342 & 13.9550 & 13.9442 & 13.9387 \\
+    $\lambda_{5}$ & --- & 14.2811 & 14.3016 & 14.3047 & 14.3054 & 14.0372 & 14.2167 & 14.2620 & 14.2773 & 14.3123 & 14.3075 & 14.3061 \\
+    $\lambda_{6}$ & --- & 17.7224 & 17.7199 & 17.7162 & 17.7143 & 17.4136 & 17.6126 & 17.6621 & 17.6786 & 17.7198 & 17.7120 & 17.7091 \\
+    $\lambda_{7}$ & --- & 19.7392 & 19.7392 & 19.7392 & 19.7392 & 19.4101 & 19.6267 & 19.6831 & 19.7024 & 19.7464 & 19.7405 & 19.7395 \\
+    $\lambda_{8}$ & --- & 24.9371 & 24.8684 & 24.8403 & 24.8281 & 24.2595 & 24.6314 & 24.7201 & 24.7484 & 24.8318 & 24.8086 & 24.7988 \\
+    \bottomrule
+  \end{tabular}}
+  \caption{Analytical/numerical eigenvalues of Laplace operator on the H-shaped domain \texttt{H\_shaped}. Numerical eigenvalues computed by each discretisation \texttt{DST}, \texttt{FD} and \texttt{FEM} with varying degrees of freedom (DOF); compared with the reference eigenvalues from the method of particular solutions (\texttt{MPS}). Timing shows the time for the matrix assembly and full spectrum computation using \texttt{MATLAB}'s \lstinline{eig} function with the default settings.}
+  \label{tab:eigenvalues_head_H_shaped_transposed}
+\end{table}
