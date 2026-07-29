@@ -29,8 +29,8 @@ function make_eigenvalues_head_paper_tables(name)
 %   cross-method DOF schedule is defined (see
 %   experiments/eigenvalues_dof_sweep/compute_*_dof_sweep.m) -- run at four DOF
 %   levels. The four non-analytic domains (ellipse_minus_quadrant, H_shaped,
-%   gww1, gww2) have no DOF sweep of their own and run at three levels set
-%   locally in DOMAIN_CONFIGS.
+%   gww1, gww2) have no DOF sweep of their own; their levels are set locally in
+%   DOMAIN_CONFIGS -- four grid resolutions for DST/FD, three meshes for FEM.
 %
 %   Called with no argument (or an empty one) it does every domain; pass a
 %   domain name to regenerate just that one.
@@ -75,8 +75,8 @@ function cfgs = domain_configs(project_root)
                    'L_shaped_eigenvalues_MPS.csv');
 
     cfgs = struct('name', {}, 'pretty', {}, 'box', {}, 'phi', {}, ...
-                  'gd', {}, 'ns', {}, 'sf', {}, 'M_grid', {}, 'M_dst', {}, ...
-                  'Hmax_fem', {}, 'has_cheb', {}, 'N_cheb', {}, 'truth_kind', {}, ...
+                  'gd', {}, 'ns', {}, 'sf', {}, 'M_grid', {}, 'Hmax_fem', {}, ...
+                  'has_cheb', {}, 'N_cheb', {}, 'truth_kind', {}, ...
                   'analytic_fun', {}, 'mps_path', {});
 
     % --- rectangle [0, 2*pi] x [0, pi] --------------------------------------
@@ -85,7 +85,7 @@ function cfgs = domain_configs(project_root)
         'box', [0 2*pi 0 pi], ...
         'phi', @(x, y) indicator_rectangle(x, y, 0, 2*pi, 0, pi), ...
         'gd', [3; 4; 0; 2*pi; 2*pi; 0; 0; 0; pi; pi], 'ns', char('R1')', 'sf', 'R1', ...
-        'M_grid', [15 25 35 49], 'M_dst', [], 'Hmax_fem', [0.35 0.25 0.18 0.13], ...
+        'M_grid', [15 25 35 49], 'Hmax_fem', [0.35 0.25 0.18 0.13], ...
         'has_cheb', true, 'N_cheb', [10 20 30 40], ...
         'truth_kind', 'analytic', ...
         'analytic_fun', @() analytic_rectangle(), 'mps_path', '');
@@ -96,7 +96,7 @@ function cfgs = domain_configs(project_root)
         'box', [0 pi 0 pi], ...
         'phi', @(x, y) indicator_isosceles_triangle(x, y, 0, pi, 0), ...
         'gd', [2; 3; 0; pi; pi; 0; 0; pi], 'ns', char('T1')', 'sf', 'T1', ...
-        'M_grid', [15 25 35 50], 'M_dst', [], 'Hmax_fem', [0.20 0.13 0.09 0.06], ...
+        'M_grid', [15 25 35 50], 'Hmax_fem', [0.20 0.13 0.09 0.06], ...
         'has_cheb', false, 'N_cheb', [], ...
         'truth_kind', 'analytic', ...
         'analytic_fun', @() analytic_isosceles(), 'mps_path', '');
@@ -108,28 +108,28 @@ function cfgs = domain_configs(project_root)
         'phi', @(x, y) indicator_L_shaped(x, y, -1, 0, 1, -1, 0, 1), ...
         'gd', [[3; 4; -1; 1; 1; -1; -1; -1; 1; 1], [3; 4; 0; 1; 1; 0; 0; 0; 1; 1]], ...
         'ns', char('R1', 'R2')', 'sf', 'R1-R2', ...
-        'M_grid', [15 25 35 49], 'M_dst', [], 'Hmax_fem', [0.20 0.13 0.09 0.06], ...
+        'M_grid', [15 25 35 49], 'Hmax_fem', [0.20 0.13 0.09 0.06], ...
         'has_cheb', false, 'N_cheb', [], ...
         'truth_kind', 'mps', 'analytic_fun', [], 'mps_path', mps);
 
     % --- Non-analytic domains: ellipse-minus-quadrant, H, GWW1, GWW2 ---------
     % No closed-form spectrum and no Cheb (non-rectangular), so the table
-    % compares DST/FD/FEM at three DOF levels each against the MPS reference
-    % eigenvalues of Betcke & Trefethen kept in data/ -- only the leading few
-    % eigenvalues are published there, so the reference row is short. Box and
-    % indicator come from DOMAIN_CATALOG_DST, the FEM decsg geometry from
-    % DOMAIN_CATALOG_FEM; the DST/FD grid resolutions M keep the domain edges on
-    % grid lines (M+1 divisible by 4 for the ellipse, by 3 for H, by 6 for the
-    % 6-wide GWW box).
+    % compares DST/FD at four grid levels and FEM at three mesh levels against
+    % the MPS reference eigenvalues of Betcke & Trefethen kept in data/ -- only
+    % the leading few eigenvalues are published there, so the reference row is
+    % short. Box and indicator come from DOMAIN_CATALOG_DST, the FEM decsg
+    % geometry from DOMAIN_CATALOG_FEM; the DST/FD grid resolutions M keep the
+    % domain edges on grid lines (M+1 divisible by 4 for the ellipse, by 3 for
+    % H, by 6 for the 6-wide GWW box). The fourth level is sized to land near
+    % 3000 dofs, comparable to the finest FEM mesh.
     % Columns: catalog name (for the DST/FEM lookups), output name (file names,
     % \texttt label and \label -- H uses H_shaped), pretty caption name,
-    % DST/FD grid resolutions, FEM mesh sizes, MPS reference CSV in data/,
-    % DST-only grid resolutions ([] = same schedule as DST/FD).
+    % DST/FD grid resolutions, FEM mesh sizes, MPS reference CSV in data/.
     extra = { ...
-        'ellipse_minus_quadrant', 'ellipse_minus_quadrant', 'ellipse-minus-quadrant', [23 35 47], [0.20 0.13 0.09], 'ellipse_minus_quadrant.csv', [23 35 47 103]; ...
-        'H',                      'H_shaped',               'H-shaped',              [20 35 50], [0.18 0.12 0.08], 'H_shaped.csv',           [20 35 50 62]; ...
-        'gww1',                   'gww1',                   'GWW1 isospectral drum', [23 35 47], [0.30 0.20 0.13], 'gww1.csv',               [23 35 47 89]; ...
-        'gww2',                   'gww2',                   'GWW2 isospectral drum', [23 35 47], [0.30 0.20 0.13], 'gww2.csv',               [23 35 47 89]  ...
+        'ellipse_minus_quadrant', 'ellipse_minus_quadrant', 'ellipse-minus-quadrant', [23 35 47 103], [0.20 0.13 0.09], 'ellipse_minus_quadrant.csv'; ...
+        'H',                      'H_shaped',               'H-shaped',              [20 35 50 62],  [0.18 0.12 0.08], 'H_shaped.csv'; ...
+        'gww1',                   'gww1',                   'GWW1 isospectral drum', [23 35 47 89],  [0.30 0.20 0.13], 'gww1.csv'; ...
+        'gww2',                   'gww2',                   'GWW2 isospectral drum', [23 35 47 89],  [0.30 0.20 0.13], 'gww2.csv'  ...
     };
     for i = 1:size(extra, 1)
         cat_nm = extra{i, 1};
@@ -140,7 +140,7 @@ function cfgs = domain_configs(project_root)
             'name', out_nm, 'pretty', extra{i, 3}, ...
             'box', dstc.box, 'phi', dstc.phi, ...
             'gd', femc.gd, 'ns', femc.ns, 'sf', femc.sf, ...
-            'M_grid', extra{i, 4}, 'M_dst', extra{i, 7}, 'Hmax_fem', extra{i, 5}, ...
+            'M_grid', extra{i, 4}, 'Hmax_fem', extra{i, 5}, ...
             'has_cheb', false, 'N_cheb', [], ...
             'truth_kind', 'mps', 'analytic_fun', [], ...
             'mps_path', fullfile(project_root, 'data', extra{i, 6})); %#ok<AGROW>
@@ -177,10 +177,9 @@ function rows = compute_domain(cfg, out_dir, NEIG)
     for mi = 1:size(methods, 1)
         disp_m = methods{mi, 1};
         low    = methods{mi, 2};
-        % Each method walks its own schedule; DST may carry extra resolutions
-        % beyond the shared DST/FD one (see DST_GRID).
+        % DST and FD share the grid schedule M_grid; FEM and Cheb walk their
+        % own, which need not have the same number of levels.
         switch low
-            case 'dst';  nlev = numel(dst_grid(cfg));
             case 'fem';  nlev = numel(cfg.Hmax_fem);
             case 'cheb'; nlev = numel(cfg.N_cheb);
             otherwise;   nlev = numel(cfg.M_grid);
@@ -216,8 +215,7 @@ function [evals, dofs, resstr, tsec] = run_one(low, k, cfg, x_range, y_range)
 %RUN_ONE One timed spectrum computation for method `low` at DOF level k.
     switch low
         case 'dst'
-            Ms = dst_grid(cfg);
-            M  = Ms(k);
+            M = cfg.M_grid(k);
             resstr = sprintf('M = %d', M);
             t = tic;
             [L, info] = make_dst_laplace_mat_batched(x_range, y_range, M, cfg.phi);
@@ -251,16 +249,6 @@ function [evals, dofs, resstr, tsec] = run_one(low, k, cfg, x_range, y_range)
             error('head_paper:method', 'unknown method %s', low);
     end
     evals = sort(real(evals(:)), 'ascend');
-end
-
-
-function M = dst_grid(cfg)
-%DST_GRID DST resolution schedule: cfg.M_dst when set, else the shared M_grid.
-    if ~isempty(cfg.M_dst)
-        M = cfg.M_dst;
-    else
-        M = cfg.M_grid;
-    end
 end
 
 
@@ -382,11 +370,11 @@ function write_latex(tex, cfg, rows, NEIG)
             comparison_clause = '';
     end
     nlev = numel(cfg.M_grid);
-    ndst = numel(dst_grid(cfg));
-    if ndst == nlev
+    nfem = numel(cfg.Hmax_fem);
+    if nfem == nlev
         lev_note = sprintf('%d DOF runs each', nlev);
     else
-        lev_note = sprintf('%d DOF runs each (DST: %d)', nlev, ndst);
+        lev_note = sprintf('%d DOF runs each (FEM: %d)', nlev, nfem);
     end
 
     % Method list in \texttt, e.g. "\texttt{DST}, \texttt{FD}, \texttt{FEM} and
