@@ -185,8 +185,10 @@ experiments_paper/eigenvalues_indexing_paper/ rectangle eigenvalue match/order t
 experiments_paper/eigenvalues_head_paper/ self-computing eigenvalue-comparison tables
                                (make_eigenvalues_head_paper_tables.m): recomputes DST/FD/FEM
                                (and Cheb for the rectangle) at a few DOF resolutions each (four
-                               for the DOF-sweep domains, three for the rest), times every
-                               run, writes new CSVs and one booktabs LaTeX table per domain
+                               everywhere, except the three FEM meshes of the non-analytic
+                               domains, whose fourth DST/FD grid is sized to ~3000 dofs to
+                               match the finest FEM mesh), times every run, writes new CSVs
+                               and one booktabs LaTeX table per domain
 results/eigenvalues/           per-method spectra CSV, a subdir each (dst, fd, fem,
                                cheb, mps, wolfram)
 results/eigenvalues_head/      generated <domain>_comparison.md tables (from
