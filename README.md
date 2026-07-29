@@ -154,6 +154,9 @@ isospectral GWW drums.
 
 ```
 .                              startup.m + dst_laplace_full/partial_spectrum demo scripts
+data/                          published reference eigenvalues (Betcke & Trefethen, SIAM
+                               Review 47(3):469-491, 2005) as <domain>.csv, used as the
+                               ground truth where no closed form is known
 src/dst/                       DST Laplace operator/matrix builders + spectrum runner
 src/domains/                   bounding box and domain indicator functions
 src/fd/                        finite-difference spectrum runner (fd_laplace_spectrum)
@@ -182,7 +185,7 @@ experiments_paper/eigenvalues_indexing_paper/ rectangle eigenvalue match/order t
 experiments_paper/eigenvalues_head_paper/ self-computing eigenvalue-comparison tables
                                (make_eigenvalues_head_paper_tables.m): recomputes DST/FD/FEM
                                (and Cheb for the rectangle) at a few DOF resolutions each (four
-                               for the analytic/MPS domains, three for the rest), times every
+                               for the DOF-sweep domains, three for the rest), times every
                                run, writes new CSVs and one booktabs LaTeX table per domain
 results/eigenvalues/           per-method spectra CSV, a subdir each (dst, fd, fem,
                                cheb, mps, wolfram)
