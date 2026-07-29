@@ -189,6 +189,11 @@ experiments_paper/eigenvalues_head_paper/ self-computing eigenvalue-comparison t
                                domains, whose fourth DST/FD grid is sized to ~3000 dofs to
                                match the finest FEM mesh), times every run, writes new CSVs
                                and one booktabs LaTeX table per domain
+experiments_paper/eigenvalues_convergence_test/ ground-state convergence test
+                               (make_eigenvalues_convergence_test.m): lambda_1 with DST/FD/FEM
+                               over thirteen resolutions from ~100 to ~10000 dofs, plotted as
+                               the error against the reference on log-log axes with a
+                               fitted-slope triangle per method; caches its run table
 results/eigenvalues/           per-method spectra CSV, a subdir each (dst, fd, fem,
                                cheb, mps, wolfram)
 results/eigenvalues_head/      generated <domain>_comparison.md tables (from
@@ -214,6 +219,10 @@ results_paper/eigenvalues_head/ self-computed comparison spectra CSV
                                plus one <domain>_eigenvalues_head.tex table per domain
                                (rectangle, isosceles_triangle, L_shaped,
                                ellipse_minus_quadrant, H_shaped, gww1, gww2)
+results_paper/eigenvalues_convergence_test_paper/ per-domain
+                               <domain>_convergence_test.csv (method, resolution, dofs,
+                               lambda_1, timing) and <domain>_convergence_test.png; the CSV
+                               is reused on re-runs, delete it to recompute
 test/mat_batched/              equivalence and timing tests for the builders
 test/laplace_action/           Laplace-operator action on a known function
 test/manufactured_solution/    BVP solve via the method of manufactured solutions
