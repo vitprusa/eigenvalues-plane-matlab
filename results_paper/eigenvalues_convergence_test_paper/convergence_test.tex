@@ -1,0 +1,18 @@
+% Ground-state convergence test (error in lambda_1 against the degrees of
+% freedom, log-log, one curve per discretisation).
+%
+% Requires in the preamble:
+%   \usepackage{graphicx}
+%
+% The figure lives next to this file, in
+% results_paper/eigenvalues_convergence_test_paper/. If you \input this snippet
+% from elsewhere, point graphicx at that folder, e.g.
+%   \graphicspath{{results_paper/eigenvalues_convergence_test_paper/}}
+% and drop the leading path from the \includegraphics argument below.
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=0.85\textwidth]{L_shaped_convergence_test}
+  \caption{Convergence of the first eigenvalue of Laplace operator, zero Dirichlet boundary conditions, L-shaped domain \texttt{L\_shaped}. The error $|\lambda_1 - \lambda_1^{\mathrm{MPS}}|$ against the number of degrees of freedom, measured with respect to the reference eigenvalue obtained by the method of particular solutions (\texttt{MPS}); \texttt{FEM} -- finite element method, \texttt{FD} -- finite differences method, \texttt{DST} -- discrete sine transform method.}
+  \label{fig:convergence_test_L_shaped}
+\end{figure}
