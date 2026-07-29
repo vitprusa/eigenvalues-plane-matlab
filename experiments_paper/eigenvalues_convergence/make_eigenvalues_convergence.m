@@ -1,5 +1,5 @@
-function make_eigenvalues_convergence_test(name)
-%MAKE_EIGENVALUES_CONVERGENCE_TEST Ground-state convergence against DOF (paper).
+function make_eigenvalues_convergence(name)
+%MAKE_EIGENVALUES_CONVERGENCE Ground-state convergence against DOF (paper).
 %
 %   For each domain it computes the first eigenvalue lambda_1 of the Dirichlet
 %   Laplacian with DST, finite differences and finite elements over a sweep of
@@ -15,10 +15,10 @@ function make_eigenvalues_convergence_test(name)
 %   identical DOF counts, which is why the measured count, not the resolution
 %   parameter, is what gets plotted.
 %
-%   Output, into results_paper/eigenvalues_convergence_test_paper/:
-%     - <domain>_convergence_test.csv   one row per (method, resolution) with
+%   Output, into results_paper/eigenvalues_convergence/:
+%     - <domain>_convergence.csv   one row per (method, resolution) with
 %       the resolution parameter, the dof count, lambda_1 and the timing, and
-%     - <domain>_convergence_test.png   the error |lambda_1 - lambda_1_ref|
+%     - <domain>_convergence.png   the error |lambda_1 - lambda_1_ref|
 %       against DOF on log-log axes, one curve per method, so that an algebraic
 %       convergence rate shows up as a straight line of that slope. No title:
 %       the domain is carried by the file name, as elsewhere in
@@ -35,7 +35,7 @@ function make_eigenvalues_convergence_test(name)
     run(fullfile(project_root, 'startup.m'));
     addpath(fullfile(project_root, 'experiments'));   % domain_catalog_dst / _fem
 
-    out_dir = fullfile(project_root, 'results_paper', 'eigenvalues_convergence_test_paper');
+    out_dir = fullfile(project_root, 'results_paper', 'eigenvalues_convergence');
     if ~exist(out_dir, 'dir')
         mkdir(out_dir);
     end
@@ -44,14 +44,14 @@ function make_eigenvalues_convergence_test(name)
     if nargin >= 1 && ~isempty(name)
         cfgs = cfgs(strcmp({cfgs.name}, name));
         if isempty(cfgs)
-            error('convergence_test:unknownDomain', ...
+            error('eigenvalues_convergence:unknownDomain', ...
                 'Unknown domain "%s" (known: L_shaped).', name);
         end
     end
     for i = 1:numel(cfgs)
         cfg = cfgs(i);
         fprintf('=== %s ===\n', cfg.name);
-        csv = fullfile(out_dir, sprintf('%s_convergence_test.csv', cfg.name));
+        csv = fullfile(out_dir, sprintf('%s_convergence.csv', cfg.name));
         if exist(csv, 'file')
             runs = read_runs_csv(csv);
             fprintf('  (reusing %s)\n', csv);
@@ -60,7 +60,7 @@ function make_eigenvalues_convergence_test(name)
             write_runs_csv(csv, cfg, runs);
             fprintf('  Wrote %s\n', csv);
         end
-        png = fullfile(out_dir, sprintf('%s_convergence_test.png', cfg.name));
+        png = fullfile(out_dir, sprintf('%s_convergence.png', cfg.name));
         plot_runs(png, cfg, runs);
         fprintf('  Wrote %s\n', png);
     end
@@ -145,7 +145,7 @@ function write_runs_csv(csv, cfg, runs)
 %WRITE_RUNS_CSV One row per run: method, resolution, dofs, lambda_1, time.
     fid = fopen(csv, 'w');
     if fid == -1
-        error('convergence_test:csv', 'Could not open %s for writing.', csv);
+        error('eigenvalues_convergence:csv', 'Could not open %s for writing.', csv);
     end
     closer = onCleanup(@() fclose(fid));
     fprintf(fid, '# Domain: %s (ground-state convergence against DOF, dense eig)\n', cfg.name);
@@ -162,7 +162,7 @@ function runs = read_runs_csv(csv)
 %READ_RUNS_CSV Read back a run table written by WRITE_RUNS_CSV.
     fid = fopen(csv, 'r');
     if fid == -1
-        error('convergence_test:csvread', 'Could not open %s.', csv);
+        error('eigenvalues_convergence:csvread', 'Could not open %s.', csv);
     end
     closer = onCleanup(@() fclose(fid));
     runs = struct('method', {}, 'resolution', {}, 'dofs', {}, 'lambda1', {}, 'time', {});
