@@ -14,6 +14,8 @@
     \toprule
     Method & DOF & Time (s) & $\lambda_{1}$ & $\lambda_{2}$ & $\lambda_{3}$ & $\lambda_{4}$ & $\lambda_{5}$ & $\lambda_{6}$ & $\lambda_{7}$ & $\lambda_{8}$ \\
     \midrule
+    \texttt{MPS} (reference) & --- & --- & \textbf{7.73309} & \textbf{8.55173} & \textbf{13.92763} & --- & --- & --- & --- & --- \\
+    \midrule
     \multirow{3}{*}{\texttt{DST}} & 288 & 0.38 & 7.98775 & 8.78935 & 14.04359 & 14.04634 & 14.28113 & 17.72238 & 19.73921 & 24.93706 \\
      & 913 & 0.27 & 7.85657 & 8.66706 & 13.98721 & 13.99057 & 14.30159 & 17.71992 & 19.73921 & 24.86844 \\
      & 1888 & 1.67 & 7.81056 & 8.62413 & 13.96576 & 13.96935 & 14.30475 & 17.71624 & 19.73921 & 24.84034 \\
@@ -27,6 +29,6 @@
      & 4843 & 12.91 & 7.74680 & 8.56458 & 13.93484 & 13.93874 & 14.30607 & 17.70911 & 19.73946 & 24.79879 \\
     \bottomrule
   \end{tabular}}
-  \caption{Numerical eigenvalues of Laplace operator on the H-shaped domain \texttt{H\_shaped}. Numerical eigenvalues computed by each discretisation \texttt{DST}, \texttt{FD} and \texttt{FEM} with varying degrees of freedom (DOF). Timing shows the time for the matrix assembly and full spectrum computation using \texttt{MATLAB}'s \lstinline{eig} function with the default settings.}
+  \caption{Analytical/numerical eigenvalues of Laplace operator on the H-shaped domain \texttt{H\_shaped}. Numerical eigenvalues computed by each discretisation \texttt{DST}, \texttt{FD} and \texttt{FEM} with varying degrees of freedom (DOF); compared with the reference eigenvalues from the method of particular solutions (\texttt{MPS}). Timing shows the time for the matrix assembly and full spectrum computation using \texttt{MATLAB}'s \lstinline{eig} function with the default settings.}
   \label{tab:eigenvalues_head_H_shaped}
 \end{table}

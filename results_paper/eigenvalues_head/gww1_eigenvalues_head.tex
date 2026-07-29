@@ -14,6 +14,8 @@
     \toprule
     Method & DOF & Time (s) & $\lambda_{1}$ & $\lambda_{2}$ & $\lambda_{3}$ & $\lambda_{4}$ & $\lambda_{5}$ & $\lambda_{6}$ & $\lambda_{7}$ & $\lambda_{8}$ \\
     \midrule
+    \texttt{MPS} (reference) & --- & --- & \textbf{2.53794} & \textbf{3.65551} & \textbf{5.17556} & --- & --- & --- & --- & --- \\
+    \midrule
     \multirow{3}{*}{\texttt{DST}} & 189 & 0.02 & 2.57496 & 3.68731 & 5.24501 & 6.53445 & 7.31062 & 9.22536 & 10.62053 & 11.51670 \\
      & 451 & 0.04 & 2.55993 & 3.67562 & 5.21768 & 6.54049 & 7.28693 & 9.22310 & 10.61573 & 11.53681 \\
      & 825 & 0.18 & 2.55306 & 3.66969 & 5.20475 & 6.54091 & 7.27524 & 9.21997 & 10.61125 & 11.54095 \\
@@ -27,6 +29,6 @@
      & 3610 & 5.00 & 2.53989 & 3.65746 & 5.17938 & 6.53847 & 7.25175 & 9.21119 & 10.59952 & 11.54249 \\
     \bottomrule
   \end{tabular}}
-  \caption{Numerical eigenvalues of Laplace operator on the GWW1 isospectral drum domain \texttt{gww1}. Numerical eigenvalues computed by each discretisation \texttt{DST}, \texttt{FD} and \texttt{FEM} with varying degrees of freedom (DOF). Timing shows the time for the matrix assembly and full spectrum computation using \texttt{MATLAB}'s \lstinline{eig} function with the default settings.}
+  \caption{Analytical/numerical eigenvalues of Laplace operator on the GWW1 isospectral drum domain \texttt{gww1}. Numerical eigenvalues computed by each discretisation \texttt{DST}, \texttt{FD} and \texttt{FEM} with varying degrees of freedom (DOF); compared with the reference eigenvalues from the method of particular solutions (\texttt{MPS}). Timing shows the time for the matrix assembly and full spectrum computation using \texttt{MATLAB}'s \lstinline{eig} function with the default settings.}
   \label{tab:eigenvalues_head_gww1}
 \end{table}

@@ -14,6 +14,8 @@
     \toprule
     Method & DOF & Time (s) & $\lambda_{1}$ & $\lambda_{2}$ & $\lambda_{3}$ & $\lambda_{4}$ & $\lambda_{5}$ & $\lambda_{6}$ & $\lambda_{7}$ & $\lambda_{8}$ \\
     \midrule
+    \texttt{MPS} (reference) & --- & --- & \textbf{5.86875} & \textbf{11.52600} & \textbf{15.14022} & --- & --- & --- & --- & --- \\
+    \midrule
     \multirow{3}{*}{\texttt{DST}} & 154 & 0.19 & 5.51567 & 11.03623 & 14.13262 & 14.55262 & 19.88674 & 25.55386 & 25.97815 & 27.48967 \\
      & 361 & 0.16 & 5.56177 & 11.09960 & 14.43160 & 14.71910 & 20.07834 & 25.65730 & 26.59825 & 27.83667 \\
      & 649 & 0.28 & 5.66750 & 11.20836 & 14.63226 & 15.13343 & 20.46896 & 26.19190 & 26.80042 & 28.46907 \\
@@ -27,6 +29,6 @@
      & 2663 & 1.84 & 5.87200 & 11.53325 & 15.14190 & 15.92417 & 21.12114 & 27.08157 & 27.50592 & 29.92394 \\
     \bottomrule
   \end{tabular}}
-  \caption{Numerical eigenvalues of Laplace operator on the ellipse-minus-quadrant domain \texttt{ellipse\_minus\_quadrant}. Numerical eigenvalues computed by each discretisation \texttt{DST}, \texttt{FD} and \texttt{FEM} with varying degrees of freedom (DOF). Timing shows the time for the matrix assembly and full spectrum computation using \texttt{MATLAB}'s \lstinline{eig} function with the default settings.}
+  \caption{Analytical/numerical eigenvalues of Laplace operator on the ellipse-minus-quadrant domain \texttt{ellipse\_minus\_quadrant}. Numerical eigenvalues computed by each discretisation \texttt{DST}, \texttt{FD} and \texttt{FEM} with varying degrees of freedom (DOF); compared with the reference eigenvalues from the method of particular solutions (\texttt{MPS}). Timing shows the time for the matrix assembly and full spectrum computation using \texttt{MATLAB}'s \lstinline{eig} function with the default settings.}
   \label{tab:eigenvalues_head_ellipse_minus_quadrant}
 \end{table}

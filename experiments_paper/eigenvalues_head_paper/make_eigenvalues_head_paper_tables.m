@@ -7,7 +7,7 @@ function make_eigenvalues_head_paper_tables(name)
 %   GENERATES ITS OWN DATA: for each domain it recomputes the Dirichlet-Laplacian
 %   spectrum with DST, finite differences, finite elements (all dense eig) and,
 %   for the rectangular domains, Chebyshev spectral collocation, at the first
-%   four DOF-sweep resolutions of each method, timing every run with tic/toc.
+%   few resolutions of each method, timing every run with tic/toc.
 %
 %   For each domain it writes
 %     - one CSV per (method, resolution) into results_paper/eigenvalues_head/
@@ -16,15 +16,24 @@ function make_eigenvalues_head_paper_tables(name)
 %       metadata header, and
 %     - one LaTeX snippet <domain>_eigenvalues_head.tex holding a transposed
 %       booktabs table: rows are the ground-truth reference plus each method's
-%       four DOF runs, columns are DOF, Time (s) and the first eight eigenvalues.
+%       DOF runs, columns are DOF, Time (s) and the first eight eigenvalues.
 %
 %   The ground truth is the analytic spectrum where a closed form is known
-%   (rectangle, isosceles triangle) or the MPS reference (L-shaped); it is read
-%   as a reference, not recomputed.
+%   (rectangle, isosceles triangle) or the MPS reference (all other domains);
+%   it is read as a reference, not recomputed. The MPS references of the
+%   non-analytic domains come from data/, which holds only the leading few
+%   eigenvalues -- the remaining reference cells are left blank.
 %
-%   Scope is the three DOF-sweep domains (rectangle, isosceles_triangle,
-%   L_shaped) -- the domains for which a four-level, cross-method DOF schedule is
-%   defined (see experiments/eigenvalues_dof_sweep/compute_*_dof_sweep.m).
+%   Scope is seven domains, in two groups. The three DOF-sweep domains
+%   (rectangle, isosceles_triangle, L_shaped) -- those for which a four-level,
+%   cross-method DOF schedule is defined (see
+%   experiments/eigenvalues_dof_sweep/compute_*_dof_sweep.m) -- run at four DOF
+%   levels. The four non-analytic domains (ellipse_minus_quadrant, H_shaped,
+%   gww1, gww2) have no DOF sweep of their own and run at three levels set
+%   locally in DOMAIN_CONFIGS.
+%
+%   Called with no argument (or an empty one) it does every domain; pass a
+%   domain name to regenerate just that one.
 %
 %   Requires the PDE Toolbox (FEM) and Chebfun (Cheb).
 
@@ -46,7 +55,7 @@ function make_eigenvalues_head_paper_tables(name)
         if isempty(cfgs)
             error('head_paper:unknownDomain', ...
                 ['Unknown domain "%s" (known: rectangle, isosceles_triangle, ', ...
-                 'L_shaped, ellipse_minus_quadrant, H, gww1, gww2).'], name);
+                 'L_shaped, ellipse_minus_quadrant, H_shaped, gww1, gww2).'], name);
         end
     end
     for i = 1:numel(cfgs)
@@ -104,20 +113,22 @@ function cfgs = domain_configs(project_root)
         'truth_kind', 'mps', 'analytic_fun', [], 'mps_path', mps);
 
     % --- Non-analytic domains: ellipse-minus-quadrant, H, GWW1, GWW2 ---------
-    % No closed-form spectrum, no Cheb (non-rectangular) and no MPS/Wolfram
-    % reference here, so the table just compares DST/FD/FEM at three DOF levels
-    % each. Box and indicator come from DOMAIN_CATALOG_DST, the FEM decsg
-    % geometry from DOMAIN_CATALOG_FEM; the DST/FD grid resolutions M keep the
-    % domain edges on grid lines (M+1 divisible by 4 for the ellipse, by 3 for
-    % H, by 6 for the 6-wide GWW box).
+    % No closed-form spectrum and no Cheb (non-rectangular), so the table
+    % compares DST/FD/FEM at three DOF levels each against the MPS reference
+    % eigenvalues of Betcke & Trefethen kept in data/ -- only the leading few
+    % eigenvalues are published there, so the reference row is short. Box and
+    % indicator come from DOMAIN_CATALOG_DST, the FEM decsg geometry from
+    % DOMAIN_CATALOG_FEM; the DST/FD grid resolutions M keep the domain edges on
+    % grid lines (M+1 divisible by 4 for the ellipse, by 3 for H, by 6 for the
+    % 6-wide GWW box).
     % Columns: catalog name (for the DST/FEM lookups), output name (file names,
     % \texttt label and \label -- H uses H_shaped), pretty caption name,
-    % DST/FD grid resolutions, FEM mesh sizes.
+    % DST/FD grid resolutions, FEM mesh sizes, MPS reference CSV in data/.
     extra = { ...
-        'ellipse_minus_quadrant', 'ellipse_minus_quadrant', 'ellipse-minus-quadrant', [23 35 47], [0.20 0.13 0.09]; ...
-        'H',                      'H_shaped',               'H-shaped',              [20 35 50], [0.18 0.12 0.08]; ...
-        'gww1',                   'gww1',                   'GWW1 isospectral drum', [23 35 47], [0.30 0.20 0.13]; ...
-        'gww2',                   'gww2',                   'GWW2 isospectral drum', [23 35 47], [0.30 0.20 0.13]  ...
+        'ellipse_minus_quadrant', 'ellipse_minus_quadrant', 'ellipse-minus-quadrant', [23 35 47], [0.20 0.13 0.09], 'ellipse_minus_quadrant.csv'; ...
+        'H',                      'H_shaped',               'H-shaped',              [20 35 50], [0.18 0.12 0.08], 'H_shaped.csv'; ...
+        'gww1',                   'gww1',                   'GWW1 isospectral drum', [23 35 47], [0.30 0.20 0.13], 'gww1.csv'; ...
+        'gww2',                   'gww2',                   'GWW2 isospectral drum', [23 35 47], [0.30 0.20 0.13], 'gww2.csv'  ...
     };
     for i = 1:size(extra, 1)
         cat_nm = extra{i, 1};
@@ -130,7 +141,8 @@ function cfgs = domain_configs(project_root)
             'gd', femc.gd, 'ns', femc.ns, 'sf', femc.sf, ...
             'M_grid', extra{i, 4}, 'Hmax_fem', extra{i, 5}, ...
             'has_cheb', false, 'N_cheb', [], ...
-            'truth_kind', 'none', 'analytic_fun', [], 'mps_path', ''); %#ok<AGROW>
+            'truth_kind', 'mps', 'analytic_fun', [], ...
+            'mps_path', fullfile(project_root, 'data', extra{i, 6})); %#ok<AGROW>
     end
 end
 
@@ -149,9 +161,11 @@ function rows = compute_domain(cfg, out_dir, NEIG)
             rows(end+1) = mk('Analytic (exact)', 'truth', '---', '---', ...
                              gt(1:NEIG), true);
         case 'mps'
+            % The published MPS references may list fewer than NEIG
+            % eigenvalues; the missing table cells are then left blank.
             gt = read_two_col(cfg.mps_path);
             rows(end+1) = mk('\texttt{MPS} (reference)', 'truth', '---', '---', ...
-                             gt(1:NEIG), true);
+                             gt(1:min(NEIG, numel(gt))), true);
     end
 
     methods = {'DST', 'dst'; 'FD', 'fd'; 'FEM', 'fem'};
@@ -415,7 +429,10 @@ function write_latex(tex, cfg, rows, NEIG)
                         s = sprintf('\\textbf{%s}', s);
                     end
                 else
-                    s = '';
+                    % Not available (e.g. the published MPS references list
+                    % fewer than NEIG eigenvalues); same marker as the DOF and
+                    % Time cells of the reference row.
+                    s = '---';
                 end
                 fprintf(fid, ' & %s', s);
             end
