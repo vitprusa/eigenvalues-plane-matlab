@@ -1,5 +1,5 @@
 % Eigenvalue comparison for the ellipse-minus-quadrant domain \texttt{ellipse\_minus\_quadrant}: DST, FD, FEM,
-% 3 DOF runs each, first 8 eigenvalues, self-computed with timing.
+% 3 DOF runs each (DST: 4), first 8 eigenvalues, self-computed with timing.
 %
 % Requires in the preamble:
 %   \usepackage{booktabs}
@@ -16,9 +16,10 @@
     \midrule
     \texttt{MPS} (reference) & --- & --- & \textbf{5.86875} & \textbf{11.52600} & \textbf{15.14022} & --- & --- & --- & --- & --- \\
     \midrule
-    \multirow{3}{*}{\texttt{DST}} & 154 & 0.19 & 5.51567 & 11.03623 & 14.13262 & 14.55262 & 19.88674 & 25.55386 & 25.97815 & 27.48967 \\
+    \multirow{4}{*}{\texttt{DST}} & 154 & 0.19 & 5.51567 & 11.03623 & 14.13262 & 14.55262 & 19.88674 & 25.55386 & 25.97815 & 27.48967 \\
      & 361 & 0.16 & 5.56177 & 11.09960 & 14.43160 & 14.71910 & 20.07834 & 25.65730 & 26.59825 & 27.83667 \\
      & 649 & 0.28 & 5.66750 & 11.20836 & 14.63226 & 15.13343 & 20.46896 & 26.19190 & 26.80042 & 28.46907 \\
+     & 3136 & 8.34 & 5.75488 & 11.32437 & 14.84802 & 15.53585 & 20.73719 & 26.51453 & 27.05182 & 29.19055 \\
     \midrule
     \multirow{3}{*}{\texttt{FD}} & 154 & 0.01 & 5.45723 & 10.79569 & 13.81045 & 14.21723 & 19.28916 & 24.62194 & 24.77663 & 26.20769 \\
      & 361 & 0.02 & 5.53205 & 10.98522 & 14.27200 & 14.55931 & 19.79946 & 25.23993 & 26.01064 & 27.23276 \\

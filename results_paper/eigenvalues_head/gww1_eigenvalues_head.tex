@@ -1,5 +1,5 @@
 % Eigenvalue comparison for the GWW1 isospectral drum domain \texttt{gww1}: DST, FD, FEM,
-% 3 DOF runs each, first 8 eigenvalues, self-computed with timing.
+% 3 DOF runs each (DST: 4), first 8 eigenvalues, self-computed with timing.
 %
 % Requires in the preamble:
 %   \usepackage{booktabs}
@@ -16,9 +16,10 @@
     \midrule
     \texttt{MPS} (reference) & --- & --- & \textbf{2.53794} & \textbf{3.65551} & \textbf{5.17556} & --- & --- & --- & --- & --- \\
     \midrule
-    \multirow{3}{*}{\texttt{DST}} & 189 & 0.02 & 2.57496 & 3.68731 & 5.24501 & 6.53445 & 7.31062 & 9.22536 & 10.62053 & 11.51670 \\
+    \multirow{4}{*}{\texttt{DST}} & 189 & 0.02 & 2.57496 & 3.68731 & 5.24501 & 6.53445 & 7.31062 & 9.22536 & 10.62053 & 11.51670 \\
      & 451 & 0.04 & 2.55993 & 3.67562 & 5.21768 & 6.54049 & 7.28693 & 9.22310 & 10.61573 & 11.53681 \\
      & 825 & 0.18 & 2.55306 & 3.66969 & 5.20475 & 6.54091 & 7.27524 & 9.21997 & 10.61125 & 11.54095 \\
+     & 3016 & 7.20 & 2.54455 & 3.66190 & 5.18843 & 6.53969 & 7.26017 & 9.21455 & 10.60393 & 11.54252 \\
     \midrule
     \multirow{3}{*}{\texttt{FD}} & 189 & 0.00 & 2.54342 & 3.63801 & 5.13776 & 6.37385 & 7.11875 & 8.91412 & 10.11953 & 11.00243 \\
      & 451 & 0.02 & 2.54510 & 3.65263 & 5.16791 & 6.46710 & 7.19915 & 9.08162 & 10.38945 & 11.30208 \\
