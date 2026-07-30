@@ -53,9 +53,9 @@ function plot_L_shaped_dof_sweep_paper_colour()
 
     png = fullfile(out_dir, 'L_shaped_dof_sweep_colour.png');
     try
-        exportgraphics(fig, png, 'Resolution', 150);
+        exportgraphics(fig, png, 'Resolution', 600);
     catch
-        print(fig, png, '-dpng', '-r150');
+        print(fig, png, '-dpng', '-r600');
     end
     fprintf('Wrote plot %s\n', png);
 end

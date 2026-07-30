@@ -69,9 +69,9 @@ function plot_rectangle_dof_sweep_paper()
 
     png = fullfile(out_dir, 'rectangle_dof_sweep.png');
     try
-        exportgraphics(fig, png, 'Resolution', 150);
+        exportgraphics(fig, png, 'Resolution', 600);
     catch
-        print(fig, png, '-dpng', '-r150');
+        print(fig, png, '-dpng', '-r600');
     end
     fprintf('Wrote plot %s\n', png);
 end

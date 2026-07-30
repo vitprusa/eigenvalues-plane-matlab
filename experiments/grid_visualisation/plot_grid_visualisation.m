@@ -109,9 +109,9 @@ function plot_one(c, out_dir)
 
     png = fullfile(out_dir, sprintf('%s_grid.png', c.name));
     try
-        exportgraphics(fig, png, 'Resolution', 150);
+        exportgraphics(fig, png, 'Resolution', 600);
     catch
-        print(fig, png, '-dpng', '-r150');
+        print(fig, png, '-dpng', '-r600');
     end
     close(fig);
     fprintf('Wrote %s\n', png);

@@ -260,9 +260,9 @@ function plot_runs(png, cfg, runs)
     set(ax, 'FontSize', 12);
 
     try
-        exportgraphics(fig, png, 'Resolution', 150);
+        exportgraphics(fig, png, 'Resolution', 600);
     catch
-        print(fig, png, '-dpng', '-r150');
+        print(fig, png, '-dpng', '-r600');
     end
     close(fig);
 end
