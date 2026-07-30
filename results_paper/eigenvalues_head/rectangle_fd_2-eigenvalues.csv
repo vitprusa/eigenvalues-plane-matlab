@@ -1,6 +1,6 @@
 # Domain: rectangle (FD, paper eigenvalues-head run, dense eig full spectrum)
 # Resolution M = 25, dofs = 300
-# Computation time: 0.0104 s
+# Computation time: 0.0040 s
 n,lambda_n
 1,1.24483877626
 2,1.99028559015

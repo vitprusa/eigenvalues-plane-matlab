@@ -1,6 +1,6 @@
 # Domain: gww1 (DST, paper eigenvalues-head run, dense eig full spectrum)
 # Resolution M = 35, dofs = 451
-# Computation time: 0.0434 s
+# Computation time: 0.0671 s
 n,lambda_n
 1,2.55993260091
 2,3.67561599029

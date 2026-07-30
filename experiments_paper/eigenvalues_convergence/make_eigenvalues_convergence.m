@@ -96,7 +96,12 @@ end
 
 function runs = compute_runs(cfg)
 %COMPUTE_RUNS One timed lambda_1 per method and resolution.
+%
+%   Each method is warmed up before the sweep (see WARM_UP), so that no timing
+%   in the CSV carries MATLAB's first-call overhead.
     [x_range, y_range] = bounding_box(cfg.box(1), cfg.box(2), cfg.box(3), cfg.box(4));
+
+    warm_up(cfg, x_range, y_range);
 
     runs = struct('method', {}, 'resolution', {}, 'dofs', {}, 'lambda1', {}, 'time', {});
 
@@ -125,6 +130,32 @@ function runs = compute_runs(cfg)
         evals = sort(real(evals(:)), 'ascend');
         runs(end+1) = mk('FEM', sprintf('Hmax = %g', h), info.dofs, evals(1), toc(t)); %#ok<AGROW>
         report(runs(end));
+    end
+end
+
+
+function warm_up(cfg, x_range, y_range)
+%WARM_UP Discarded runs of each method on this domain, at its cheapest resolution.
+%
+%   Warm-up has two components, both measured on this code: MATLAB's toolbox
+%   load and JIT compilation, paid once per session (about 1.7 s for FEM), and a
+%   smaller per-geometry cost, paid again by the first call on each new domain.
+%   Left in the sweep, they land on the coarsest run and put the smallest DOF
+%   count at the top of the timings. Two calls rather than one, because the
+%   first geometry of a session is still decaying on its second call.
+%
+%   Eager rather than lazy here: COMPUTE_RUNS is reached only when the CSV is
+%   missing, that is when every run is recomputed anyway.
+    fprintf('  warm-up: DST, FD, FEM at the coarsest resolution (discarded)\n');
+    M = cfg.M_grid(1);
+    h = cfg.Hmax_fem(1);
+    entry = struct('gd', cfg.gd, 'ns', cfg.ns, 'sf', cfg.sf, ...
+                   'Hmax_eig', h, 'Hmax_solvepdeeig', h);
+    for i = 1:2
+        L = make_dst_laplace_mat_batched(x_range, y_range, M, cfg.phi);
+        eig(L);
+        fd_laplace_spectrum(struct('box', cfg.box, 'phi', cfg.phi, 'M', M));
+        fem_laplace_spectrum(entry, "eig");
     end
 end
 

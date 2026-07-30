@@ -221,37 +221,75 @@ end
 
 function [evals, dofs, resstr, tsec] = run_one(low, k, cfg, x_range, y_range)
 %RUN_ONE One timed spectrum computation for method `low` at DOF level k.
+%
+%   The timing covers COMPUTE_ONE only, and never a cold call: warm-up is spent
+%   on discarded runs by ENSURE_WARM instead. Left in, it lands on whichever run
+%   happens to go first and makes a coarse grid look slower than a finer one.
+    ensure_warm(low, cfg, x_range, y_range);
+    t = tic;
+    [evals, dofs, resstr] = compute_one(low, k, cfg, x_range, y_range);
+    tsec = toc(t);
+end
+
+
+function ensure_warm(low, cfg, x_range, y_range)
+%ENSURE_WARM Discarded runs of method `low` on domain `cfg`, before its first timing.
+%
+%   Warm-up has two components, both measured on this code: MATLAB's toolbox
+%   load and JIT compilation, paid once per session (about 1.7 s for FEM), and a
+%   smaller per-geometry cost, paid again by the first call on each new domain
+%   (about 0.14 s against 0.03 s warm, for the L-shape). Hence the key is method
+%   AND domain, and two calls rather than one -- the first geometry of a session
+%   is still decaying on its second call.
+%
+%   Lazy on purpose: a run whose CSV is cached never reaches RUN_ONE, so a
+%   layout-only regeneration still costs no computation at all. The discarded
+%   runs use level 1, the cheapest of each sweep.
+    persistent warmed
+    if isempty(warmed)
+        warmed = struct();
+    end
+    key = sprintf('%s_%s', low, cfg.name);
+    if isfield(warmed, key)
+        return;
+    end
+    warmed.(key) = true;   % set first, so that a failed warm-up is not retried
+    fprintf('  warm-up: %s on %s (discarded)\n', low, cfg.name);
+    try
+        for i = 1:2
+            compute_one(low, 1, cfg, x_range, y_range);
+        end
+    catch
+        % Ignored: the real run reports its own failure through the caller.
+    end
+end
+
+
+function [evals, dofs, resstr] = compute_one(low, k, cfg, x_range, y_range)
+%COMPUTE_ONE One untimed spectrum computation for method `low` at DOF level k.
     switch low
         case 'dst'
             M = cfg.M_grid(k);
             resstr = sprintf('M = %d', M);
-            t = tic;
             [L, info] = make_dst_laplace_mat_batched(x_range, y_range, M, cfg.phi);
             evals = sort(-real(eig(L)), 'ascend');
-            tsec = toc(t);
             dofs = info.dofs;
         case 'fd'
             M = cfg.M_grid(k);
             resstr = sprintf('M = %d', M);
-            t = tic;
             [evals, info] = fd_laplace_spectrum(struct('box', cfg.box, 'phi', cfg.phi, 'M', M));
-            tsec = toc(t);
             dofs = info.dofs;
         case 'fem'
             h = cfg.Hmax_fem(k);
             resstr = sprintf('Hmax = %g', h);
             entry = struct('gd', cfg.gd, 'ns', cfg.ns, 'sf', cfg.sf, ...
                            'Hmax_eig', h, 'Hmax_solvepdeeig', h);
-            t = tic;
             [evals, info] = fem_laplace_spectrum(entry, "eig");
-            tsec = toc(t);
             dofs = info.dofs;
         case 'cheb'
             N = cfg.N_cheb(k);
             resstr = sprintf('N = %d', N);
-            t = tic;
             [evals, info] = chebfun_laplace_spectrum(cfg.box, N);
-            tsec = toc(t);
             dofs = info.dofs;
         otherwise
             error('head_paper:method', 'unknown method %s', low);

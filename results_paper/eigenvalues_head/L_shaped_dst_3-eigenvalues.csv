@@ -1,6 +1,6 @@
 # Domain: L_shaped (DST, paper eigenvalues-head run, dense eig full spectrum)
 # Resolution M = 35, dofs = 901
-# Computation time: 0.2452 s
+# Computation time: 0.1744 s
 n,lambda_n
 1,9.6947887577
 2,15.1956029811

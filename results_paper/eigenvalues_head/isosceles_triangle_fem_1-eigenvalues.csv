@@ -1,6 +1,6 @@
 # Domain: isosceles_triangle (FEM, paper eigenvalues-head run, dense eig full spectrum)
 # Resolution Hmax = 0.2, dofs = 511
-# Computation time: 0.1923 s
+# Computation time: 0.0359 s
 n,lambda_n
 1,5.00016601099
 2,10.0013398828

@@ -1,6 +1,6 @@
 # Domain: H_shaped (FEM, paper eigenvalues-head run, dense eig full spectrum)
 # Resolution Hmax = 0.12, dofs = 2087
-# Computation time: 0.9138 s
+# Computation time: 0.5492 s
 n,lambda_n
 1,7.75740185642
 2,8.57437213902
