@@ -19,9 +19,14 @@ function make_eigenvalues_head_paper_tables(name)
 %       columns are DOF, Time (s) and the first eight eigenvalues, and
 %     - <domain>_eigenvalues_head_transposed.tex, the same data with the axes
 %       swapped -- one column per run, one row per eigenvalue index, so that a
-%       single eigenvalue reads across all discretisations.
-%   Both are \scriptsize and print four decimals, so that the two tables of a
-%   domain match and the widest of them stays inside the text width.
+%       single eigenvalue reads across all discretisations, and
+%     - <domain>_eigenvalues_head_transposed_extended.tex for the domains whose
+%       config carries EXTRA_INDICES: the transposed table with a few deeper
+%       eigenvalues appended, each on an empty row of its own (see
+%       WRITE_LATEX_TRANSPOSED).
+%   All are \scriptsize and print four decimals, so that the tables of a domain
+%   match; the extended one is too wide even so, and is scaled to the text width
+%   with \resizebox.
 %
 %   The ground truth is the analytic spectrum where a closed form is known
 %   (rectangle, isosceles triangle) or the MPS reference (all other domains);
@@ -66,28 +71,40 @@ function make_eigenvalues_head_paper_tables(name)
     for i = 1:numel(cfgs)
         cfg = cfgs(i);
         fprintf('=== %s ===\n', cfg.name);
-        rows = compute_domain(cfg, out_dir, NEIG);
+        rows = compute_domain(cfg, out_dir);
         tex  = fullfile(out_dir, sprintf('%s_eigenvalues_head.tex', cfg.name));
         write_latex(tex, cfg, rows, NEIG);
         fprintf('Wrote %s\n', tex);
         tex = fullfile(out_dir, sprintf('%s_eigenvalues_head_transposed.tex', cfg.name));
-        write_latex_transposed(tex, cfg, rows, NEIG);
+        write_latex_transposed(tex, cfg, rows, NEIG, []);
         fprintf('Wrote %s\n', tex);
+        if ~isempty(cfg.extra_indices)
+            tex = fullfile(out_dir, ...
+                sprintf('%s_eigenvalues_head_transposed_extended.tex', cfg.name));
+            write_latex_transposed(tex, cfg, rows, NEIG, cfg.extra_indices);
+            fprintf('Wrote %s\n', tex);
+        end
     end
 end
 
 
 function cfgs = domain_configs(project_root)
 %DOMAIN_CONFIGS Per-domain geometry, DOF schedules and ground-truth source.
+%
+%   EXTRA_INDICES holds the deeper eigenvalue indices of the extended transposed
+%   table, empty for the domains that do not get one.
     mps = fullfile(project_root, 'results', 'eigenvalues', 'mps', ...
                    'L_shaped_eigenvalues_MPS.csv');
 
     cfgs = struct('name', {}, 'pretty', {}, 'box', {}, 'phi', {}, ...
                   'gd', {}, 'ns', {}, 'sf', {}, 'M_grid', {}, 'Hmax_fem', {}, ...
                   'has_cheb', {}, 'N_cheb', {}, 'truth_kind', {}, ...
-                  'analytic_fun', {}, 'mps_path', {});
+                  'analytic_fun', {}, 'mps_path', {}, 'extra_indices', {});
 
     % --- rectangle [0, 2*pi] x [0, pi] --------------------------------------
+    % The only domain with an extended table so far: its ground truth is a
+    % closed form, so the deeper eigenvalues have an exact value to be read
+    % against, which the short MPS references of the other domains cannot give.
     cfgs(end+1) = struct( ...
         'name', 'rectangle', 'pretty', 'rectangular', ...
         'box', [0 2*pi 0 pi], ...
@@ -96,7 +113,8 @@ function cfgs = domain_configs(project_root)
         'M_grid', [15 25 35 49], 'Hmax_fem', [0.35 0.25 0.18 0.13], ...
         'has_cheb', true, 'N_cheb', [10 20 30 40], ...
         'truth_kind', 'analytic', ...
-        'analytic_fun', @() analytic_rectangle(), 'mps_path', '');
+        'analytic_fun', @() analytic_rectangle(), 'mps_path', '', ...
+        'extra_indices', [60 80 100 200]);
 
     % --- right isosceles triangle, legs pi ----------------------------------
     cfgs(end+1) = struct( ...
@@ -107,7 +125,8 @@ function cfgs = domain_configs(project_root)
         'M_grid', [15 25 35 50], 'Hmax_fem', [0.20 0.13 0.09 0.06], ...
         'has_cheb', false, 'N_cheb', [], ...
         'truth_kind', 'analytic', ...
-        'analytic_fun', @() analytic_isosceles(), 'mps_path', '');
+        'analytic_fun', @() analytic_isosceles(), 'mps_path', '', ...
+        'extra_indices', []);
 
     % --- L-shaped domain ----------------------------------------------------
     cfgs(end+1) = struct( ...
@@ -118,7 +137,8 @@ function cfgs = domain_configs(project_root)
         'ns', char('R1', 'R2')', 'sf', 'R1-R2', ...
         'M_grid', [15 25 35 49], 'Hmax_fem', [0.20 0.13 0.09 0.06], ...
         'has_cheb', false, 'N_cheb', [], ...
-        'truth_kind', 'mps', 'analytic_fun', [], 'mps_path', mps);
+        'truth_kind', 'mps', 'analytic_fun', [], 'mps_path', mps, ...
+        'extra_indices', []);
 
     % --- Non-analytic domains: ellipse-minus-quadrant, H, GWW1, GWW2 ---------
     % No closed-form spectrum and no Cheb (non-rectangular), so the table
@@ -151,12 +171,13 @@ function cfgs = domain_configs(project_root)
             'M_grid', extra{i, 4}, 'Hmax_fem', extra{i, 5}, ...
             'has_cheb', false, 'N_cheb', [], ...
             'truth_kind', 'mps', 'analytic_fun', [], ...
-            'mps_path', fullfile(project_root, 'data', extra{i, 6})); %#ok<AGROW>
+            'mps_path', fullfile(project_root, 'data', extra{i, 6}), ...
+            'extra_indices', []); %#ok<AGROW>
     end
 end
 
 
-function rows = compute_domain(cfg, out_dir, NEIG)
+function rows = compute_domain(cfg, out_dir)
 %COMPUTE_DOMAIN Compute every method/run for one domain; write CSVs; collect rows.
     [x_range, y_range] = bounding_box(cfg.box(1), cfg.box(2), cfg.box(3), cfg.box(4));
 
@@ -164,17 +185,19 @@ function rows = compute_domain(cfg, out_dir, NEIG)
                   'eigs', {}, 'bold', {});
 
     % Ground-truth reference row (analytic closed form or MPS reference).
+    %
+    % Each row keeps the whole spectrum, not just the NEIG leading values: the
+    % extended table reads deeper indices out of the same rows. The writers take
+    % what they need and mark anything past the end of a row with "---", which is
+    % how a run coarser than the index asked for, and a published MPS reference
+    % shorter than NEIG, are both handled.
     switch cfg.truth_kind
         case 'analytic'
-            gt = cfg.analytic_fun();
             rows(end+1) = mk('Analytic', 'truth', '---', '---', ...
-                             gt(1:NEIG), true);
+                             cfg.analytic_fun(), true);
         case 'mps'
-            % The published MPS references may list fewer than NEIG
-            % eigenvalues; the missing table cells are then left blank.
-            gt = read_two_col(cfg.mps_path);
             rows(end+1) = mk('\texttt{MPS}', 'truth', '---', '---', ...
-                             gt(1:min(NEIG, numel(gt))), true);
+                             read_two_col(cfg.mps_path), true);
     end
 
     methods = {'DST', 'dst'; 'FD', 'fd'; 'FEM', 'fem'};
@@ -213,7 +236,7 @@ function rows = compute_domain(cfg, out_dir, NEIG)
                         disp_m, k, dofs, tsec, csv);
             end
             rows(end+1) = mk(disp_m, disp_m, num2str(dofs), sprintf('%.2f', tsec), ...
-                             evals(1:min(NEIG, numel(evals))), false); %#ok<AGROW>
+                             evals, false); %#ok<AGROW>
         end
     end
 end
@@ -526,7 +549,7 @@ function t = caption_bits(cfg)
 end
 
 
-function write_latex_transposed(tex, cfg, rows, NEIG)
+function write_latex_transposed(tex, cfg, rows, NEIG, extras)
 %WRITE_LATEX_TRANSPOSED Transposed booktabs table: one row per eigenvalue.
 %
 %   The same data as WRITE_LATEX with the axes swapped -- one column per run
@@ -536,6 +559,12 @@ function write_latex_transposed(tex, cfg, rows, NEIG)
 %   timing become the two leading body rows, and the reference column stays
 %   bold. Four decimals and \scriptsize, as in WRITE_LATEX, which is also what
 %   keeps the thirteen to seventeen numeric columns inside the text width.
+%
+%   EXTRAS are eigenvalue indices past the leading NEIG, each written on a row
+%   of its own after an empty row, so that the jump in the index is visible. Pass
+%   [] for the plain table; a non-empty EXTRAS also wraps the tabular in
+%   \resizebox, drops the timing sentence from the caption and marks the \label
+%   as extended, every layout being \input into one document.
     fid = fopen(tex, 'w');
     if fid == -1
         error('head_paper:tex', 'Could not open %s for writing.', tex);
@@ -561,9 +590,18 @@ function write_latex_transposed(tex, cfg, rows, NEIG)
     fprintf(fid, ['%% %s, first %d eigenvalues, self-computed with timing.\n', ...
         '%% Transposed layout: one column per run, one row per eigenvalue.\n'], ...
         t.lev_note, NEIG);
+    if ~isempty(extras)
+        fprintf(fid, ['%% Extended with the eigenvalues %s;\n', ...
+            '%% too wide for the text width, so the tabular is scaled to it.\n'], ...
+            index_list(extras));
+    end
     fprintf(fid, '%%\n%% Requires in the preamble:\n');
     fprintf(fid, ['%%   \\usepackage{booktabs}\n', ...
-                  '%%   \\usepackage{amsmath}\n%%   \\usepackage{listings}\n\n']);
+                  '%%   \\usepackage{amsmath}\n%%   \\usepackage{listings}\n']);
+    if ~isempty(extras)
+        fprintf(fid, '%%   \\usepackage{graphicx}          %% \\resizebox\n');
+    end
+    fprintf(fid, '\n');
 
     % \scriptsize throughout, as in WRITE_LATEX. Measured with pdflatex against
     % the article preamble (amsart, a4paper, geometry scale=0.9, so \textwidth =
@@ -571,10 +609,24 @@ function write_latex_transposed(tex, cfg, rows, NEIG)
     % holds the seventeen runs of the rectangle -- the only domain with Cheb --
     % inside the text width, so every table takes it and they stay uniform. A
     % narrower page (a plain article \textwidth of 345pt, say) fits none of them.
+    %
+    % The extended table is the one that overruns, its deeper eigenvalues running
+    % into three figures before the decimal point: a column being as wide as its
+    % widest cell, those rows alone set every column width. Four decimals
+    % throughout is deliberate -- the table is not to print a different number of
+    % digits for the deeper eigenvalues -- and at four decimals no setting of
+    % size and separation fits: 105pt over at \scriptsize/3pt, 63pt at \tiny/3pt,
+    % 33pt at \scriptsize/1pt. It therefore keeps the family's \scriptsize and
+    % 3pt, like every other table here, and buys the fit by scaling the whole
+    % tabular to \textwidth with \resizebox (about 84 per cent).
     fprintf(fid, '\\begin{table}[htbp]\n  \\centering\n');
     % The size and \tabcolsep changes scope to the tabular (grouped) so that the
     % caption keeps the normal body size.
     fprintf(fid, '  {\\scriptsize\n  \\setlength{\\tabcolsep}{3pt}\n');
+    if ~isempty(extras)
+        % Trailing %% so that the line break adds no space before the tabular.
+        fprintf(fid, '  \\resizebox{\\textwidth}{!}{%%\n');
+    end
     fprintf(fid, '  \\begin{tabular}{%s}\n    \\toprule\n', colspec);
 
     % Group head: method name spanning its DOF runs, underlined by \cmidrule.
@@ -600,36 +652,78 @@ function write_latex_transposed(tex, cfg, rows, NEIG)
     fprintf(fid, ' \\\\\n    \\midrule\n');
 
     for i = 1:NEIG
-        fprintf(fid, '    $\\lambda_{%d}$', i);
-        for j = 1:ncol
-            row = rows(j);
-            if i <= numel(row.eigs)
-                s = sprintf('%.4f', row.eigs(i));
-                if row.bold
-                    s = sprintf('\\textbf{%s}', s);
-                end
-            else
-                % Not available (e.g. the published MPS references list fewer
-                % than NEIG eigenvalues); same marker as the DOF and Time cells
-                % of the reference column.
-                s = '---';
-            end
-            fprintf(fid, ' & %s', s);
-        end
-        fprintf(fid, ' \\\\\n');
+        write_eig_row(fid, rows, i, 4);
+    end
+    % The deeper eigenvalues, each after an empty row: the index jumps from one
+    % to the next, and a rule would read as a new block of the same sequence.
+    for i = extras(:)'
+        fprintf(fid, '   %s \\\\\n', repmat(' &', 1, ncol));
+        write_eig_row(fid, rows, i, 4);
     end
 
-    fprintf(fid, '    \\bottomrule\n  \\end{tabular}}\n');
+    if isempty(extras)
+        fprintf(fid, '    \\bottomrule\n  \\end{tabular}}\n');
+    else
+        fprintf(fid, '    \\bottomrule\n  \\end{tabular}}}\n');   % tabular, \resizebox, size group
+    end
+    % The extended table stops after the comparison clause: the timing sentence
+    % is carried by the two tables it shares its numbers with, and the deeper
+    % eigenvalue indices are read off the rows themselves.
+    if isempty(extras)
+        timing_clause = [' Timing shows the time for the matrix assembly and ', ...
+            'full spectrum computation using \texttt{MATLAB}''s ', ...
+            '\lstinline{eig} function with the default settings.'];
+    else
+        timing_clause = '';
+    end
     fprintf(fid, ['  \\caption{%s eigenvalues of Laplace operator on the %s ', ...
         'domain \\texttt{%s}. Numerical eigenvalues computed by each ', ...
-        'discretisation %s with varying degrees of freedom (DOF)%s. Timing ', ...
-        'shows the time for the matrix assembly and full spectrum computation ', ...
-        'using \\texttt{MATLAB}''s \\lstinline{eig} function with the default ', ...
-        'settings.}\n'], ...
-        t.leading, cfg.pretty, latex_name(cfg.name), t.method_list, t.comparison_clause);
-    % Distinct label: both layouts may be \input into the same document.
-    fprintf(fid, '  \\label{tab:eigenvalues_head_%s_transposed}\n', cfg.name);
+        'discretisation %s with varying degrees of freedom (DOF)%s.%s}\n'], ...
+        t.leading, cfg.pretty, latex_name(cfg.name), t.method_list, ...
+        t.comparison_clause, timing_clause);
+    % Distinct label: every layout may be \input into the same document.
+    if isempty(extras)
+        suffix = '';
+    else
+        suffix = '_extended';
+    end
+    fprintf(fid, '  \\label{tab:eigenvalues_head_%s_transposed%s}\n', cfg.name, suffix);
     fprintf(fid, '\\end{table}\n');
+end
+
+
+function write_eig_row(fid, rows, i, ndec)
+%WRITE_EIG_ROW One eigenvalue row of the transposed table: index, then each run.
+%
+%   NDEC decimals per cell. A run holding fewer than i eigenvalues -- a grid
+%   coarser than the index asked for, or a published MPS reference shorter than
+%   the table -- gets "---", the marker the DOF and Time cells of the reference
+%   column use.
+    fprintf(fid, '    $\\lambda_{%d}$', i);
+    for j = 1:numel(rows)
+        row = rows(j);
+        if i <= numel(row.eigs)
+            s = sprintf('%.*f', ndec, row.eigs(i));
+            if row.bold
+                s = sprintf('\\textbf{%s}', s);
+            end
+        else
+            s = '---';
+        end
+        fprintf(fid, ' & %s', s);
+    end
+    fprintf(fid, ' \\\\\n');
+end
+
+
+function s = index_list(idx)
+%INDEX_LIST Eigenvalue indices as "$\lambda_{60}$, $\lambda_{80}$ and $\lambda_{100}$".
+    parts = arrayfun(@(k) sprintf('$\\lambda_{%d}$', k), idx, 'UniformOutput', false);
+    if numel(parts) == 1
+        s = parts{1};
+    else
+        s = sprintf('%s and %s', strjoin(parts(1:end-1), ', '), parts{end});
+    end
 end
 
 

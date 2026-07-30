@@ -1,0 +1,45 @@
+% Eigenvalue comparison for the rectangular domain \texttt{rectangle}: DST, FD, FEM, Cheb,
+% 4 DOF runs each, first 8 eigenvalues, self-computed with timing.
+% Transposed layout: one column per run, one row per eigenvalue.
+% Extended with the eigenvalues $\lambda_{60}$, $\lambda_{80}$, $\lambda_{100}$ and $\lambda_{200}$;
+% too wide for the text width, so the tabular is scaled to it.
+%
+% Requires in the preamble:
+%   \usepackage{booktabs}
+%   \usepackage{amsmath}
+%   \usepackage{listings}
+%   \usepackage{graphicx}          % \resizebox
+
+\begin{table}[htbp]
+  \centering
+  {\scriptsize
+  \setlength{\tabcolsep}{3pt}
+  \resizebox{\textwidth}{!}{%
+  \begin{tabular}{lrrrrrrrrrrrrrrrrr}
+    \toprule
+    & \multicolumn{1}{c}{Analytic} & \multicolumn{4}{c}{\texttt{DST}} & \multicolumn{4}{c}{\texttt{FD}} & \multicolumn{4}{c}{\texttt{FEM}} & \multicolumn{4}{c}{\texttt{Cheb}} \\
+    \cmidrule(lr){2-2} \cmidrule(lr){3-6} \cmidrule(lr){7-10} \cmidrule(lr){11-14} \cmidrule(lr){15-18}
+    DOF & --- & 105 & 300 & 595 & 1176 & 105 & 300 & 595 & 1176 & 663 & 1333 & 2653 & 5201 & 64 & 324 & 784 & 1444 \\
+    Time (s) & --- & 0.00 & 0.02 & 0.08 & 0.32 & 0.00 & 0.00 & 0.02 & 0.06 & 0.10 & 0.15 & 1.45 & 13.53 & 0.01 & 0.02 & 0.10 & 0.39 \\
+    \midrule
+    $\lambda_{1}$ & \textbf{1.2500} & 1.2500 & 1.2500 & 1.2500 & 1.2500 & 1.2364 & 1.2448 & 1.2473 & 1.2486 & 1.2500 & 1.2500 & 1.2500 & 1.2500 & 1.2500 & 1.2500 & 1.2500 & 1.2500 \\
+    $\lambda_{2}$ & \textbf{2.0000} & 2.0000 & 2.0000 & 2.0000 & 2.0000 & 1.9744 & 1.9903 & 1.9949 & 1.9974 & 2.0001 & 2.0000 & 2.0000 & 2.0000 & 2.0000 & 2.0000 & 2.0000 & 2.0000 \\
+    $\lambda_{3}$ & \textbf{3.2500} & 3.2500 & 3.2500 & 3.2500 & 3.2500 & 3.1729 & 3.2206 & 3.2346 & 3.2420 & 3.2504 & 3.2501 & 3.2500 & 3.2500 & 3.2506 & 3.2500 & 3.2500 & 3.2500 \\
+    $\lambda_{4}$ & \textbf{4.2500} & 4.2500 & 4.2500 & 4.2500 & 4.2500 & 4.0478 & 4.1724 & 4.2094 & 4.2289 & 4.2510 & 4.2503 & 4.2501 & 4.2500 & 4.2500 & 4.2500 & 4.2500 & 4.2500 \\
+    $\lambda_{5}$ & \textbf{5.0000} & 5.0000 & 5.0000 & 5.0000 & 5.0000 & 4.7858 & 4.9179 & 4.9570 & 4.9777 & 5.0016 & 5.0004 & 5.0001 & 5.0000 & 4.9798 & 5.0000 & 5.0000 & 5.0000 \\
+    $\lambda_{6}$ & \textbf{5.0000} & 5.0000 & 5.0000 & 5.0000 & 5.0000 & 4.7858 & 4.9179 & 4.9570 & 4.9777 & 5.0016 & 5.0004 & 5.0001 & 5.0000 & 5.0000 & 5.0000 & 5.0000 & 5.0000 \\
+    $\lambda_{7}$ & \textbf{6.2500} & 6.2500 & 6.2500 & 6.2500 & 6.2500 & 5.9843 & 6.1482 & 6.1967 & 6.2223 & 6.2531 & 6.2508 & 6.2502 & 6.2501 & 6.2506 & 6.2500 & 6.2500 & 6.2500 \\
+    $\lambda_{8}$ & \textbf{7.2500} & 7.2500 & 7.2500 & 7.2500 & 7.2500 & 6.7511 & 7.0573 & 7.1489 & 7.1974 & 7.2546 & 7.2512 & 7.2503 & 7.2501 & 7.6103 & 7.2500 & 7.2500 & 7.2500 \\
+    & & & & & & & & & & & & & & & & & \\
+    $\lambda_{60}$ & \textbf{45.0000} & 45.0000 & 45.0000 & 45.0000 & 45.0000 & 27.9035 & 38.1693 & 41.6243 & 43.2204 & 45.9354 & 45.2619 & 45.0697 & 45.0189 & 144.0091 & 45.0000 & 45.0000 & 45.0000 \\
+    & & & & & & & & & & & & & & & & & \\
+    $\lambda_{80}$ & \textbf{58.0000} & 58.0000 & 58.0000 & 58.0000 & 58.0000 & 35.1088 & 46.9872 & 51.9967 & 54.8147 & 59.9226 & 58.5315 & 58.1474 & 58.0399 & --- & 60.1001 & 57.9981 & 58.0000 \\
+    & & & & & & & & & & & & & & & & & \\
+    $\lambda_{100}$ & \textbf{72.0000} & 85.0000 & 72.0000 & 72.0000 & 72.0000 & 47.0907 & 54.6960 & 62.4306 & 66.6353 & 75.5330 & 73.0341 & 72.2799 & 72.0777 & --- & 79.8587 & 72.0000 & 72.0000 \\
+    & & & & & & & & & & & & & & & & & \\
+    $\lambda_{200}$ & \textbf{137.0000} & --- & 137.0000 & 137.0000 & 137.0000 & --- & 82.2903 & 104.3124 & 119.6977 & 160.0711 & 143.4497 & 138.8005 & 137.5200 & --- & 216.6505 & 146.6333 & 137.0000 \\
+    \bottomrule
+  \end{tabular}}}
+  \caption{Analytical/numerical eigenvalues of Laplace operator on the rectangular domain \texttt{rectangle}. Numerical eigenvalues computed by each discretisation \texttt{DST}, \texttt{FD}, \texttt{FEM} and \texttt{Cheb} with varying degrees of freedom (DOF); compared with the analytic eigenvalues (exact).}
+  \label{tab:eigenvalues_head_rectangle_transposed_extended}
+\end{table}
