@@ -213,7 +213,10 @@ results/eigenvalues_dof_requirement/ DOF needed for the first n eigenvalues, per
                                with the largest relative error over the block),
                                <domain>_dof_requirement_n<n>_answer.csv (the answer
                                table) and <domain>_dof_requirement_n<n>.eps; the CSVs
-                               are reused on re-runs, delete them to recompute
+                               are reused on re-runs, delete them to recompute.
+                               Also richardson_extrapolation.tex, a standalone note
+                               (pdflatex) on extrapolating the DST sequence to a
+                               reference, validated against the published ground state
 results/grid_visualisation/    per-domain <domain>_grid.png showing the DST grid and
                                domain mask (from experiments/grid_visualisation/)
 results/eigenvalues_weyl/      per-domain <domain>_weyl.png checking lambda_n/n -> 4*pi/A
