@@ -10,12 +10,12 @@ function make_eigenvalues_convergence_index(index, name)
 %   single domain "name". Pass "" or [] to keep all domains.
 %
 %   Companion of MAKE_EIGENVALUES_CONVERGENCE, which follows the ground state:
-%   same domains, same resolution sweeps, same timing and caching. What differs
-%   is the reference. The ground state has one -- the MPS value of Betcke &
-%   Trefethen -- so its figure shows the error and reads a convergence rate off
-%   the slope. No reference is published deeper in the spectrum, so this figure
-%   plots the eigenvalue itself against the degrees of freedom, and convergence
-%   is what the eye reads off the curves flattening towards a common level.
+%   same domains, same resolution sweeps, same timing and caching. Any index may
+%   be asked for, the ground state included, and what changes with the index is
+%   the reference. The ground state has a published one, the MPS value of Betcke
+%   & Trefethen; deeper in the spectrum nobody has published anything, and the
+%   finest DST run of the sweep stands in. REFERENCE_FOR picks between them and
+%   the figures say which they used.
 %
 %   Deep in the spectrum a coarse discretisation has little left to work with:
 %   the hundredth eigenvalue of a run carrying a few hundred degrees of freedom
@@ -29,16 +29,17 @@ function make_eigenvalues_convergence_index(index, name)
 %     - <domain>_convergence_lambda<index>.csv   one row per (method,
 %       resolution) with the resolution parameter, the dof count, the eigenvalue
 %       and the timing,
-%     - <domain>_convergence_lambda<index>.png   the eigenvalue against DOF, one
-%       curve per method. No title: the domain is carried by the file name, as
-%       elsewhere in experiments_paper, and
-%     - <domain>_convergence_lambda<index>_error.png   the same runs as an error
-%       against DOF on log-log axes, in the manner of MAKE_EIGENVALUES_CONVERGENCE
-%       and with the same slope triangles, taking the finest DST run as the
-%       reference in place of the MPS value that exists only for the ground
-%       state (see PLOT_ERROR_RUNS for what that costs).
-%   The error figure stops the DST curve three runs short of the reference, for
-%   the reason given in CURVE. The value figure shows every run of every method.
+%     - <domain>_convergence_lambda<index>.eps   the eigenvalue against DOF on
+%       linear axes, one curve per method, with the published value drawn as a
+%       level where there is one. No title: the domain is carried by the file
+%       name, as elsewhere in experiments_paper, and
+%     - <domain>_convergence_lambda<index>_error.eps   the same runs as a
+%       relative error against DOF on log-log axes, in the manner of
+%       MAKE_EIGENVALUES_CONVERGENCE and with the same slope triangles.
+%   Vector EPS, not raster: see SAVE_FIGURE.
+%   Against a DST reference the error figure stops the DST curve three runs short
+%   of it and gives it no triangle, for the reasons in PLOT_ERROR_RUNS and CURVE.
+%   The value figure always shows every run of every method.
 %
 %   The CSV is a cache, read run by run: a run already in it is taken over as it
 %   stands, timing included, and only what is missing is computed. So a figure
@@ -93,12 +94,9 @@ function make_eigenvalues_convergence_index(index, name)
             fprintf('  Wrote %s (%d run(s) computed, %d reused)\n', ...
                     csv, computed, numel(runs) - computed);
         end
-        png = [stem '.png'];
-        plot_runs(png, runs, index);
-        fprintf('  Wrote %s\n', png);
-        png = [stem '_error.png'];
-        plot_error_runs(png, runs, index);
-        fprintf('  Wrote %s\n', png);
+        ref = reference_for(cfg, index, runs);
+        plot_runs(stem, runs, index, ref);
+        plot_error_runs([stem '_error'], runs, index, ref);
     end
 end
 
@@ -108,10 +106,17 @@ function cfgs = domain_configs()
 %
 %   The sweeps follow MAKE_EIGENVALUES_CONVERGENCE, so that the figures of a
 %   domain are read against the same DOF counts, with one resolution added at the
-%   fine end. There is no reference field here: none is published away from the
-%   ground state, and the finest DST run takes its place.
+%   fine end.
+%
+%   REF_VALUE is the published eigenvalue, and REF_INDEX the index it belongs to
+%   -- the ground state, the only one for which anybody has published a value.
+%   Asked for that index, the figures use it: the exact level is drawn, and the
+%   error measured against it is a true error, relative to the eigenvalue. Asked
+%   for any other, they fall back on the finest DST run of the sweep, with the
+%   caveats in PLOT_ERROR_RUNS.
     cfgs = struct('name', {}, 'pretty', {}, 'box', {}, 'phi', {}, ...
-                  'gd', {}, 'ns', {}, 'sf', {}, 'M_grid', {}, 'Hmax_fem', {});
+                  'gd', {}, 'ns', {}, 'sf', {}, 'M_grid', {}, 'Hmax_fem', {}, ...
+                  'ref_index', {}, 'ref_value', {}, 'ref_label', {});
 
     % --- L-shaped domain ----------------------------------------------------
     % Box [-1,1]^2, so h = 2/(M+1) and M+1 must be even for the re-entrant
@@ -140,7 +145,8 @@ function cfgs = domain_configs()
         'ns', char('R1', 'R2')', 'sf', 'R1-R2', ...
         'M_grid',   [13 17 31 41 49 55 63 69 75 81 93 105 115 141], ...
         'Hmax_fem', [0.33 0.25 0.135 0.10 0.085 0.0755 0.066 0.060 0.055 0.051 ...
-                     0.0446 0.0395 0.036 0.030]);
+                     0.0446 0.0395 0.036 0.030], ...
+        'ref_index', 1, 'ref_value', 9.6397238440219, 'ref_label', 'MPS');
 end
 
 
@@ -338,15 +344,53 @@ function runs = read_runs_csv(csv)
 end
 
 
-function plot_runs(png, runs, index)
+function ref = reference_for(cfg, index, runs)
+%REFERENCE_FOR The value the figures measure against, and what it is worth.
+%
+%   PUBLISHED, when the index asked for is the one the config carries a value
+%   for: the ground state, against the MPS value of Betcke & Trefethen. It is
+%   external to the sweep, so every run can be measured against it and the error
+%   is a true error.
+%
+%   Otherwise the finest DST run of the sweep. That is not a true reference, and
+%   what it gives is a difference between two computed numbers rather than a
+%   distance from the exact value, so the DST runs nearest it are held back from
+%   the error figure.
+%
+%   Either way the error is reported relative to the reference. The eigenvalues
+%   run from 9.6 at the ground state to 919 deep in the spectrum, and an absolute
+%   error carries that scale with it; dividing it out is what lets the figures of
+%   different indices be read against each other.
+    if ~isempty(cfg.ref_index) && index == cfg.ref_index
+        ref = struct('value', cfg.ref_value, 'label', cfg.ref_label, ...
+                     'published', true, 'relative', true, 'dst_trim', 0);
+        fprintf('  reference: %s, lambda_%d = %.13f\n', ref.label, index, ref.value);
+        return;
+    end
+    dst = strcmp({runs.method}, 'DST');
+    if ~any(dst)
+        error('eigenvalues_convergence:noReference', ...
+            'No published value for lambda_%d and no DST run to stand in.', index);
+    end
+    dst_runs = runs(dst);
+    [ref_dofs, imax] = max([dst_runs.dofs]);
+    ref = struct('value', dst_runs(imax).lambda, 'label', 'DST', ...
+                 'published', false, 'relative', true, 'dst_trim', 3);
+    fprintf('  reference: DST at %d dofs, lambda_%d = %.9f\n', ...
+            ref_dofs, index, ref.value);
+end
+
+
+function plot_runs(stem, runs, index, ref)
 %PLOT_RUNS The eigenvalue against DOF, one curve per method.
 %
-%   The computed eigenvalue itself on linear axes, not an error and not a
-%   log-log rate plot: without a reference value there is nothing to take the
-%   difference against, and the question the figure answers is whether the three
-%   methods settle on a common level and how soon. Colours and markers are those
-%   of MAKE_EIGENVALUES_CONVERGENCE, so that the figures of a domain read as one
-%   family.
+%   The computed eigenvalue itself on linear axes, not an error and not a log-log
+%   rate plot: the question the figure answers is whether the three methods
+%   settle on a common level and how soon. Where that level is known -- the
+%   ground state, see REFERENCE_FOR -- it is drawn as a horizontal line, and the
+%   curves are read against it rather than against each other. Colours and
+%   markers are those of MAKE_EIGENVALUES_CONVERGENCE, so that the figures of a
+%   domain read as one family.
     methods = {'DST', 'FD', 'FEM'};
     colors  = {[0 0.45 0.74], [0.85 0.33 0.10], [0.47 0.67 0.19]};
     markers = {'o', 's', '^'};
@@ -365,6 +409,13 @@ function plot_runs(png, runs, index)
             'MarkerSize', 7, 'MarkerFaceColor', 'w', ...
             'DisplayName', sprintf('\\texttt{%s}', methods{mi}));
     end
+    if ref.published
+        % Drawn last so that it lies over the curves, and dashed and black so
+        % that it reads as the level they are converging to and not as a fourth
+        % method.
+        yline(ax, ref.value, 'k--', 'LineWidth', 1.5, ...
+            'DisplayName', sprintf('\\texttt{%s}', ref.label));
+    end
 
     hold(ax, 'off');
     xlabel(ax, 'degrees of freedom');
@@ -374,40 +425,32 @@ function plot_runs(png, runs, index)
     grid(ax, 'on'); box(ax, 'on');
     set(ax, 'FontSize', 12);
 
-    try
-        exportgraphics(fig, png, 'Resolution', 600);
-    catch
-        print(fig, png, '-dpng', '-r600');
-    end
-    close(fig);
+    save_figure(fig, stem);
 end
 
 
-function plot_error_runs(png, runs, index)
+function plot_error_runs(stem, runs, index, ref)
 %PLOT_ERROR_RUNS Error against DOF on log-log axes, in the manner of the sibling.
 %
-%   The ground-state figure of MAKE_EIGENVALUES_CONVERGENCE takes its reference
-%   from outside the sweep -- the MPS value of Betcke & Trefethen -- so its error
-%   curves are honest over their whole length. Away from the ground state there
-%   is no such value, so the reference here is the finest DST run of the sweep
-%   itself: M = 141, 14840 degrees of freedom. The DST curve therefore stops
-%   short of it, three runs back -- see CURVE -- since a point measured against a
-%   neighbouring resolution says how fast DST is still moving rather than how far
-%   it is from the true eigenvalue. FD and FEM are drawn whole, their errors
-%   staying orders of magnitude above the DST tail.
+%   The relative error, always, so that the figures of different indices can be
+%   read against each other; REFERENCE_FOR says what it is relative to and how
+%   much that reference is worth.
+%
+%   Two cases, told apart there. With the published value -- the ground state,
+%   the MPS value of Betcke & Trefethen -- the reference lies outside the sweep,
+%   so every run can be measured against it over the whole length of its curve
+%   and each method carries a slope triangle.
+%
+%   Without one the finest DST run stands in. The DST curve then stops three runs
+%   short of it -- see CURVE -- a point measured against a neighbouring
+%   resolution saying how fast DST is still moving rather than how far it is from
+%   the true eigenvalue, and it carries no triangle: away from the ground state
+%   DST converges before the sweep starts, and a line fitted to a curve that
+%   drops once and then lies flat describes the drop, not the method. FD and FEM
+%   are drawn whole either way.
     methods = {'DST', 'FD', 'FEM'};
     colors  = {[0 0.45 0.74], [0.85 0.33 0.10], [0.47 0.67 0.19]};
     markers = {'o', 's', '^'};
-
-    dst = strcmp({runs.method}, 'DST');
-    if ~any(dst)
-        error('eigenvalues_convergence:noReference', ...
-            'No DST run to take the reference from.');
-    end
-    [ref_dofs, imax] = max([runs(dst).dofs]);
-    dst_runs = runs(dst);
-    ref = dst_runs(imax).lambda;
-    fprintf('  reference: DST at %d dofs, lambda_%d = %.9f\n', ref_dofs, index, ref);
 
     % Render all text with the LaTeX interpreter, as in the other paper figures.
     fig = figure('Visible', 'off', 'Position', [100 100 950 680], ...
@@ -417,24 +460,33 @@ function plot_error_runs(png, runs, index)
     ax = axes(fig);
     hold(ax, 'on');
 
-    % A slope triangle on FD and FEM, none on DST. The DST curve is not a power
-    % law and has no rate to report: it drops off its first point, where the
-    % index asked for is the whole dimension of the discrete spectrum, and is
-    % flat afterwards -- converged, with nothing left to converge. A
-    % least-squares line through that reads -2.4, which describes the cliff and
-    % not the method. The two triangles sit in the free space above their own
-    % curves, FD holding the top of the plot and FEM the middle.
-    triangle = [false, true, true];
-    spans    = {[], [0.38 0.61], [0.68 0.91]};
-    offsets  = [NaN, 2.2, 1.8];
-
-    % How many of the finest DST runs stay out of this figure; see CURVE.
-    DST_TRIM = 3;
+    % Each triangle sits above its own curve, staggered so that no two stack up.
+    % With the published reference all three curves are power laws and all three
+    % get one, in the placement MAKE_EIGENVALUES_CONVERGENCE settled on for this
+    % data: FD takes the coarse left end where its gap to DST is still wide, DST
+    % the middle, FEM the fine right end where it has pulled away from FD.
+    % Against a DST reference, DST gets none.
+    if ref.published
+        triangle = [true, true, true];
+        % FEM keeps a shorter span than the other two. It is the lowest curve and
+        % the steepest, so a triangle drawn over the usual quarter of the range
+        % grows taller than the gap to FD above it and its top edge cuts across
+        % that curve; the height goes with the span, so the span comes in.
+        spans    = {[0.32 0.55], [0.08 0.28], [0.74 0.90]};
+        offsets  = [1.13, 1.25, 1.10];
+    else
+        triangle = [false, true, true];
+        spans    = {[], [0.38 0.61], [0.68 0.91]};
+        offsets  = [NaN, 2.2, 1.8];
+    end
 
     lo = inf; hi = 0;
     for mi = 1:numel(methods)
-        [d, v] = curve(runs, methods{mi}, DST_TRIM);
-        err = abs(v - ref);
+        [d, v] = curve(runs, methods{mi}, ref.dst_trim);
+        err = abs(v - ref.value);
+        if ref.relative
+            err = err / abs(ref.value);
+        end
         keep = err > 0;          % belt and braces: no zero can reach a log axis
         d = d(keep); err = err(keep);
         loglog(ax, d, err, ['-' markers{mi}], 'Color', colors{mi}, 'LineWidth', 2.0, ...
@@ -454,17 +506,36 @@ function plot_error_runs(png, runs, index)
     set(ax, 'XScale', 'log', 'YScale', 'log');
     ylim(ax, [lo * 0.72, hi * 1.35]);
     xlabel(ax, 'degrees of freedom');
-    ylabel(ax, sprintf('$|\\lambda_{%d} - \\lambda_{%d}^{\\mathrm{DST}}|$', index, index));
+    if ref.relative
+        ylabel(ax, sprintf('$|\\lambda_{%d} - \\lambda_{%d}^{\\mathrm{%s}}| / \\lambda_{%d}^{\\mathrm{%s}}$', ...
+                           index, index, ref.label, index, ref.label));
+    else
+        ylabel(ax, sprintf('$|\\lambda_{%d} - \\lambda_{%d}^{\\mathrm{%s}}|$', ...
+                           index, index, ref.label));
+    end
     % No title: the domain is identified by the output file name.
     legend(ax, 'Location', 'southwest', 'FontSize', 10, 'Box', 'off');
     grid(ax, 'on'); box(ax, 'on');
     set(ax, 'FontSize', 12);
 
+    save_figure(fig, stem);
+end
+
+
+function save_figure(fig, stem)
+%SAVE_FIGURE One figure as vector EPS, then close it.
+%
+%   These plots are line art -- axes, curves, markers, a few labels -- so a
+%   vector figure is both smaller than a raster of the same page area and sharp
+%   at any size, and there is no resolution to choose. Read by latex/dvips
+%   directly, and by pdflatex through epstopdf.
+    eps_file = [stem '.eps'];
     try
-        exportgraphics(fig, png, 'Resolution', 600);
+        exportgraphics(fig, eps_file, 'ContentType', 'vector');
     catch
-        print(fig, png, '-dpng', '-r600');
+        print(fig, eps_file, '-depsc2', '-painters');
     end
+    fprintf('  Wrote %s\n', eps_file);
     close(fig);
 end
 
