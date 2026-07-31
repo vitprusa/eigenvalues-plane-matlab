@@ -1,0 +1,45 @@
+% Eigenvalue comparison for the right isosceles triangle domain \texttt{isosceles\_triangle}: DST, FD, FEM,
+% 4 DOF runs each, first 8 eigenvalues, self-computed with timing.
+% Transposed layout: one column per run, one row per eigenvalue.
+% Extended with the eigenvalues $\lambda_{60}$, $\lambda_{80}$, $\lambda_{100}$ and $\lambda_{200}$;
+% the tabular is scaled down if it exceeds the text width.
+%
+% Requires in the preamble:
+%   \usepackage{booktabs}
+%   \usepackage{amsmath}
+%   \usepackage{listings}
+%   \usepackage{graphicx}          % \resizebox
+
+\begin{table}[htbp]
+  \centering
+  {\scriptsize
+  \setlength{\tabcolsep}{3pt}
+  \resizebox{\ifdim\width>\textwidth\textwidth\else\width\fi}{!}{%
+  \begin{tabular}{lrrrrrrrrrrrrr}
+    \toprule
+    & \multicolumn{1}{c}{Analytic} & \multicolumn{4}{c}{\texttt{DST}} & \multicolumn{4}{c}{\texttt{FD}} & \multicolumn{4}{c}{\texttt{FEM}} \\
+    \cmidrule(lr){2-2} \cmidrule(lr){3-6} \cmidrule(lr){7-10} \cmidrule(lr){11-14}
+    DOF & --- & 105 & 300 & 595 & 1225 & 105 & 300 & 595 & 1225 & 511 & 1231 & 2664 & 6075 \\
+    Time (s) & --- & 0.00 & 0.02 & 0.09 & 0.31 & 0.00 & 0.00 & 0.01 & 0.06 & 0.04 & 0.12 & 1.33 & 21.79 \\
+    \midrule
+    $\lambda_{1}$ & \textbf{5.0000} & 4.9988 & 4.9997 & 4.9999 & 5.0000 & 4.9457 & 4.9794 & 4.9892 & 4.9946 & 5.0002 & 5.0000 & 5.0000 & 5.0000 \\
+    $\lambda_{2}$ & \textbf{10.0000} & 9.9912 & 9.9980 & 9.9993 & 9.9997 & 9.7395 & 9.9007 & 9.9481 & 9.9741 & 10.0013 & 10.0002 & 10.0001 & 10.0000 \\
+    $\lambda_{3}$ & \textbf{13.0000} & 12.9965 & 12.9992 & 12.9997 & 12.9999 & 12.6916 & 12.8825 & 12.9386 & 12.9694 & 13.0029 & 13.0005 & 13.0001 & 13.0000 \\
+    $\lambda_{4}$ & \textbf{17.0000} & 16.9678 & 16.9929 & 16.9974 & 16.9991 & 16.1911 & 16.6897 & 16.8376 & 16.9189 & 17.0066 & 17.0012 & 17.0003 & 17.0000 \\
+    $\lambda_{5}$ & \textbf{20.0000} & 19.9790 & 19.9954 & 19.9983 & 19.9994 & 19.1431 & 19.6715 & 19.8281 & 19.9142 & 20.0104 & 20.0019 & 20.0004 & 20.0001 \\
+    $\lambda_{6}$ & \textbf{25.0000} & 24.9927 & 24.9984 & 24.9994 & 24.9998 & 23.9370 & 24.5928 & 24.7869 & 24.8936 & 25.0195 & 25.0037 & 25.0008 & 25.0002 \\
+    $\lambda_{7}$ & \textbf{26.0000} & 25.9137 & 25.9815 & 25.9932 & 25.9976 & 24.0522 & 25.2476 & 25.6052 & 25.8027 & 26.0228 & 26.0041 & 26.0009 & 26.0002 \\
+    $\lambda_{8}$ & \textbf{29.0000} & 28.9327 & 28.9857 & 28.9948 & 28.9982 & 27.0043 & 28.2293 & 28.5957 & 28.7979 & 29.0308 & 29.0057 & 29.0012 & 29.0002 \\
+    & & & & & & & & & & & & & \\
+    $\lambda_{60}$ & \textbf{180.0000} & 175.1244 & 179.4653 & 179.8370 & 179.9481 & 111.4989 & 152.6772 & 166.4973 & 173.1534 & 185.7172 & 181.2155 & 180.2795 & 180.0572 \\
+    & & & & & & & & & & & & & \\
+    $\lambda_{80}$ & \textbf{233.0000} & 226.2823 & 231.5827 & 232.8354 & 232.9495 & 140.4351 & 187.9487 & 208.2332 & 219.7416 & 244.5152 & 235.5154 & 233.6102 & 233.1222 \\
+    & & & & & & & & & & & & & \\
+    $\lambda_{100}$ & \textbf{290.0000} & 335.3339 & 288.0380 & 289.9627 & 289.9891 & 183.5688 & 218.7839 & 249.7226 & 271.5283 & 306.3862 & 294.8046 & 291.1610 & 290.2359 \\
+    & & & & & & & & & & & & & \\
+    $\lambda_{200}$ & \textbf{557.0000} & --- & 545.7207 & 556.2113 & 556.8477 & --- & 327.9322 & 420.2181 & 487.4151 & 705.1534 & 585.0264 & 564.5921 & 558.5913 \\
+    \bottomrule
+  \end{tabular}}}
+  \caption{Analytical/numerical eigenvalues of Laplace operator on the right isosceles triangle domain \texttt{isosceles\_triangle}. Numerical eigenvalues computed by each discretisation \texttt{DST}, \texttt{FD} and \texttt{FEM} with varying degrees of freedom (DOF); compared with the analytic eigenvalues (exact).}
+  \label{tab:eigenvalues_head_isosceles_triangle_transposed_extended}
+\end{table}

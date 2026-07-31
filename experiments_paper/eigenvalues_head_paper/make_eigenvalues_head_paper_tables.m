@@ -25,8 +25,8 @@ function make_eigenvalues_head_paper_tables(name)
 %       eigenvalues appended, each on an empty row of its own (see
 %       WRITE_LATEX_TRANSPOSED).
 %   All are \scriptsize and print four decimals, so that the tables of a domain
-%   match; the extended one is too wide even so, and is scaled to the text width
-%   with \resizebox.
+%   match; an extended one wider than the text width is scaled down to it with
+%   \resizebox.
 %
 %   The ground truth is the analytic spectrum where a closed form is known
 %   (rectangle, isosceles triangle) or the MPS reference (all other domains);
@@ -92,9 +92,14 @@ function cfgs = domain_configs(project_root)
 %DOMAIN_CONFIGS Per-domain geometry, DOF schedules and ground-truth source.
 %
 %   EXTRA_INDICES holds the deeper eigenvalue indices of the extended transposed
-%   table, empty for the domains that do not get one.
+%   table, empty for a domain that is not to get one.
     mps = fullfile(project_root, 'results', 'eigenvalues', 'mps', ...
                    'L_shaped_eigenvalues_MPS.csv');
+
+    % The same four indices for every domain, so that the extended tables can be
+    % read side by side. Every run of every domain resolves at least 105
+    % eigenvalues, so only lambda_200 falls off the coarsest grids.
+    EXTRA = [60 80 100 200];
 
     cfgs = struct('name', {}, 'pretty', {}, 'box', {}, 'phi', {}, ...
                   'gd', {}, 'ns', {}, 'sf', {}, 'M_grid', {}, 'Hmax_fem', {}, ...
@@ -102,9 +107,6 @@ function cfgs = domain_configs(project_root)
                   'analytic_fun', {}, 'mps_path', {}, 'extra_indices', {});
 
     % --- rectangle [0, 2*pi] x [0, pi] --------------------------------------
-    % The only domain with an extended table so far: its ground truth is a
-    % closed form, so the deeper eigenvalues have an exact value to be read
-    % against, which the short MPS references of the other domains cannot give.
     cfgs(end+1) = struct( ...
         'name', 'rectangle', 'pretty', 'rectangular', ...
         'box', [0 2*pi 0 pi], ...
@@ -114,7 +116,7 @@ function cfgs = domain_configs(project_root)
         'has_cheb', true, 'N_cheb', [10 20 30 40], ...
         'truth_kind', 'analytic', ...
         'analytic_fun', @() analytic_rectangle(), 'mps_path', '', ...
-        'extra_indices', [60 80 100 200]);
+        'extra_indices', EXTRA);
 
     % --- right isosceles triangle, legs pi ----------------------------------
     cfgs(end+1) = struct( ...
@@ -126,7 +128,7 @@ function cfgs = domain_configs(project_root)
         'has_cheb', false, 'N_cheb', [], ...
         'truth_kind', 'analytic', ...
         'analytic_fun', @() analytic_isosceles(), 'mps_path', '', ...
-        'extra_indices', []);
+        'extra_indices', EXTRA);
 
     % --- L-shaped domain ----------------------------------------------------
     cfgs(end+1) = struct( ...
@@ -138,7 +140,7 @@ function cfgs = domain_configs(project_root)
         'M_grid', [15 25 35 49], 'Hmax_fem', [0.20 0.13 0.09 0.06], ...
         'has_cheb', false, 'N_cheb', [], ...
         'truth_kind', 'mps', 'analytic_fun', [], 'mps_path', mps, ...
-        'extra_indices', []);
+        'extra_indices', EXTRA);
 
     % --- Non-analytic domains: ellipse-minus-quadrant, H, GWW1, GWW2 ---------
     % No closed-form spectrum and no Cheb (non-rectangular), so the table
@@ -172,7 +174,7 @@ function cfgs = domain_configs(project_root)
             'has_cheb', false, 'N_cheb', [], ...
             'truth_kind', 'mps', 'analytic_fun', [], ...
             'mps_path', fullfile(project_root, 'data', extra{i, 6}), ...
-            'extra_indices', []); %#ok<AGROW>
+            'extra_indices', EXTRA); %#ok<AGROW>
     end
 end
 
@@ -592,7 +594,7 @@ function write_latex_transposed(tex, cfg, rows, NEIG, extras)
         t.lev_note, NEIG);
     if ~isempty(extras)
         fprintf(fid, ['%% Extended with the eigenvalues %s;\n', ...
-            '%% too wide for the text width, so the tabular is scaled to it.\n'], ...
+            '%% the tabular is scaled down if it exceeds the text width.\n'], ...
             index_list(extras));
     end
     fprintf(fid, '%%\n%% Requires in the preamble:\n');
@@ -610,22 +612,28 @@ function write_latex_transposed(tex, cfg, rows, NEIG, extras)
     % inside the text width, so every table takes it and they stay uniform. A
     % narrower page (a plain article \textwidth of 345pt, say) fits none of them.
     %
-    % The extended table is the one that overruns, its deeper eigenvalues running
-    % into three figures before the decimal point: a column being as wide as its
-    % widest cell, those rows alone set every column width. Four decimals
+    % The extended tables are the ones that overrun, their deeper eigenvalues
+    % running into three figures before the decimal point: a column being as wide
+    % as its widest cell, those rows alone set every column width. Four decimals
     % throughout is deliberate -- the table is not to print a different number of
     % digits for the deeper eigenvalues -- and at four decimals no setting of
-    % size and separation fits: 105pt over at \scriptsize/3pt, 63pt at \tiny/3pt,
-    % 33pt at \scriptsize/1pt. It therefore keeps the family's \scriptsize and
-    % 3pt, like every other table here, and buys the fit by scaling the whole
-    % tabular to \textwidth with \resizebox (about 84 per cent).
+    % size and separation fits the widest of them, the rectangle: 105pt over at
+    % \scriptsize/3pt, 63pt at \tiny/3pt, 33pt at \scriptsize/1pt. They therefore
+    % keep the family's \scriptsize and 3pt, like every other table here, and buy
+    % the fit by scaling the tabular with \resizebox.
+    %
+    % Scaled DOWN only: \width is the natural width of the tabular, so a table
+    % that already fits is passed through at its own size rather than blown up to
+    % fill the text width. The domains without Cheb are five columns narrower
+    % than the rectangle and several of them need no scaling at all.
     fprintf(fid, '\\begin{table}[htbp]\n  \\centering\n');
     % The size and \tabcolsep changes scope to the tabular (grouped) so that the
     % caption keeps the normal body size.
     fprintf(fid, '  {\\scriptsize\n  \\setlength{\\tabcolsep}{3pt}\n');
     if ~isempty(extras)
         % Trailing %% so that the line break adds no space before the tabular.
-        fprintf(fid, '  \\resizebox{\\textwidth}{!}{%%\n');
+        fprintf(fid, ['  \\resizebox{\\ifdim\\width>\\textwidth\\textwidth', ...
+                      '\\else\\width\\fi}{!}{%%\n']);
     end
     fprintf(fid, '  \\begin{tabular}{%s}\n    \\toprule\n', colspec);
 

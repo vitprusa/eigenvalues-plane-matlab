@@ -1,0 +1,45 @@
+% Eigenvalue comparison for the GWW1 isospectral drum domain \texttt{gww1}: DST, FD, FEM,
+% 4 DOF runs each (FEM: 3), first 8 eigenvalues, self-computed with timing.
+% Transposed layout: one column per run, one row per eigenvalue.
+% Extended with the eigenvalues $\lambda_{60}$, $\lambda_{80}$, $\lambda_{100}$ and $\lambda_{200}$;
+% the tabular is scaled down if it exceeds the text width.
+%
+% Requires in the preamble:
+%   \usepackage{booktabs}
+%   \usepackage{amsmath}
+%   \usepackage{listings}
+%   \usepackage{graphicx}          % \resizebox
+
+\begin{table}[htbp]
+  \centering
+  {\scriptsize
+  \setlength{\tabcolsep}{3pt}
+  \resizebox{\ifdim\width>\textwidth\textwidth\else\width\fi}{!}{%
+  \begin{tabular}{lrrrrrrrrrrrr}
+    \toprule
+    & \multicolumn{1}{c}{\texttt{MPS}} & \multicolumn{4}{c}{\texttt{DST}} & \multicolumn{4}{c}{\texttt{FD}} & \multicolumn{3}{c}{\texttt{FEM}} \\
+    \cmidrule(lr){2-2} \cmidrule(lr){3-6} \cmidrule(lr){7-10} \cmidrule(lr){11-13}
+    DOF & --- & 189 & 451 & 825 & 3016 & 189 & 451 & 825 & 3016 & 657 & 1515 & 3610 \\
+    Time (s) & --- & 0.02 & 0.07 & 0.19 & 6.91 & 0.00 & 0.01 & 0.03 & 0.60 & 0.06 & 0.21 & 4.28 \\
+    \midrule
+    $\lambda_{1}$ & \textbf{2.5379} & 2.5750 & 2.5599 & 2.5531 & 2.5446 & 2.5434 & 2.5451 & 2.5443 & 2.5417 & 2.5438 & 2.5413 & 2.5399 \\
+    $\lambda_{2}$ & \textbf{3.6555} & 3.6873 & 3.6756 & 3.6697 & 3.6619 & 3.6380 & 3.6526 & 3.6563 & 3.6577 & 3.6614 & 3.6590 & 3.6575 \\
+    $\lambda_{3}$ & \textbf{5.1756} & 5.2450 & 5.2177 & 5.2047 & 5.1884 & 5.1378 & 5.1679 & 5.1758 & 5.1795 & 5.1872 & 5.1823 & 5.1794 \\
+    $\lambda_{4}$ & --- & 6.5345 & 6.5405 & 6.5409 & 6.5397 & 6.3738 & 6.4671 & 6.4990 & 6.5275 & 6.5429 & 6.5395 & 6.5385 \\
+    $\lambda_{5}$ & --- & 7.3106 & 7.2869 & 7.2752 & 7.2602 & 7.1188 & 7.1991 & 7.2249 & 7.2451 & 7.2609 & 7.2547 & 7.2518 \\
+    $\lambda_{6}$ & --- & 9.2254 & 9.2231 & 9.2200 & 9.2145 & 8.9141 & 9.0816 & 9.1394 & 9.1911 & 9.2198 & 9.2133 & 9.2112 \\
+    $\lambda_{7}$ & --- & 10.6205 & 10.6157 & 10.6112 & 10.6039 & 10.1195 & 10.3895 & 10.4829 & 10.5668 & 10.6113 & 10.6023 & 10.5995 \\
+    $\lambda_{8}$ & --- & 11.5167 & 11.5368 & 11.5410 & 11.5425 & 11.0024 & 11.3021 & 11.4074 & 11.5039 & 11.5549 & 11.5448 & 11.5425 \\
+    & & & & & & & & & & & & \\
+    $\lambda_{60}$ & --- & 63.2470 & 63.9171 & 64.0618 & 64.1398 & 49.8582 & 57.6268 & 59.9879 & 62.7537 & 65.6062 & 64.4676 & 64.2108 \\
+    & & & & & & & & & & & & \\
+    $\lambda_{80}$ & --- & 82.6513 & 83.7838 & 83.8520 & 83.8861 & 58.9730 & 73.2473 & 78.4589 & 82.3131 & 87.2498 & 84.5618 & 84.0197 \\
+    & & & & & & & & & & & & \\
+    $\lambda_{100}$ & --- & 100.9193 & 103.0091 & 103.3051 & 103.4135 & 64.0000 & 86.9237 & 93.6688 & 100.8274 & 108.6801 & 104.6820 & 103.6531 \\
+    & & & & & & & & & & & & \\
+    $\lambda_{200}$ & --- & --- & 195.3385 & 199.6910 & 200.4144 & --- & 136.0662 & 162.6540 & 187.9618 & 236.6670 & 207.5425 & 202.0267 \\
+    \bottomrule
+  \end{tabular}}}
+  \caption{Analytical/numerical eigenvalues of Laplace operator on the GWW1 isospectral drum domain \texttt{gww1}. Numerical eigenvalues computed by each discretisation \texttt{DST}, \texttt{FD} and \texttt{FEM} with varying degrees of freedom (DOF); compared with the reference eigenvalues from the method of particular solutions (\texttt{MPS}).}
+  \label{tab:eigenvalues_head_gww1_transposed_extended}
+\end{table}

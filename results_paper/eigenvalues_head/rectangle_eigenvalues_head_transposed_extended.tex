@@ -2,7 +2,7 @@
 % 4 DOF runs each, first 8 eigenvalues, self-computed with timing.
 % Transposed layout: one column per run, one row per eigenvalue.
 % Extended with the eigenvalues $\lambda_{60}$, $\lambda_{80}$, $\lambda_{100}$ and $\lambda_{200}$;
-% too wide for the text width, so the tabular is scaled to it.
+% the tabular is scaled down if it exceeds the text width.
 %
 % Requires in the preamble:
 %   \usepackage{booktabs}
@@ -14,7 +14,7 @@
   \centering
   {\scriptsize
   \setlength{\tabcolsep}{3pt}
-  \resizebox{\textwidth}{!}{%
+  \resizebox{\ifdim\width>\textwidth\textwidth\else\width\fi}{!}{%
   \begin{tabular}{lrrrrrrrrrrrrrrrrr}
     \toprule
     & \multicolumn{1}{c}{Analytic} & \multicolumn{4}{c}{\texttt{DST}} & \multicolumn{4}{c}{\texttt{FD}} & \multicolumn{4}{c}{\texttt{FEM}} & \multicolumn{4}{c}{\texttt{Cheb}} \\

@@ -1,0 +1,45 @@
+% Eigenvalue comparison for the L-shaped domain \texttt{L\_shaped}: DST, FD, FEM,
+% 4 DOF runs each, first 8 eigenvalues, self-computed with timing.
+% Transposed layout: one column per run, one row per eigenvalue.
+% Extended with the eigenvalues $\lambda_{60}$, $\lambda_{80}$, $\lambda_{100}$ and $\lambda_{200}$;
+% the tabular is scaled down if it exceeds the text width.
+%
+% Requires in the preamble:
+%   \usepackage{booktabs}
+%   \usepackage{amsmath}
+%   \usepackage{listings}
+%   \usepackage{graphicx}          % \resizebox
+
+\begin{table}[htbp]
+  \centering
+  {\scriptsize
+  \setlength{\tabcolsep}{3pt}
+  \resizebox{\ifdim\width>\textwidth\textwidth\else\width\fi}{!}{%
+  \begin{tabular}{lrrrrrrrrrrrrr}
+    \toprule
+    & \multicolumn{1}{c}{\texttt{MPS}} & \multicolumn{4}{c}{\texttt{DST}} & \multicolumn{4}{c}{\texttt{FD}} & \multicolumn{4}{c}{\texttt{FEM}} \\
+    \cmidrule(lr){2-2} \cmidrule(lr){3-6} \cmidrule(lr){7-10} \cmidrule(lr){11-14}
+    DOF & --- & 161 & 456 & 901 & 1776 & 161 & 456 & 901 & 1776 & 317 & 751 & 1565 & 3663 \\
+    Time (s) & --- & 0.01 & 0.04 & 0.17 & 1.00 & 0.00 & 0.01 & 0.03 & 0.68 & 0.04 & 0.06 & 0.25 & 4.54 \\
+    \midrule
+    $\lambda_{1}$ & \textbf{9.6397} & 9.8024 & 9.7247 & 9.6948 & 9.6753 & 9.6932 & 9.6801 & 9.6700 & 9.6613 & 9.6756 & 9.6597 & 9.6522 & 9.6467 \\
+    $\lambda_{2}$ & \textbf{15.1973} & 15.1829 & 15.1933 & 15.1956 & 15.1966 & 14.9932 & 15.1206 & 15.1575 & 15.1767 & 15.2036 & 15.1987 & 15.1977 & 15.1974 \\
+    $\lambda_{3}$ & \textbf{19.7392} & 19.7392 & 19.7392 & 19.7392 & 19.7392 & 19.4868 & 19.6433 & 19.6892 & 19.7132 & 19.7486 & 19.7410 & 19.7396 & 19.7393 \\
+    $\lambda_{4}$ & \textbf{29.5215} & 29.5145 & 29.5197 & 29.5208 & 29.5212 & 28.8069 & 29.2496 & 29.3795 & 29.4478 & 29.5531 & 29.5278 & 29.5230 & 29.5218 \\
+    $\lambda_{5}$ & \textbf{31.9126} & 32.2973 & 32.1164 & 32.0454 & 31.9987 & 31.3733 & 31.7566 & 31.8535 & 31.8965 & 32.0335 & 31.9679 & 31.9446 & 31.9301 \\
+    $\lambda_{6}$ & \textbf{41.4745} & 41.7737 & 41.6307 & 41.5756 & 41.5397 & 39.9365 & 40.9271 & 41.2059 & 41.3463 & 41.6164 & 41.5258 & 41.5012 & 41.4881 \\
+    $\lambda_{7}$ & \textbf{44.9485} & 44.8758 & 44.9285 & 44.9401 & 44.9450 & 42.7801 & 44.1220 & 44.5171 & 44.7250 & 45.0621 & 44.9718 & 44.9550 & 44.9499 \\
+    $\lambda_{8}$ & \textbf{49.3480} & 49.3480 & 49.3480 & 49.3480 & 49.3480 & 47.2338 & 48.5375 & 48.9238 & 49.1277 & 49.4833 & 49.3746 & 49.3546 & 49.3492 \\
+    & & & & & & & & & & & & & \\
+    $\lambda_{60}$ & --- & 290.5729 & 289.7546 & 289.4924 & 289.3285 & 221.8195 & 264.5901 & 276.2019 & 282.3540 & 305.8253 & 293.8442 & 290.3472 & 289.3333 \\
+    & & & & & & & & & & & & & \\
+    $\lambda_{80}$ & --- & 380.1742 & 382.1728 & 382.6026 & 382.7794 & 256.0000 & 335.9745 & 355.5353 & 367.9736 & 429.3385 & 393.2054 & 385.7573 & 383.4591 \\
+    & & & & & & & & & & & & & \\
+    $\lambda_{100}$ & --- & 478.8032 & 479.4134 & 479.5849 & 479.6419 & 288.8582 & 392.5734 & 436.1533 & 457.2066 & 571.0542 & 500.6343 & 484.9403 & 480.7367 \\
+    & & & & & & & & & & & & & \\
+    $\lambda_{200}$ & --- & --- & 919.1048 & 919.1154 & 919.0912 & --- & 633.8658 & 766.9496 & 835.6869 & 1353.1810 & 1024.9906 & 951.5820 & 925.9007 \\
+    \bottomrule
+  \end{tabular}}}
+  \caption{Analytical/numerical eigenvalues of Laplace operator on the L-shaped domain \texttt{L\_shaped}. Numerical eigenvalues computed by each discretisation \texttt{DST}, \texttt{FD} and \texttt{FEM} with varying degrees of freedom (DOF); compared with the reference eigenvalues from the method of particular solutions (\texttt{MPS}).}
+  \label{tab:eigenvalues_head_L_shaped_transposed_extended}
+\end{table}
