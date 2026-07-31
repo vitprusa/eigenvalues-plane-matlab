@@ -1,0 +1,20 @@
+% Eigenvalue DOF-sweep spectra, colour variant (method by colour, DOF level by line style): index n against the eigenvalue
+% lambda_n, several DOF levels per method, against the analytic ground truth. Right isosceles triangle domain.
+%
+% Requires in the preamble:
+%   \usepackage{graphicx}
+%   \usepackage{epstopdf}   % the figure is EPS; needed under pdflatex,
+%                           % which then wants -shell-escape. Not needed for
+%                           % latex/dvips, which reads EPS directly.
+%
+% The figure lives next to this file, in results_paper/eigenvalues_dof_sweep/.
+% If you \input this snippet from elsewhere, point graphicx at that folder, e.g.
+%   \graphicspath{{results_paper/eigenvalues_dof_sweep/}}
+% and drop the leading path from the \includegraphics argument below.
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=0.8\textwidth]{isosceles_triangle_dof_sweep_colour}
+  \caption{Eigenvalues of Laplace operator, zero Dirichlet boundary conditions, right isosceles triangle domain \texttt{isosceles\_triangle}. Comparison of analytical (exact) eigenvalues of the continuous eigenvalue problem and eigenvalues computed using various discretisations of Laplace operator; \texttt{FEM} -- finite element method, \texttt{FD} -- finite differences method, \texttt{DST} -- discrete sine transform method.}
+  \label{fig:dof_sweep_colour_isosceles_triangle}
+\end{figure}
