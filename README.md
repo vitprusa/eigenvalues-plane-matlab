@@ -169,6 +169,9 @@ experiments/eigenvalues_head/  make_eigenvalues_head_comparison_tables.py (per-d
                                comparison tables)
 experiments/eigenvalues_dof_sweep/ DOF-sweep drivers and plots (compute_*_dof_sweep.m,
                                plot_*_dof_sweep.m, load_dof_sweep, run_*_dof_sweep.sh)
+experiments/eigenvalues_dof_requirement/ how many DOF the first n eigenvalues cost
+                               (compute_eigenvalues_dof_requirement.m,
+                               run_eigenvalues_dof_requirement.sh)
 experiments/grid_visualisation/ DST grid + domain-mask figures (plot_grid_visualisation.m,
                                run_grid_visualisation.sh)
 experiments/eigenvalues_weyl/  Weyl-asymptotics visual check (plot_weyl_asymptotics.m,
@@ -203,6 +206,14 @@ results/eigenvalues_dof_sweep/ L-shaped, rectangle, and isosceles-triangle
                                experiments/eigenvalues_dof_sweep/compute_*_dof_sweep.m
                                generates the data (only the missing CSVs),
                                plot_*_dof_sweep.m draws the figure
+results/eigenvalues_dof_requirement/ DOF needed for the first n eigenvalues, per method:
+                               <domain>_dof_requirement_n<n>_reference-eigenvalues.csv
+                               (the DST reference spectrum),
+                               <domain>_dof_requirement_n<n>.csv (one row per run,
+                               with the largest relative error over the block),
+                               <domain>_dof_requirement_n<n>_answer.csv (the answer
+                               table) and <domain>_dof_requirement_n<n>.eps; the CSVs
+                               are reused on re-runs, delete them to recompute
 results/grid_visualisation/    per-domain <domain>_grid.png showing the DST grid and
                                domain mask (from experiments/grid_visualisation/)
 results/eigenvalues_weyl/      per-domain <domain>_weyl.png checking lambda_n/n -> 4*pi/A
