@@ -507,8 +507,12 @@ function plot_error_runs(stem, runs, index, ref)
     ylim(ax, [lo * 0.72, hi * 1.35]);
     xlabel(ax, 'degrees of freedom');
     if ref.relative
-        ylabel(ax, sprintf('$|\\lambda_{%d} - \\lambda_{%d}^{\\mathrm{%s}}| / \\lambda_{%d}^{\\mathrm{%s}}$', ...
-                           index, index, ref.label, index, ref.label));
+        % A built fraction rather than a solidus, as in the sub-captions of the
+        % snippets. It is set a size larger than the other axis text, the
+        % numerator and denominator of a fraction being rendered small.
+        ylabel(ax, sprintf(['$\\frac{|\\lambda_{%d} - \\lambda_{%d}^{\\mathrm{%s}}|}', ...
+                            '{\\lambda_{%d}^{\\mathrm{%s}}}$'], ...
+                           index, index, ref.label, index, ref.label), 'FontSize', 16);
     else
         ylabel(ax, sprintf('$|\\lambda_{%d} - \\lambda_{%d}^{\\mathrm{%s}}|$', ...
                            index, index, ref.label));
