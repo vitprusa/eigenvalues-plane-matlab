@@ -9,7 +9,7 @@ function plot_weyl_asymptotics(name)
 %       lambda_n / n  -->  4*pi / Area      as n grows,
 %
 %   the two-dimensional Weyl law N(lambda) ~ (Area/(4*pi)) lambda written per
-%   eigenvalue. One PNG per domain is written into results/eigenvalues_weyl/,
+%   eigenvalue. One EPS per domain is written into results/eigenvalues_weyl/,
 %   together with a summary table weyl_areas.md.
 %
 %   plot_weyl_asymptotics(name) restricts the run to the single domain "name"
@@ -91,14 +91,14 @@ function row = plot_one(c, out_dir)
         pretty, M, dofs, area));
     legend(ax, 'Location', 'northwest', 'FontSize', 9, 'Box', 'off');
 
-    png = fullfile(out_dir, sprintf('%s_weyl.png', c.name));
+    eps_file = fullfile(out_dir, sprintf('%s_weyl.eps', c.name));
     try
-        exportgraphics(fig, png, 'Resolution', 150);
+        exportgraphics(fig, eps_file, 'ContentType', 'vector');
     catch
-        print(fig, png, '-dpng', '-r150');
+        print(fig, eps_file, '-depsc2', '-painters');
     end
     close(fig);
-    fprintf('Wrote %s  (area = %.6f, 4*pi/A = %.6f)\n', png, area, C);
+    fprintf('Wrote %s  (area = %.6f, 4*pi/A = %.6f)\n', eps_file, area, C);
 
     row = struct('name', c.name, 'area', area, 'dofs', dofs, 'C', C);
 end

@@ -7,7 +7,7 @@ function plot_L_shaped_dof_sweep_paper()
 %   square, triangle, diamond for the successive DOFs), with a few markers
 %   placed along each curve. Reads the existing CSVs from
 %   results/eigenvalues_dof_sweep/ (produced by COMPUTE_L_SHAPED_DOF_SWEEP) and
-%   writes L_shaped_dof_sweep.png into results_paper/eigenvalues_dof_sweep/. The
+%   writes L_shaped_dof_sweep.eps into results_paper/eigenvalues_dof_sweep/. The
 %   domain name is carried by the file name in place of the removed title.
 
     paper_dir       = fileparts(mfilename('fullpath'));
@@ -51,13 +51,13 @@ function plot_L_shaped_dof_sweep_paper()
     title(inset, 'indices $k \leq 1000$', 'FontSize', 8);
     set(inset, 'FontSize', 7);
 
-    png = fullfile(out_dir, 'L_shaped_dof_sweep.png');
+    eps_file = fullfile(out_dir, 'L_shaped_dof_sweep.eps');
     try
-        exportgraphics(fig, png, 'Resolution', 600);
+        exportgraphics(fig, eps_file, 'ContentType', 'vector');
     catch
-        print(fig, png, '-dpng', '-r600');
+        print(fig, eps_file, '-depsc2', '-painters');
     end
-    fprintf('Wrote plot %s\n', png);
+    fprintf('Wrote plot %s\n', eps_file);
 end
 
 

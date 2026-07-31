@@ -8,7 +8,7 @@ function plot_isosceles_triangle_dof_sweep_paper_colour()
 %   black-and-white variant. The analytic ground truth is a thick solid black
 %   line. Reads the existing CSVs from results/eigenvalues_dof_sweep/ (produced
 %   by COMPUTE_ISOSCELES_TRIANGLE_DOF_SWEEP) and writes
-%   isosceles_triangle_dof_sweep_colour.png into
+%   isosceles_triangle_dof_sweep_colour.eps into
 %   results_paper/eigenvalues_dof_sweep/. The domain name is carried by the file
 %   name in place of the removed title.
 
@@ -68,13 +68,13 @@ function plot_isosceles_triangle_dof_sweep_paper_colour()
     title(inset, 'indices $k \leq 600$', 'FontSize', 8);
     set(inset, 'FontSize', 7);
 
-    png = fullfile(out_dir, 'isosceles_triangle_dof_sweep_colour.png');
+    eps_file = fullfile(out_dir, 'isosceles_triangle_dof_sweep_colour.eps');
     try
-        exportgraphics(fig, png, 'Resolution', 600);
+        exportgraphics(fig, eps_file, 'ContentType', 'vector');
     catch
-        print(fig, png, '-dpng', '-r600');
+        print(fig, eps_file, '-depsc2', '-painters');
     end
-    fprintf('Wrote plot %s\n', png);
+    fprintf('Wrote plot %s\n', eps_file);
 end
 
 

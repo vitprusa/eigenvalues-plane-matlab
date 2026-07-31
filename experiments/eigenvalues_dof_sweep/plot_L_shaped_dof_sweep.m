@@ -2,7 +2,7 @@ function plot_L_shaped_dof_sweep()
 %PLOT_L_SHAPED_DOF_SWEEP Plot the L-shaped DOF-sweep spectra from the CSVs.
 %
 %   Reads results/eigenvalues_dof_sweep/L_shaped_<method>_*-eigenvalues.csv
-%   (produced by COMPUTE_L_SHAPED_DOF_SWEEP) and saves L_shaped_dof_sweep.png:
+%   (produced by COMPUTE_L_SHAPED_DOF_SWEEP) and saves L_shaped_dof_sweep.eps:
 %   eigenvalue index vs eigenvalue with all curves (full spectra), plus an
 %   upper-left inset zooming to indices n <= 1000.
 
@@ -41,13 +41,13 @@ function plot_L_shaped_dof_sweep()
     title(inset, 'indices $k \leq 1000$', 'FontSize', 8);
     set(inset, 'FontSize', 7);
 
-    png = fullfile(out_dir, 'L_shaped_dof_sweep.png');
+    eps_file = fullfile(out_dir, 'L_shaped_dof_sweep.eps');
     try
-        exportgraphics(fig, png, 'Resolution', 150);
+        exportgraphics(fig, eps_file, 'ContentType', 'vector');
     catch
-        print(fig, png, '-dpng', '-r150');
+        print(fig, eps_file, '-depsc2', '-painters');
     end
-    fprintf('Wrote plot %s\n', png);
+    fprintf('Wrote plot %s\n', eps_file);
 end
 
 

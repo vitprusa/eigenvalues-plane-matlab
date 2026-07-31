@@ -14,3 +14,4 @@ auto/
 *.fdb_latexmk
 *.bbl
 *.blg
+*-eps-converted-to.pdf

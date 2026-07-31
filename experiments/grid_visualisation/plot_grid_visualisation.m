@@ -3,7 +3,7 @@ function plot_grid_visualisation(name)
 %
 %   plot_grid_visualisation() draws one figure per domain in DOMAIN_CATALOG_DST,
 %   using the SAME bounding box, grid spacing, and mask as the DST "full"
-%   spectrum (resolution M_full), and writes a PNG into
+%   spectrum (resolution M_full), and writes a EPS into
 %   results/grid_visualisation/.
 %
 %   plot_grid_visualisation(name) restricts the run to the single domain "name"
@@ -107,12 +107,12 @@ function plot_one(c, out_dir)
     legend(ax, [hdom hbnd hgrid hmask], 'Location', 'northeastoutside', ...
         'FontSize', 9, 'Box', 'off');
 
-    png = fullfile(out_dir, sprintf('%s_grid.png', c.name));
+    eps_file = fullfile(out_dir, sprintf('%s_grid.eps', c.name));
     try
-        exportgraphics(fig, png, 'Resolution', 600);
+        exportgraphics(fig, eps_file, 'ContentType', 'vector');
     catch
-        print(fig, png, '-dpng', '-r600');
+        print(fig, eps_file, '-depsc2', '-painters');
     end
     close(fig);
-    fprintf('Wrote %s\n', png);
+    fprintf('Wrote %s\n', eps_file);
 end

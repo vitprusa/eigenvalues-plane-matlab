@@ -3,7 +3,7 @@ function plot_rectangle_dof_sweep()
 %
 %   Reads results/eigenvalues_dof_sweep/rectangle_<method>_*-eigenvalues.csv and
 %   rectangle_analytic-eigenvalues.csv (produced by COMPUTE_RECTANGLE_DOF_SWEEP)
-%   and saves rectangle_dof_sweep.png: eigenvalue index vs eigenvalue with all
+%   and saves rectangle_dof_sweep.eps: eigenvalue index vs eigenvalue with all
 %   method curves and the analytic ground truth. Both panels are clipped to the
 %   physical band (the spurious high modes run off the top), and a lower-right
 %   inset zooms to indices n <= 600.
@@ -59,13 +59,13 @@ function plot_rectangle_dof_sweep()
     title(inset, 'indices $k \leq 600$', 'FontSize', 8);
     set(inset, 'FontSize', 7);
 
-    png = fullfile(out_dir, 'rectangle_dof_sweep.png');
+    eps_file = fullfile(out_dir, 'rectangle_dof_sweep.eps');
     try
-        exportgraphics(fig, png, 'Resolution', 150);
+        exportgraphics(fig, eps_file, 'ContentType', 'vector');
     catch
-        print(fig, png, '-dpng', '-r150');
+        print(fig, eps_file, '-depsc2', '-painters');
     end
-    fprintf('Wrote plot %s\n', png);
+    fprintf('Wrote plot %s\n', eps_file);
 end
 
 

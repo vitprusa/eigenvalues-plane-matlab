@@ -4,6 +4,9 @@
 %   \usepackage{amsmath}
 %   \usepackage{graphicx}
 %   \usepackage{subfig}
+%   \usepackage{epstopdf}   % the figures are EPS; needed under pdflatex,
+%                           % which then wants -shell-escape. Not needed for
+%                           % latex/dvips, which reads EPS directly.
 %
 % The figures live next to this file, in results_paper/grid_visualisation/.
 % If you \input this snippet from elsewhere, point graphicx at that folder, e.g.
