@@ -88,11 +88,11 @@ function make_eigenvalues_convergence_index(index, name)
         else
             cached = empty_runs();
         end
-        [runs, computed] = compute_runs(cfg, index, cached);
+        [runs, computed, reused] = compute_runs(cfg, index, cached);
         if computed > 0
             write_runs_csv(csv, cfg, runs, index);
             fprintf('  Wrote %s (%d run(s) computed, %d reused)\n', ...
-                    csv, computed, numel(runs) - computed);
+                    csv, computed, reused);
         end
         ref = reference_for(cfg, index, runs);
         plot_runs(stem, runs, index, ref);
@@ -150,7 +150,7 @@ function cfgs = domain_configs()
 end
 
 
-function [runs, computed] = compute_runs(cfg, index, cached)
+function [runs, computed, reused] = compute_runs(cfg, index, cached)
 %COMPUTE_RUNS One timed eigenvalue per method and resolution, cached run by run.
 %
 %   CACHED holds whatever the CSV already had. A planned run found there is
@@ -160,8 +160,10 @@ function [runs, computed] = compute_runs(cfg, index, cached)
 %   the whole half hour back on the bill. Runs are returned in the order of the
 %   plan, so that the rewritten CSV keeps the shape of the old one.
 %
-%   COMPUTED counts what was actually recomputed, and is zero when the CSV
-%   already covered the whole sweep -- the caller then leaves the file alone.
+%   COMPUTED counts the computations performed and REUSED the runs taken from the
+%   cache. They need not add up to the table: a run too coarse to reach the index
+%   is computed and then dropped. COMPUTED is zero when the CSV already covered
+%   the whole sweep, and the caller then leaves the file alone.
 %
 %   A run too coarse to reach the index never enters the CSV, so it is attempted
 %   again on each pass. Those are the cheapest runs of the sweep, a fraction of a
@@ -181,10 +183,12 @@ function [runs, computed] = compute_runs(cfg, index, cached)
 
     runs = empty_runs();
     computed = 0;
+    reused = 0;
     for i = 1:numel(plan)
         p = plan(i);
         if hits(i)
             runs(end+1) = pick_run(cached, p.method, p.resolution); %#ok<AGROW>
+            reused = reused + 1;
             continue;
         end
         t = tic;
