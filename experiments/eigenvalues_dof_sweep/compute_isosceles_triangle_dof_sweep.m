@@ -42,7 +42,8 @@ function compute_isosceles_triangle_dof_sweep()
         if exist(csv_file, 'file'); continue; end
         M = M_grid(k);
         [L, info] = make_dst_laplace_mat_batched(x_range, y_range, M, phi);
-        evals = sort(-real(eig(L)), 'ascend');
+        % evals = sort(-real(eig(L)), 'ascend');
+        evals = sort(-eig(dst_laplace_symmetrise(L)), 'ascend');
         write_sweep_csv(csv_file, evals, info.dofs, sprintf('M = %d', M), 'DST');
     end
 

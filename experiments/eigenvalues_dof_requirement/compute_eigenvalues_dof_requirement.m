@@ -292,7 +292,8 @@ end
 
 function [evals, dofs] = dst_spectrum(x_range, y_range, M, phi)
     [L, info] = make_dst_laplace_mat_batched(x_range, y_range, M, phi);
-    evals = sort(-real(eig(L)), 'ascend');
+    % evals = sort(-real(eig(L)), 'ascend');
+    evals = sort(-eig(dst_laplace_symmetrise(L)), 'ascend');
     dofs = info.dofs;
 end
 
@@ -329,7 +330,8 @@ function warm_up(cfg, x_range, y_range)
                    'Hmax_eig', h, 'Hmax_solvepdeeig', h);
     for i = 1:2
         L = make_dst_laplace_mat_batched(x_range, y_range, M, cfg.phi);
-        eig(L);
+        % eig(L);
+        eig(dst_laplace_symmetrise(L));
         fd_laplace_spectrum(struct('box', cfg.box, 'phi', cfg.phi, 'M', M));
         fem_laplace_spectrum(entry, "eig");
     end

@@ -63,7 +63,9 @@ function eigenvalues_rectangle_match_column(M, margin)
     [x_range, y_range] = bounding_box(0, Lx, 0, Ly);
     phi = @(x, y) indicator_rectangle(x, y, 0, Lx, 0, Ly);
     [L, info] = make_dst_laplace_mat_batched(x_range, y_range, M, phi);
-    lambda_num = sort(-real(eig(L)), 'ascend');   % positive, ascending
+    % lambda_num = sort(-real(eig(L)), 'ascend');   % positive, ascending
+    % positive, ascending
+    lambda_num = sort(-eig(dst_laplace_symmetrise(L)), 'ascend');
 
     % Modes resolved per direction = interior grid points per direction. For a
     % rectangle filling its box this is the full grid minus the two boundary

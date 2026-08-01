@@ -45,9 +45,22 @@ function [lambda, info] = dst_laplace_spectrum(c, mode, out_dir, opts)
         case "full"
             M = c.M_full;
             [L, info] = make_dst_laplace_mat_batched(x_range, y_range, M, c.phi);
-            % Full spectrum via dense eig. Take the real part as a hedge
-            % against spurious imaginary parts, then report -Laplacian.
-            lambda = sort(-real(eig(L)), 'ascend');
+            % Full spectrum via dense eig. The assembled matrix should be in
+            % exact arithmetic symmetric, but in practice, for large assembled
+            % matrices, the round-off errors in FFT lead to non-symmetric
+            % matrix. The spurious non-symmetry that is a numerical artifact
+            % then force EIG to use eigenvalues solver for non-symmetric
+            % matrices. This is time consuming and gives eigenvalues with small
+            % imaginary parts, which is again a numerical artifact. Previously
+            % we have just applied real() to the so-obtained eigenvalues, but it
+            % is better to symmetrise the assembled matrix beforehand, which
+            % eliminates both the non-symmetric solver path and the spurious
+            % imaginary parts in the computed eigenvalues. (Use
+            % DST_LAPLACE_SYMMETRISE.) The impact of symmetrisation on
+            % computation time and the computed eigenvalues is tested in
+            % CHECK_LAPLACE_MATRIX_SYMMETRY, in test/laplace_matrix_symmetry.
+            % lambda = sort(-real(eig(L)), 'ascend');
+            lambda = sort(-eig(dst_laplace_symmetrise(L)), 'ascend');
 
         case "partial"
             M = c.M_partial;

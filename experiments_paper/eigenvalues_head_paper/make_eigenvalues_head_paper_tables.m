@@ -297,7 +297,8 @@ function [evals, dofs, resstr] = compute_one(low, k, cfg, x_range, y_range)
             M = cfg.M_grid(k);
             resstr = sprintf('M = %d', M);
             [L, info] = make_dst_laplace_mat_batched(x_range, y_range, M, cfg.phi);
-            evals = sort(-real(eig(L)), 'ascend');
+            % evals = sort(-real(eig(L)), 'ascend');
+            evals = sort(-eig(dst_laplace_symmetrise(L)), 'ascend');
             dofs = info.dofs;
         case 'fd'
             M = cfg.M_grid(k);

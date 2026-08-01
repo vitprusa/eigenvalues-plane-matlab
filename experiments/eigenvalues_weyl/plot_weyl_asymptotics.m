@@ -57,7 +57,9 @@ function row = plot_one(c, out_dir)
 
     % Full Dirichlet-Laplacian spectrum at the "full" resolution.
     [L, info] = make_dst_laplace_mat_batched(x_range, y_range, M, c.phi);
-    lambda = sort(-real(eig(L)), 'ascend');     % positive eigenvalues, ascending
+    % lambda = sort(-real(eig(L)), 'ascend');     % positive eigenvalues, ascending
+    % positive eigenvalues, ascending
+    lambda = sort(-eig(dst_laplace_symmetrise(L)), 'ascend');
     dofs   = info.dofs;
     n      = (1:dofs)';
 
