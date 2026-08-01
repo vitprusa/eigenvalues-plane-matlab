@@ -192,11 +192,17 @@ experiments_paper/eigenvalues_head_paper/ self-computing eigenvalue-comparison t
                                domains, whose fourth DST/FD grid is sized to ~3000 dofs to
                                match the finest FEM mesh), times every run, writes new CSVs
                                and two booktabs LaTeX tables per domain (upright and transposed)
-experiments_paper/eigenvalues_convergence/ ground-state convergence test
-                               (make_eigenvalues_convergence.m): lambda_1 with DST/FD/FEM
-                               over thirteen resolutions from ~100 to ~10000 dofs, plotted as
-                               the error against the reference on log-log axes with a
-                               fitted-slope triangle per method; caches its run table
+experiments_paper/eigenvalues_convergence/ convergence test for one eigenvalue
+                               (make_eigenvalues_convergence_index.m): lambda_k, any k, with
+                               DST/FD/FEM over thirteen resolutions from ~100 to ~10000 dofs
+                               (fourteen, to ~15000, on the L-shape), for the rectangle, the
+                               right isosceles triangle and the L-shape, plotted both as the
+                               eigenvalue itself against DOF and as the error against the
+                               reference on log-log axes with a fitted-slope triangle per
+                               method; the reference is the closed-form eigenvalue on the
+                               first two domains, the published MPS ground state on the
+                               L-shape, and its own finest DST run away from it; caches its
+                               run table
 results/eigenvalues/           per-method spectra CSV, a subdir each (dst, fd, fem,
                                cheb, mps, wolfram)
 results/eigenvalues_head/      generated <domain>_comparison.md tables (from
@@ -236,14 +242,24 @@ results_paper/eigenvalues_head/ self-computed comparison spectra CSV
                                <domain>_eigenvalues_head.tex (one row per run, eigenvalues
                                across) and <domain>_eigenvalues_head_transposed.tex (one
                                row per eigenvalue, runs across)
-results_paper/eigenvalues_convergence/ per-domain
-                               <domain>_convergence.csv (method, resolution, dofs,
-                               lambda_1, timing), <domain>_convergence.png and the
-                               <domain>_convergence.tex figure snippet; the CSV
-                               is reused on re-runs, delete it to recompute
+results_paper/eigenvalues_convergence/ per domain and eigenvalue index
+                               <domain>_convergence_lambda<k>.csv (method, resolution,
+                               dofs, lambda_k, timing), the value figure
+                               <domain>_convergence_lambda<k>.eps, the error figure
+                               <domain>_convergence_lambda<k>_error.eps and the
+                               <domain>_convergence_lambda<k>.tex figure snippet, plus the
+                               combined <domain>_convergence.tex float holding every index
+                               of a domain in one figure; spectra/ holds the whole spectrum
+                               of every run, which is the cache the rest is built from, so
+                               a further index costs a redraw and nothing else -- delete a
+                               domain's spectra to compute it again
 test/mat_batched/              equivalence and timing tests for the builders
 test/laplace_action/           Laplace-operator action on a known function
 test/manufactured_solution/    BVP solve via the method of manufactured solutions
+test/laplace_matrix_symmetry/  symmetry of the assembled DST Laplace matrix on
+                               every domain at four resolutions each, and what
+                               symmetrising it costs and changes; spectra/ caches
+                               both spectra of every matrix
 ```
 
 The domains (square, rectangle, ellipse minus a quadrant, isosceles triangle,
@@ -289,6 +305,7 @@ report, and exits non-zero if any test errors. For example:
 test/mat_batched/run_tests.sh             # writes test/mat_batched/report.md
 test/laplace_action/run_tests.sh          # writes test/laplace_action/report.md
 test/manufactured_solution/run_tests.sh   # writes test/manufactured_solution/report.md
+test/laplace_matrix_symmetry/run_tests.sh # writes test/laplace_matrix_symmetry/report.md
 ```
 
 Set `MATLAB_BIN` to override the `matlab` executable, or pass a path to

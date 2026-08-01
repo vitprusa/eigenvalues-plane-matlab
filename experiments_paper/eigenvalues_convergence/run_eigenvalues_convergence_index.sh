@@ -3,8 +3,13 @@
 # of resolutions and plot it against the degrees of freedom, writing the run
 # table CSV and the figure into results_paper/eigenvalues_convergence/.
 #
-#   ./run_eigenvalues_convergence_index.sh 100            # every domain
-#   ./run_eigenvalues_convergence_index.sh 100 L_shaped   # just that one
+#   ./run_eigenvalues_convergence_index.sh 100             # every domain
+#   ./run_eigenvalues_convergence_index.sh 100 L_shaped    # just that one
+#
+# Domains: rectangle, isosceles_triangle, L_shaped. The first two have a
+# closed-form spectrum and are measured against it at every index; the L-shape
+# is measured against the published MPS ground state, or against its own finest
+# DST run away from it.
 #
 # An existing CSV is reused (figure-only regeneration); delete it to recompute.
 # Requires the PDE Toolbox.

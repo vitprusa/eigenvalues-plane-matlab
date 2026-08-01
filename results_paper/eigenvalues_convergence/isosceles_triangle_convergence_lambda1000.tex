@@ -1,0 +1,27 @@
+% Convergence of the thousandth eigenvalue against the degrees of freedom,
+% triangular domain: the eigenvalue itself on the left, the relative error on
+% the right.
+%
+% Requires in the preamble:
+%   \usepackage{graphicx}
+%   \usepackage{subfig}
+%   \usepackage{epstopdf}   % the figures are EPS; needed under pdflatex,
+%                           % which then wants -shell-escape. Not needed for
+%                           % latex/dvips, which reads EPS directly.
+%
+% The figures live next to this file, in
+% results_paper/eigenvalues_convergence/. If you \input this snippet
+% from elsewhere, point graphicx at that folder, e.g.
+%   \graphicspath{{results_paper/eigenvalues_convergence/}}
+% and drop the leading path from the \includegraphics arguments below.
+
+\begin{figure}[htbp]
+  \centering
+  \subfloat[Eigenvalue $\lambda_{1000}$.\label{fig:convergence_isosceles_triangle_lambda1000_value}]{%
+    \includegraphics[width=0.45\textwidth]{isosceles_triangle_convergence_lambda1000}}
+  \qquad
+  \subfloat[Relative error $\frac{|\lambda_{1000} - \lambda_{1000}^{\text{exact}}|}{\lambda_{1000}^{\text{exact}}}$.\label{fig:convergence_isosceles_triangle_lambda1000_error}]{%
+    \includegraphics[width=0.45\textwidth]{isosceles_triangle_convergence_lambda1000_error}}
+  \caption{The thousandth eigenvalue $\lambda_{1000}$ of Laplace operator, zero Dirichlet boundary conditions, triangular domain \texttt{isosceles\_triangle}, the right isosceles triangle with legs of length $\pi$. Eigenvalue $\lambda_{1000}$ computed by each discretisation \texttt{DST}, \texttt{FD} and \texttt{FEM} with varying degrees of freedom; compared with the exact eigenvalue $\lambda_{1000}^{\text{exact}}$, the thousandth value of $m^2 + n^2$, $m > n \geq 1$, in ascending order. Resolutions carrying fewer than 1000 degrees of freedom cannot supply the eigenvalue and are left out.}
+  \label{fig:convergence_isosceles_triangle_lambda1000}
+\end{figure}

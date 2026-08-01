@@ -7,15 +7,16 @@ function make_eigenvalues_convergence_index(index, name)
 %   plots it against the degrees of freedom actually used by each discretisation.
 %
 %   make_eigenvalues_convergence_index(index, name) restricts the run to the
-%   single domain "name". Pass "" or [] to keep all domains.
+%   single domain "name" -- rectangle, isosceles_triangle or L_shaped. Pass ""
+%   or [] to keep all three.
 %
-%   Companion of MAKE_EIGENVALUES_CONVERGENCE, which follows the ground state:
-%   same domains, same resolution sweeps, same timing and caching. Any index may
-%   be asked for, the ground state included, and what changes with the index is
-%   the reference. The ground state has a published one, the MPS value of Betcke
-%   & Trefethen; deeper in the spectrum nobody has published anything, and the
-%   finest DST run of the sweep stands in. REFERENCE_FOR picks between them and
-%   the figures say which they used.
+%   Any index may be asked for, the ground state included, and what changes with
+%   the domain and the index is the reference. The rectangle and the right
+%   isosceles triangle have a closed-form spectrum, so every index has an exact
+%   reference. The L-shape has a published value for the ground state alone, the
+%   MPS value of Betcke & Trefethen; deeper in its spectrum nobody has published
+%   anything, and the finest DST run of the sweep stands in. REFERENCE_FOR picks
+%   between the three and the figures say which they used.
 %
 %   Deep in the spectrum a coarse discretisation has little left to work with:
 %   the hundredth eigenvalue of a run carrying a few hundred degrees of freedom
@@ -35,16 +36,35 @@ function make_eigenvalues_convergence_index(index, name)
 %       name, as elsewhere in experiments_paper, and
 %     - <domain>_convergence_lambda<index>_error.eps   the same runs as a
 %       relative error against DOF on log-log axes, in the manner of
-%       MAKE_EIGENVALUES_CONVERGENCE and with the same slope triangles.
+%       MAKE_EIGENVALUES_CONVERGENCE and with the same slope triangles, and
+%     - spectra/<domain>_<method>_<resolution>-eigenvalues.csv   the whole
+%       spectrum of each run, which is the cache the other three are built from.
 %   Vector EPS, not raster: see SAVE_FIGURE.
 %   Against a DST reference the error figure stops the DST curve three runs short
 %   of it and gives it no triangle, for the reasons in PLOT_ERROR_RUNS and CURVE.
 %   The value figure always shows every run of every method.
 %
-%   The CSV is a cache, read run by run: a run already in it is taken over as it
-%   stands, timing included, and only what is missing is computed. So a figure
-%   can be restyled for free, and a resolution added to the sweep costs its own
-%   run and nothing else. Delete the CSV to force the whole sweep again.
+%   On the rectangle the DST error is at roundoff -- the domain fills its
+%   bounding box, so the sine basis the operator is built in is the exact
+%   eigenbasis -- and that curve gets no triangle either: see PLOT_ERROR_RUNS.
+%
+%   The cache is the whole spectrum of each run, one file per run under
+%   results_paper/eigenvalues_convergence/spectra/ (see READ_SPECTRUM). What
+%   costs the time here is the dense eig, and it returns the whole spectrum
+%   whatever index is asked for; keeping only one eigenvalue of it made every
+%   further index pay for the sweep again. Kept, the sweep is paid once per
+%   domain and every index after the first is a redraw, at any index whatever.
+%   Delete the spectra of a domain to force it again.
+%
+%   A run whose spectrum is shorter than the index asked for is left out of the
+%   figures, and its stored spectrum says so, so it is not attempted again on the
+%   next pass.
+%
+%   The per-index run tables written next to the figures are output, not cache.
+%   The exception is the legacy path: where no spectrum has been stored but an
+%   older run table holds the run, its eigenvalue and timing are taken from
+%   there, which is what keeps the L-shape's sweep -- half an hour of it, already
+%   computed and committed -- from having to be run again.
 %
 %   Requires the PDE Toolbox (FEM).
 %
@@ -68,13 +88,21 @@ function make_eigenvalues_convergence_index(index, name)
     if ~exist(out_dir, 'dir')
         mkdir(out_dir);
     end
+    % The spectra are the cache, and there is one file per run of every sweep:
+    % their own folder, so that the figures and the run tables stay legible next
+    % to each other in the parent.
+    spectra_dir = fullfile(out_dir, 'spectra');
+    if ~exist(spectra_dir, 'dir')
+        mkdir(spectra_dir);
+    end
 
     cfgs = domain_configs();
     if nargin >= 2 && ~isempty(name)
-        cfgs = cfgs(strcmp({cfgs.name}, name));
+        known = {cfgs.name};
+        cfgs = cfgs(strcmp(known, name));
         if isempty(cfgs)
             error('eigenvalues_convergence:unknownDomain', ...
-                'Unknown domain "%s" (known: L_shaped).', name);
+                'Unknown domain "%s" (known: %s).', name, strjoin(known, ', '));
         end
     end
     for i = 1:numel(cfgs)
@@ -83,18 +111,15 @@ function make_eigenvalues_convergence_index(index, name)
         stem = fullfile(out_dir, sprintf('%s_convergence_lambda%d', cfg.name, index));
         csv = [stem '.csv'];
         if exist(csv, 'file')
-            cached = read_runs_csv(csv);
-            fprintf('  (reading %s: %d runs)\n', csv, numel(cached));
+            legacy = read_runs_csv(csv);
         else
-            cached = empty_runs();
+            legacy = empty_runs();
         end
-        [runs, computed, reused] = compute_runs(cfg, index, cached);
-        if computed > 0
-            write_runs_csv(csv, cfg, runs, index);
-            fprintf('  Wrote %s (%d run(s) computed, %d reused)\n', ...
-                    csv, computed, reused);
-        end
+        [runs, computed, reused] = compute_runs(cfg, index, spectra_dir, legacy);
         ref = reference_for(cfg, index, runs);
+        write_runs_csv(csv, cfg, runs, index, ref);
+        fprintf('  Wrote %s (%d run(s) computed, %d from cache)\n', ...
+                csv, computed, reused);
         plot_runs(stem, runs, index, ref);
         plot_error_runs([stem '_error'], runs, index, ref);
     end
@@ -104,19 +129,78 @@ end
 function cfgs = domain_configs()
 %DOMAIN_CONFIGS Geometry and resolution sweeps per domain.
 %
-%   The sweeps follow MAKE_EIGENVALUES_CONVERGENCE, so that the figures of a
-%   domain are read against the same DOF counts, with one resolution added at the
-%   fine end.
+%   Every sweep covers the same band of DOF counts, from about 100 to about
+%   10000, so that the figures of the three domains are read against each other;
+%   the L-shape runs one resolution past it, to about 15000, for the reference it
+%   needs and the others do not.
 %
-%   REF_VALUE is the published eigenvalue, and REF_INDEX the index it belongs to
-%   -- the ground state, the only one for which anybody has published a value.
-%   Asked for that index, the figures use it: the exact level is drawn, and the
-%   error measured against it is a true error, relative to the eigenvalue. Asked
-%   for any other, they fall back on the finest DST run of the sweep, with the
+%   EXACT_FUN, where the spectrum is known in closed form, returns the exact
+%   eigenvalue of the index asked for. It is external to the sweep and available
+%   at every index, so on those domains the figures always draw the exact level
+%   and always measure a true error against it.
+%
+%   Without one, REF_VALUE is the published eigenvalue and REF_INDEX the index it
+%   belongs to -- the ground state, the only one for which anybody has published
+%   a value on the L-shape. Asked for that index, the figures use it. Asked for
+%   any other, they fall back on the finest DST run of the sweep, with the
 %   caveats in PLOT_ERROR_RUNS.
     cfgs = struct('name', {}, 'pretty', {}, 'box', {}, 'phi', {}, ...
                   'gd', {}, 'ns', {}, 'sf', {}, 'M_grid', {}, 'Hmax_fem', {}, ...
-                  'ref_index', {}, 'ref_value', {}, 'ref_label', {});
+                  'exact_fun', {}, 'ref_index', {}, 'ref_value', {}, 'ref_label', {});
+
+    % --- rectangle [0, 2*pi] x [0, pi] ---------------------------------------
+    % Box [0,2pi]x[0,pi], so h = 2*pi/(M+1) and M+1 must be even for the top edge
+    % y = pi to fall on a grid line. The domain then fills its bounding box and
+    % carries M columns of (M-1)/2 interior points, dofs = M*(M-1)/2 exactly, so
+    % the M values below sweep 105 to 10731 degrees of freedom.
+    %
+    % There is no run ahead of the sweep here: the reference is the closed-form
+    % eigenvalue, m^2/4 + n^2, so nothing has to stand in for it and the sweep
+    % stops where the L-shape's measured curves stop.
+    %
+    % Filling the bounding box is what makes this domain the control of the set.
+    % The DST operator is built in the sine basis of the box, which is the exact
+    % eigenbasis of the rectangle, so DST returns m^2/4 + n^2 to roundoff at every
+    % resolution -- what it can get wrong is only which modes the grid carries,
+    % and that shows up at indices deep enough to reach the edge of the grid.
+    %
+    % The FEM meshes follow the same DOF counts through the empirical
+    % dofs*Hmax^2 ~ 88 that the finer meshes here obey to within a few per cent.
+    cfgs(end+1) = struct( ...
+        'name', 'rectangle', 'pretty', 'rectangular', ...
+        'box', [0 2*pi 0 pi], ...
+        'phi', @(x, y) indicator_rectangle(x, y, 0, 2*pi, 0, pi), ...
+        'gd', [3; 4; 0; 2*pi; 2*pi; 0; 0; 0; pi; pi], ...
+        'ns', char('R1')', 'sf', 'R1', ...
+        'M_grid',   [15 21 31 41 51 61 71 81 91 105 119 133 147], ...
+        'Hmax_fem', [0.85 0.61 0.42 0.32 0.26 0.22 0.188 0.165 0.147 0.127 ...
+                     0.1125 0.100 0.0914], ...
+        'exact_fun', @exact_rectangle, ...
+        'ref_index', [], 'ref_value', [], 'ref_label', '');
+
+    % --- right isosceles triangle, legs pi -----------------------------------
+    % Box [0,pi]^2, so h = pi/(M+1), and the hypotenuse y = x runs through grid
+    % points whatever M is: no alignment condition to meet. The interior points
+    % are those with y < x, dofs = M*(M-1)/2 exactly, the same counts as the
+    % rectangle, and the same M values sweep them.
+    %
+    % Reference: lambda = m^2 + n^2 with m > n >= 1, again exact at every index,
+    % so again no run ahead of the sweep.
+    %
+    % The FEM meshes follow the DOF counts through the empirical dofs*Hmax^2 ~ 22
+    % of this geometry -- a quarter of the rectangle's, the domain being a quarter
+    % of its area -- obeyed to within a few per cent by the finer meshes.
+    cfgs(end+1) = struct( ...
+        'name', 'isosceles_triangle', 'pretty', 'right isosceles triangle', ...
+        'box', [0 pi 0 pi], ...
+        'phi', @(x, y) indicator_isosceles_triangle(x, y, 0, pi, 0), ...
+        'gd', [2; 3; 0; pi; pi; 0; 0; pi], ...
+        'ns', char('T1')', 'sf', 'T1', ...
+        'M_grid',   [15 21 31 41 51 61 71 81 91 105 119 133 147], ...
+        'Hmax_fem', [0.43 0.30 0.21 0.16 0.13 0.109 0.094 0.082 0.073 0.063 ...
+                     0.056 0.050 0.0456], ...
+        'exact_fun', @exact_isosceles_triangle, ...
+        'ref_index', [], 'ref_value', [], 'ref_label', '');
 
     % --- L-shaped domain ----------------------------------------------------
     % Box [-1,1]^2, so h = 2/(M+1) and M+1 must be even for the re-entrant
@@ -146,37 +230,90 @@ function cfgs = domain_configs()
         'M_grid',   [13 17 31 41 49 55 63 69 75 81 93 105 115 141], ...
         'Hmax_fem', [0.33 0.25 0.135 0.10 0.085 0.0755 0.066 0.060 0.055 0.051 ...
                      0.0446 0.0395 0.036 0.030], ...
+        'exact_fun', [], ...
         'ref_index', 1, 'ref_value', 9.6397238440219, 'ref_label', 'MPS');
 end
 
 
-function [runs, computed, reused] = compute_runs(cfg, index, cached)
-%COMPUTE_RUNS One timed eigenvalue per method and resolution, cached run by run.
+function lambda = exact_rectangle(index)
+%EXACT_RECTANGLE The index-th eigenvalue of [0,2pi]x[0,pi], in closed form.
 %
-%   CACHED holds whatever the CSV already had. A planned run found there is
-%   taken over as it stands, timing included; only what is missing is computed.
-%   That is what makes the sweep extensible: a resolution added to the config
-%   costs its own run and nothing else, where an all-or-nothing cache would put
-%   the whole half hour back on the bill. Runs are returned in the order of the
-%   plan, so that the rewritten CSV keeps the shape of the old one.
+%   lambda_{m,n} = m^2/4 + n^2, m, n >= 1, sorted ascending with multiplicity.
+%   The pairs are enumerated below a bound rather than over a fixed rectangle of
+%   (m, n): a truncation in m and n alone can miss an eigenvalue smaller than one
+%   it keeps, and then the index-th entry of the sorted list is not the index-th
+%   eigenvalue. Below a bound nothing is missed, and the bound is doubled until
+%   it holds enough of the spectrum.
+    bound = 64;
+    while true
+        [m, n] = meshgrid(1:ceil(2 * sqrt(bound)), 1:ceil(sqrt(bound)));
+        v = m.^2 / 4 + n.^2;
+        v = sort(v(v <= bound));
+        if numel(v) >= index
+            lambda = v(index);
+            return;
+        end
+        bound = 2 * bound;
+    end
+end
+
+
+function lambda = exact_isosceles_triangle(index)
+%EXACT_ISOSCELES_TRIANGLE The index-th eigenvalue of the triangle, in closed form.
 %
-%   COMPUTED counts the computations performed and REUSED the runs taken from the
-%   cache. They need not add up to the table: a run too coarse to reach the index
-%   is computed and then dropped. COMPUTED is zero when the CSV already covered
-%   the whole sweep, and the caller then leaves the file alone.
+%   Right isosceles triangle with legs pi: lambda_{m,n} = m^2 + n^2 with
+%   m > n >= 1, the antisymmetric half of the square's spectrum. Enumerated below
+%   a doubling bound, for the reason in EXACT_RECTANGLE.
+    bound = 64;
+    while true
+        [m, n] = meshgrid(1:ceil(sqrt(bound)), 1:ceil(sqrt(bound)));
+        v = m.^2 + n.^2;
+        v = sort(v(m > n & v <= bound));
+        if numel(v) >= index
+            lambda = v(index);
+            return;
+        end
+        bound = 2 * bound;
+    end
+end
+
+
+function [runs, computed, reused] = compute_runs(cfg, index, spectra_dir, legacy)
+%COMPUTE_RUNS One timed eigenvalue per method and resolution, off the spectra.
 %
-%   A run too coarse to reach the index never enters the CSV, so it is attempted
-%   again on each pass. Those are the cheapest runs of the sweep, a fraction of a
-%   second, and the alternative is a cache that records absences.
+%   Three places a run can come from, in this order:
+%
+%   The stored spectrum, which is complete, so it either holds the index or the
+%   run has no such eigenvalue. The whole point of the restructuring: the dense
+%   eig returns the spectrum, so the spectrum is what is kept, and the second
+%   index asked for on a domain costs nothing.
+%
+%   LEGACY, the run table of this index from before there were spectra, for the
+%   runs the spectra do not hold. It carries one eigenvalue and its timing, which
+%   is all this index needs, and it saves recomputing the L-shape.
+%
+%   The computation, otherwise. What comes back is stored as a spectrum, so it is
+%   paid once.
+%
+%   COMPUTED counts the computations performed and REUSED the runs taken from
+%   either cache. They need not add up to the table: a run whose spectrum is
+%   shorter than the index is left out of it.
 %
 %   Warm-up (see WARM_UP) is paid only if something is to be computed, so that a
 %   figure-only regeneration stays free.
+%
+%   Runs are returned in the order of the plan, so that the rewritten run table
+%   keeps the shape of the old one.
     [x_range, y_range] = bounding_box(cfg.box(1), cfg.box(2), cfg.box(3), cfg.box(4));
 
     plan = build_plan(cfg);
-    hits = arrayfun(@(p) find_run(cached, p.method, p.resolution), plan);
-    if all(hits)
-        fprintf('  every run of the sweep is in the CSV\n');
+    paths = arrayfun(@(p) spectrum_path(spectra_dir, cfg, p.method, p.resolution), ...
+                     plan, 'UniformOutput', false);
+    from_cache = arrayfun(@(i) ...
+        spectrum_serves(paths{i}, index) || find_run(legacy, plan(i).method, plan(i).resolution), ...
+        1:numel(plan));
+    if all(from_cache)
+        fprintf('  every run of the sweep is cached\n');
     else
         warm_up(cfg, x_range, y_range);
     end
@@ -186,23 +323,150 @@ function [runs, computed, reused] = compute_runs(cfg, index, cached)
     reused = 0;
     for i = 1:numel(plan)
         p = plan(i);
-        if hits(i)
-            runs(end+1) = pick_run(cached, p.method, p.resolution); %#ok<AGROW>
+        [lambda, dofs, tsec, status] = read_spectrum(paths{i}, index);
+        switch status
+            case 'hit'
+                runs(end+1) = mk(p.method, p.resolution, dofs, lambda, tsec); %#ok<AGROW>
+                reused = reused + 1;
+                report(runs(end), index, '(cached)');
+                continue;
+            case 'short'
+                fprintf('  %-4s %-12s dofs = %-5d  only %d eigenvalues, left out\n', ...
+                        p.method, p.resolution, dofs, lambda);   % lambda: the count
+                reused = reused + 1;
+                continue;
+        end
+        if find_run(legacy, p.method, p.resolution)
+            runs(end+1) = pick_run(legacy, p.method, p.resolution); %#ok<AGROW>
             reused = reused + 1;
+            report(runs(end), index, '(run table)');
             continue;
         end
         t = tic;
         [evals, dofs] = p.compute(x_range, y_range);
         tsec = toc(t);
         computed = computed + 1;
+        write_spectrum(paths{i}, cfg, p, dofs, tsec, evals);
         if numel(evals) < index
-            fprintf('  %-4s %-12s dofs = %-5d  only %d eigenvalues, skipped\n', ...
+            fprintf('  %-4s %-12s dofs = %-5d  only %d eigenvalues, left out\n', ...
                     p.method, p.resolution, dofs, numel(evals));
             continue;
         end
         runs(end+1) = mk(p.method, p.resolution, dofs, evals(index), tsec); %#ok<AGROW>
-        report(runs(end), index);
+        report(runs(end), index, '');
     end
+end
+
+
+function path = spectrum_path(spectra_dir, cfg, method, resolution)
+%SPECTRUM_PATH Where the spectrum of one run of one domain is kept.
+%
+%   The resolution goes into the name as it is written everywhere else, with the
+%   spaces and the equals sign taken out: <domain>_<method>_M147, and
+%   <domain>_<method>_Hmax0.0914 for the meshes. One run per file, as in
+%   results_paper/eigenvalues_head/.
+    slug = regexprep(resolution, '\s*=\s*', '');
+    path = fullfile(spectra_dir, sprintf('%s_%s_%s-eigenvalues.csv', ...
+                                         cfg.name, lower(method), slug));
+end
+
+
+function tf = spectrum_serves(path, index)
+%SPECTRUM_SERVES Whether the stored spectrum settles this index without computing.
+    [~, ~, ~, status] = read_spectrum(path, index);
+    tf = ~strcmp(status, 'miss');
+end
+
+
+function [lambda, dofs, tsec, status] = read_spectrum(path, index)
+%READ_SPECTRUM The index-th eigenvalue of a stored run, if it is there.
+%
+%   STATUS is "hit" when the spectrum holds the index, and LAMBDA is the
+%   eigenvalue; "short" when the run has fewer eigenvalues than the index --
+%   LAMBDA is then the number of eigenvalues the run has, for the message -- and
+%   "miss" when there is no usable file, which is the one case that has to be
+%   computed again.
+%
+%   A file is usable only if it is complete: the header says how many
+%   eigenvalues the run has and how many are written, the two must agree, and the
+%   rows must be there. Anything else -- a run interrupted halfway through
+%   writing, or a file left over from when only the head was kept -- is a miss
+%   rather than a short spectrum, so that a truncated cache can never be read as
+%   a run that has no such eigenvalue.
+    lambda = NaN; dofs = NaN; tsec = NaN;
+    if ~exist(path, 'file')
+        status = 'miss';
+        return;
+    end
+    fid = fopen(path, 'r');
+    if fid == -1
+        status = 'miss';
+        return;
+    end
+    closer = onCleanup(@() fclose(fid));
+    stored = NaN; total = NaN;
+    while true                      % the header, which is the "#" lines
+        line = fgetl(fid);
+        if ~ischar(line) || isempty(line) || line(1) ~= '#'; break; end
+        tok = regexp(line, 'dofs\s*=\s*(\d+)', 'tokens', 'once');
+        if ~isempty(tok); dofs = str2double(tok{1}); end
+        tok = regexp(line, 'time:\s*([0-9.eE+-]+)', 'tokens', 'once');
+        if ~isempty(tok); tsec = str2double(tok{1}); end
+        tok = regexp(line, 'stored:\s*(\d+)\s+of\s+(\d+)', 'tokens', 'once');
+        if ~isempty(tok)
+            stored = str2double(tok{1});
+            total  = str2double(tok{2});
+        end
+    end
+    clear closer;                   % READTABLE opens the file again itself
+    % The whole spectrum of a fine run is ten thousand rows, so the table is read
+    % in one call rather than line by line, as READ_EIGS_CSV does it.
+    try
+        evals = readtable(path, 'CommentStyle', '#').lambda_n;
+    catch
+        status = 'miss';
+        return;
+    end
+    if isnan(stored) || stored ~= total || numel(evals) ~= total
+        status = 'miss';       % incomplete, truncated or hand-edited
+        return;
+    end
+    if index <= total
+        lambda = evals(index);
+        status = 'hit';
+    else
+        lambda = total;        % the whole spectrum is here and it is too short
+        status = 'short';
+    end
+end
+
+
+function write_spectrum(path, cfg, p, dofs, tsec, evals)
+%WRITE_SPECTRUM One run's whole spectrum, with what it took to get it.
+%
+%   Every eigenvalue the run resolved, not a head of the spectrum: what the dense
+%   eig produced is what is kept, and no index can then be asked for that the
+%   cache has to go back to the solver for. It costs a few megabytes over the
+%   three domains, against a quarter of an hour of eig per domain.
+%
+%   Seventeen significant digits, and the header repeats the count the rows carry
+%   so that READ_SPECTRUM can tell a complete file from an interrupted one.
+    keep = numel(evals);
+    fid = fopen(path, 'w');
+    if fid == -1
+        error('eigenvalues_convergence:spectrum', ...
+            'Could not open %s for writing.', path);
+    end
+    closer = onCleanup(@() fclose(fid));
+    fprintf(fid, '# Domain: %s (%s, convergence sweep, dense eig full spectrum)\n', ...
+            cfg.name, p.method);
+    fprintf(fid, '# Resolution %s, dofs = %d\n', p.resolution, dofs);
+    fprintf(fid, '# Computation time: %.4f s\n', tsec);
+    fprintf(fid, '# Eigenvalues stored: %d of %d\n', keep, numel(evals));
+    fprintf(fid, 'n,lambda_n\n');
+    % One call rather than a loop over the rows: the spectra of the finer runs
+    % are ten thousand lines long, and there are dozens of them per domain.
+    fprintf(fid, '%d,%.17g\n', [1:keep; reshape(evals(1:keep), 1, [])]);
 end
 
 
@@ -231,7 +495,8 @@ end
 
 function [evals, dofs] = dst_spectrum(x_range, y_range, M, phi)
     [L, info] = make_dst_laplace_mat_batched(x_range, y_range, M, phi);
-    evals = sort(-real(eig(L)), 'ascend');
+    % evals = sort(-real(eig(L)), 'ascend');
+    evals = sort(-eig(dst_laplace_symmetrise(L)), 'ascend');
     dofs = info.dofs;
 end
 
@@ -253,7 +518,7 @@ end
 
 
 function tf = find_run(runs, method, resolution)
-%FIND_RUN Whether the cache holds this run.
+%FIND_RUN Whether a run table holds this run.
     tf = ~isempty(runs) && any(strcmp({runs.method}, method) & ...
                                strcmp({runs.resolution}, resolution));
 end
@@ -290,7 +555,8 @@ function warm_up(cfg, x_range, y_range)
                    'Hmax_eig', h, 'Hmax_solvepdeeig', h);
     for i = 1:2
         L = make_dst_laplace_mat_batched(x_range, y_range, M, cfg.phi);
-        eig(L);
+        % eig(L);
+        eig(dst_laplace_symmetrise(L));
         fd_laplace_spectrum(struct('box', cfg.box, 'phi', cfg.phi, 'M', M));
         fem_laplace_spectrum(entry, "eig");
     end
@@ -303,14 +569,24 @@ function s = mk(method, resolution, dofs, lambda, tsec)
 end
 
 
-function report(r, index)
-    fprintf('  %-4s %-12s dofs = %-5d  lambda_%d = %.8f  time = %6.2f s\n', ...
-            r.method, r.resolution, r.dofs, index, r.lambda, r.time);
+function report(r, index, whence)
+%REPORT One line per run, saying where it came from when it was not computed here.
+    fprintf('  %-4s %-12s dofs = %-5d  lambda_%d = %.8f  time = %6.2f s %s\n', ...
+            r.method, r.resolution, r.dofs, index, r.lambda, r.time, whence);
 end
 
 
-function write_runs_csv(csv, cfg, runs, index)
+function write_runs_csv(csv, cfg, runs, index, ref)
 %WRITE_RUNS_CSV One row per run: method, resolution, dofs, eigenvalue, time.
+%
+%   The reference is named in the header but kept out of the table: it is not a
+%   run, and the figures recompute it from the config anyway.
+%
+%   Seventeen significant digits: the CSV is the cache the figures are redrawn
+%   from, so it has to carry a double back exactly. Twelve, which is plenty to
+%   read, would round an error that sits near machine precision -- the DST error
+%   on the rectangle -- to zero or to a spurious level, and the redrawn figure
+%   would not be the one the run produced.
     fid = fopen(csv, 'w');
     if fid == -1
         error('eigenvalues_convergence:csv', 'Could not open %s for writing.', csv);
@@ -318,10 +594,10 @@ function write_runs_csv(csv, cfg, runs, index)
     closer = onCleanup(@() fclose(fid));
     fprintf(fid, ['# Domain: %s (convergence of eigenvalue %d against DOF, ', ...
                   'dense eig)\n'], cfg.name, index);
-    fprintf(fid, '# No reference value: the figure plots lambda_%d itself.\n', index);
+    fprintf(fid, '# Reference (%s): lambda_%d = %.13f\n', ref.label, index, ref.value);
     fprintf(fid, 'method,resolution,dofs,lambda_%d,time_s\n', index);
     for i = 1:numel(runs)
-        fprintf(fid, '%s,%s,%d,%.12g,%.4f\n', runs(i).method, runs(i).resolution, ...
+        fprintf(fid, '%s,%s,%d,%.17g,%.4f\n', runs(i).method, runs(i).resolution, ...
                 runs(i).dofs, runs(i).lambda, runs(i).time);
     end
 end
@@ -351,10 +627,13 @@ end
 function ref = reference_for(cfg, index, runs)
 %REFERENCE_FOR The value the figures measure against, and what it is worth.
 %
+%   EXACT, where the domain has a closed-form spectrum: the rectangle and the
+%   right isosceles triangle, at every index. It is external to the sweep, so
+%   every run can be measured against it and the error is a true error.
+%
 %   PUBLISHED, when the index asked for is the one the config carries a value
-%   for: the ground state, against the MPS value of Betcke & Trefethen. It is
-%   external to the sweep, so every run can be measured against it and the error
-%   is a true error.
+%   for: the ground state of the L-shape, against the MPS value of Betcke &
+%   Trefethen. Again external to the sweep, and again a true error.
 %
 %   Otherwise the finest DST run of the sweep. That is not a true reference, and
 %   what it gives is a difference between two computed numbers rather than a
@@ -365,8 +644,18 @@ function ref = reference_for(cfg, index, runs)
 %   run from 9.6 at the ground state to 919 deep in the spectrum, and an absolute
 %   error carries that scale with it; dividing it out is what lets the figures of
 %   different indices be read against each other.
+    if ~isempty(cfg.exact_fun)
+        % "exact" reads as a word, not as a method, so it is set upright in the
+        % legend where MPS is set in typewriter.
+        ref = struct('value', cfg.exact_fun(index), 'label', 'exact', ...
+                     'legend', 'exact', ...
+                     'published', true, 'relative', true, 'dst_trim', 0);
+        fprintf('  reference: exact, lambda_%d = %.13f\n', index, ref.value);
+        return;
+    end
     if ~isempty(cfg.ref_index) && index == cfg.ref_index
         ref = struct('value', cfg.ref_value, 'label', cfg.ref_label, ...
+                     'legend', sprintf('\\texttt{%s}', cfg.ref_label), ...
                      'published', true, 'relative', true, 'dst_trim', 0);
         fprintf('  reference: %s, lambda_%d = %.13f\n', ref.label, index, ref.value);
         return;
@@ -379,6 +668,7 @@ function ref = reference_for(cfg, index, runs)
     dst_runs = runs(dst);
     [ref_dofs, imax] = max([dst_runs.dofs]);
     ref = struct('value', dst_runs(imax).lambda, 'label', 'DST', ...
+                 'legend', '\texttt{DST}', ...
                  'published', false, 'relative', true, 'dst_trim', 3);
     fprintf('  reference: DST at %d dofs, lambda_%d = %.9f\n', ...
             ref_dofs, index, ref.value);
@@ -418,14 +708,18 @@ function plot_runs(stem, runs, index, ref)
         % that it reads as the level they are converging to and not as a fourth
         % method.
         yline(ax, ref.value, 'k--', 'LineWidth', 1.5, ...
-            'DisplayName', sprintf('\\texttt{%s}', ref.label));
+            'DisplayName', ref.legend);
     end
 
     hold(ax, 'off');
     xlabel(ax, 'degrees of freedom');
     ylabel(ax, sprintf('$\\lambda_{%d}$', index));
     % No title: the domain is identified by the output file name.
-    legend(ax, 'Location', 'northeast', 'FontSize', 10, 'Box', 'off');
+    % The corner the curves leave free is not the same one from domain to domain
+    % -- on the L-shape they come down to the level from above and clear the top
+    % right, on the rectangle they come up to it and clear the bottom right -- so
+    % the placement is left to the axes rather than fixed here.
+    legend(ax, 'Location', 'best', 'FontSize', 10, 'Box', 'off');
     grid(ax, 'on'); box(ax, 'on');
     set(ax, 'FontSize', 12);
 
@@ -445,6 +739,15 @@ function plot_error_runs(stem, runs, index, ref)
 %   so every run can be measured against it over the whole length of its curve
 %   and each method carries a slope triangle.
 %
+%   Only the part of a curve above ROUNDOFF_FLOOR is fitted, and a curve with
+%   fewer than three points there, or one that does not fall over them (see
+%   DECAYS), gets no triangle whatever the placement asks for. Both cases are the
+%   DST curve on the rectangle, where the sine basis is exact: at the ground
+%   state the whole curve is the eigensolver's roundoff, which grows with the
+%   norm of the operator rather than falling with the grid, and deeper in the
+%   spectrum it is one coarse grid short of the modes it needs and then drops to
+%   that same floor in a single step.
+%
 %   Without one the finest DST run stands in. The DST curve then stops three runs
 %   short of it -- see CURVE -- a point measured against a neighbouring
 %   resolution saying how fast DST is still moving rather than how far it is from
@@ -455,6 +758,14 @@ function plot_error_runs(stem, runs, index, ref)
     methods = {'DST', 'FD', 'FEM'};
     colors  = {[0 0.45 0.74], [0.85 0.33 0.10], [0.47 0.67 0.19]};
     markers = {'o', 's', '^'};
+    % Where the arithmetic takes over from the method. A dense eig returns the
+    % eigenvalues of these operators to about a part in 1e11 -- the norm grows as
+    % h^-2, and that is what the DST error on the rectangle is made of -- so a
+    % relative error a decade below that is not a discretisation error and no
+    % rate is fitted through it. Every genuine curve in these figures is orders
+    % of magnitude above it, the closest being FEM on the rectangle ground state
+    % at 1e-7.
+    ROUNDOFF_FLOOR = 1e-10;
 
     % Render all text with the LaTeX interpreter, as in the other paper figures.
     fig = figure('Visible', 'off', 'Position', [100 100 950 680], ...
@@ -491,16 +802,27 @@ function plot_error_runs(stem, runs, index, ref)
         if ref.relative
             err = err / abs(ref.value);
         end
-        keep = err > 0;          % belt and braces: no zero can reach a log axis
-        d = d(keep); err = err(keep);
+        % A run that lands on the reference exactly -- it happens on the
+        % rectangle, where DST is exact -- has no place on a log axis, and
+        % dropping it would leave a hole in the middle of a curve. It is drawn on
+        % the floor instead, at the smallest error double precision can tell from
+        % zero.
+        err = max(err, eps);
         loglog(ax, d, err, ['-' markers{mi}], 'Color', colors{mi}, 'LineWidth', 2.0, ...
             'MarkerSize', 7, 'MarkerFaceColor', 'w', ...
             'DisplayName', sprintf('\\texttt{%s}', methods{mi}));
         yhi = 0;
-        if triangle(mi)
+        % The rate is fitted to the part of the curve that is a discretisation
+        % error, which is the part above the floor: on the rectangle, DST at an
+        % index deep enough to feel the edge of the coarsest grid drops from a
+        % real error to roundoff in one step, and a line through the drop
+        % describes neither end of it.
+        fit = err > ROUNDOFF_FLOOR;
+        if triangle(mi) && sum(fit) >= 3 && decays(err(fit))
             % Least-squares algebraic rate: err ~ dofs^p, annotated by the triangle.
-            p = polyfit(log(d), log(err), 1);
-            yhi = slope_triangle(ax, d, p, colors{mi}, spans{mi}, offsets(mi));
+            p = polyfit(log(d(fit)), log(err(fit)), 1);
+            yhi = slope_triangle(ax, d(fit), err(fit), p, colors{mi}, ...
+                                 spans{mi}, offsets(mi));
         end
         lo = min([lo, err]);
         hi = max([hi, err, yhi]);
@@ -521,12 +843,29 @@ function plot_error_runs(stem, runs, index, ref)
         ylabel(ax, sprintf('$|\\lambda_{%d} - \\lambda_{%d}^{\\mathrm{%s}}|$', ...
                            index, index, ref.label));
     end
-    % No title: the domain is identified by the output file name.
-    legend(ax, 'Location', 'southwest', 'FontSize', 10, 'Box', 'off');
+    % No title: the domain is identified by the output file name. The free corner
+    % moves with the domain here too, so the placement is left to the axes; see
+    % PLOT_RUNS.
+    legend(ax, 'Location', 'best', 'FontSize', 10, 'Box', 'off');
     grid(ax, 'on'); box(ax, 'on');
     set(ax, 'FontSize', 12);
 
     save_figure(fig, stem);
+end
+
+
+function tf = decays(err)
+%DECAYS Whether an error curve falls fast enough for a fitted rate to mean anything.
+%
+%   The finest run at least twice as accurate as the worst, over at least three
+%   runs. Any method converging at all clears that -- the shallowest curve in
+%   these figures, FD on the L-shaped ground state, falls by a factor of eight --
+%   while a curve that wanders about one level or climbs does not: the DST error
+%   on the rectangle is the eigensolver's roundoff, which grows with the norm of
+%   the operator, and a line fitted to it would report a rate for arithmetic
+%   noise. Written as a ratio rather than as a threshold on the error itself, so
+%   that it carries no scale of its own.
+    tf = numel(err) >= 3 && err(end) < 0.5 * max(err);
 end
 
 
@@ -576,21 +915,28 @@ function [d, v] = curve(runs, method, dst_trim)
 end
 
 
-function y_hi = slope_triangle(ax, d, p, color, span, offset)
+function y_hi = slope_triangle(ax, d, err, p, color, span, offset)
 %SLOPE_TRIANGLE Reference-slope triangle above one curve, labelled with the rate.
 %
 %   Right triangle whose hypotenuse has the fitted slope p(1), drawn just above
 %   the curve it belongs to: horizontal leg on top, vertical leg on the right.
 %   SPAN gives the fraction of the log-DOF range it covers and OFFSET how far
-%   above the fitted line it sits -- the caller staggers the three triangles so
-%   that each keeps to the gap above its own curve without running into the
+%   above the curve it sits -- the caller staggers the three triangles so that
+%   each keeps to the gap above its own curve without running into the
 %   neighbouring one. Returns the highest ordinate drawn so the caller can
 %   leave room. Kept out of the legend.
+%
+%   Anchored to the curve at the left end of the span, not to the fitted line.
+%   The two agree wherever the curve is a power law, which is most of these
+%   figures; where it is not -- DST on the triangle, steep while the coarse grids
+%   are still resolving the mode and shallower afterwards -- the fitted line runs
+%   away from the curve in the middle and a triangle hung off it floats in empty
+%   space. The slope drawn is the fitted one either way.
 
     lg = log(d([1 end]));
     x1 = exp(lg(1) + span(1) * diff(lg));
     x2 = exp(lg(1) + span(2) * diff(lg));
-    y1 = exp(polyval(p, log(x1))) * offset;
+    y1 = exp(interp1(log(d), log(err), log(x1))) * offset;
     y2 = y1 * (x2 / x1)^p(1);
 
     args = {'Color', color, 'LineWidth', 1.0, 'HandleVisibility', 'off'};

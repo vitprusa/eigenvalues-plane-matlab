@@ -1,0 +1,26 @@
+% Ground-state convergence against the degrees of freedom, rectangular domain:
+% the eigenvalue itself on the left, the relative error on the right.
+%
+% Requires in the preamble:
+%   \usepackage{graphicx}
+%   \usepackage{subfig}
+%   \usepackage{epstopdf}   % the figures are EPS; needed under pdflatex,
+%                           % which then wants -shell-escape. Not needed for
+%                           % latex/dvips, which reads EPS directly.
+%
+% The figures live next to this file, in
+% results_paper/eigenvalues_convergence/. If you \input this snippet
+% from elsewhere, point graphicx at that folder, e.g.
+%   \graphicspath{{results_paper/eigenvalues_convergence/}}
+% and drop the leading path from the \includegraphics arguments below.
+
+\begin{figure}[htbp]
+  \centering
+  \subfloat[Eigenvalue $\lambda_1$.\label{fig:convergence_rectangle_lambda1_value}]{%
+    \includegraphics[width=0.45\textwidth]{rectangle_convergence_lambda1}}
+  \qquad
+  \subfloat[Relative error $\frac{|\lambda_1 - \lambda_1^{\text{exact}}|}{\lambda_1^{\text{exact}}}$.\label{fig:convergence_rectangle_lambda1_error}]{%
+    \includegraphics[width=0.45\textwidth]{rectangle_convergence_lambda1_error}}
+  \caption{The first eigenvalue $\lambda_1$ of Laplace operator, zero Dirichlet boundary conditions, rectangular domain \texttt{rectangle}, $(0, 2 \pi) \times (0, \pi)$. Eigenvalue $\lambda_1$ computed by each discretisation \texttt{DST}, \texttt{FD} and \texttt{FEM} with varying degrees of freedom; compared with the exact eigenvalue $\lambda_1^{\text{exact}}$, the smallest value of $\frac{m^2}{4} + n^2$, $m, n \geq 1$.}
+  \label{fig:convergence_rectangle_lambda1}
+\end{figure}
