@@ -1,7 +1,7 @@
 # Domain: square (partial spectrum)
 # Bounding box [a, b] x [c, d] = [0, 3.14159] x [0, 3.14159]
 # Resolution M = 200, grid spacing h = 0.0156298, dofs = 40000
-# Computation time: 66.594 s
+# Computation time: 60.604 s
 # Indicator function phi = @(x,y)indicator_rectangle(x,y,0,pi,0,pi)
 # eigs: k = 10, tolerance = 1e-10, subspace_dim = 100, max_iterations = 300
 n,lambda_n

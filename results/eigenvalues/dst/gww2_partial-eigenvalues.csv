@@ -1,7 +1,7 @@
 # Domain: gww2 (partial spectrum)
 # Bounding box [a, b] x [c, d] = [-3, 3] x [-3, 3]
 # Resolution M = 200, grid spacing h = 0.0298507, dofs = 15411
-# Computation time: 6.340 s
+# Computation time: 5.993 s
 # Indicator function phi = @(x,y)indicator_gww2(x,y,-3,-1,1,3,-1,1,3)
 # eigs: k = 10, tolerance = 1e-10, subspace_dim = 100, max_iterations = 300
 n,lambda_n

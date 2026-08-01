@@ -1,7 +1,7 @@
 # Domain: L_shaped (partial spectrum)
 # Bounding box [a, b] x [c, d] = [-1, 1] x [-1, 1]
 # Resolution M = 299, grid spacing h = 0.00666667, dofs = 66901
-# Computation time: 184.042 s
+# Computation time: 159.106 s
 # Indicator function phi = @(x,y)indicator_L_shaped(x,y,-1,0,1,-1,0,1)
 # eigs: k = 10, tolerance = 1e-10, subspace_dim = 100, max_iterations = 300
 n,lambda_n
