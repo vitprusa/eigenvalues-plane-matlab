@@ -25,14 +25,18 @@ function compute_eigenvalues_dof_requirement(n_eigenvalues, name, tolerances)
 %   does not, E is fitted as a power law E ~ C * dofs^p over the finest runs and
 %   the crossing extrapolated; the answer table says which of the two it is.
 %
-%   The reference is the DST run at M_REF, finer than every run of the sweep.
-%   Nobody has published the first n eigenvalues of the L-shaped domain, so
-%   there is nothing else to measure against. Its own resolution shows up as a
-%   floor: the difference between it and the finest DST run of the sweep is
+%   The reference is the closed form where the domain has one -- the right
+%   isosceles triangle, whose spectrum is m^2 + n^2 with m > n >= 1 -- and there
+%   every error in the table is a true error.
+%
+%   Where it has none, it is the DST run at M_REF, finer than every run of the
+%   sweep: nobody has published the first n eigenvalues of the L-shaped domain,
+%   so there is nothing else to measure against. Its own resolution then shows up
+%   as a floor: the difference between it and the finest DST run of the sweep is
 %   reported, and a tolerance within an order of magnitude of that floor is not
 %   resolved by this computation, which the answer table says.
 %
-%   What binds the floor on this domain is the ground state, not the top of the
+%   What binds the floor on the L-shape is the ground state, not the top of the
 %   block. The re-entrant corner carries an r^(2/3) singularity, every method
 %   converges slowly on the modes that feel it, and the reference itself sits
 %   about 1e-3 from the published MPS value of lambda_1. Against a DST reference
@@ -90,11 +94,13 @@ function compute_eigenvalues_dof_requirement(n_eigenvalues, name, tolerances)
     end
 
     cfgs = domain_configs();
+    cfgs_all = cfgs;
     if nargin >= 2 && ~isempty(name)
         cfgs = cfgs(strcmp({cfgs.name}, name));
         if isempty(cfgs)
             error('eigenvalues_dof_requirement:unknownDomain', ...
-                'Unknown domain "%s" (known: L_shaped).', name);
+                'Unknown domain "%s" (known: %s).', name, ...
+                strjoin({cfgs_all.name}, ', '));
         end
     end
 
@@ -124,12 +130,13 @@ function compute_eigenvalues_dof_requirement(n_eigenvalues, name, tolerances)
         end
         runs = compute_runs(cfg, n_eigenvalues, reference, cached, csv, ref_dofs);
 
-        floor_value = reference_floor(runs);
+        floor_value = reference_floor(runs, ref_dofs);
         answer = required_dofs(runs, tolerances, n_eigenvalues);
         report_answer(cfg, n_eigenvalues, answer, floor_value, ref_dofs);
         write_answer_csv([stem '_answer.csv'], cfg, answer, n_eigenvalues, ...
                          ref_dofs, floor_value);
-        plot_requirement(stem, runs, answer, tolerances, n_eigenvalues, floor_value);
+        plot_requirement(stem, runs, answer, tolerances, n_eigenvalues, ...
+                         floor_value, reference_label(ref_dofs));
     end
 end
 
@@ -144,7 +151,8 @@ function cfgs = domain_configs()
 %   freedom is what fits.
     cfgs = struct('name', {}, 'pretty', {}, 'box', {}, 'phi', {}, ...
                   'gd', {}, 'ns', {}, 'sf', {}, ...
-                  'M_ref', {}, 'M_grid_dst', {}, 'M_grid_fd', {}, 'Hmax_fem', {});
+                  'M_ref', {}, 'exact_fun', {}, ...
+                  'M_grid_dst', {}, 'M_grid_fd', {}, 'Hmax_fem', {});
 
     % --- L-shaped domain ----------------------------------------------------
     % Box [-1,1]^2, so h = 2/(M+1) and M+1 must be even for the re-entrant
@@ -171,21 +179,79 @@ function cfgs = domain_configs()
         'phi', @(x, y) indicator_L_shaped(x, y, -1, 0, 1, -1, 0, 1), ...
         'gd', [[3; 4; -1; 1; 1; -1; -1; -1; 1; 1], [3; 4; 0; 1; 1; 0; 0; 0; 1; 1]], ...
         'ns', char('R1', 'R2')', 'sf', 'R1-R2', ...
-        'M_ref', 163, ...
+        'M_ref', 163, 'exact_fun', [], ...
         'M_grid_dst', [37 45 55 65 75 85 95 105 115], ...
         'M_grid_fd',  [37 45 55 65 75 85 95 105 115 127 141], ...
         'Hmax_fem', [0.11 0.10 0.085 0.0755 0.066 0.060 0.055 0.051 0.0446 ...
                      0.0395 0.036 0.030]);
+
+    % --- right isosceles triangle, legs pi -----------------------------------
+    % Box [0,pi]^2 and the hypotenuse y = x runs through grid points whatever M
+    % is, so there is no alignment condition to meet. The interior points are
+    % those with y < x, dofs = M*(M-1)/2 exactly, so M = 46 is the first
+    % resolution with more than a thousand of them.
+    %
+    % No reference run: the spectrum is m^2 + n^2 with m > n >= 1, so the
+    % reference is the closed form and every error in the table is a true error
+    % rather than a distance to another computation. That is what EXACT_FUN
+    % carries, and why M_REF is empty -- see REFERENCE_SPECTRUM. There is no
+    % reference floor either, and the figure draws none.
+    %
+    % The FEM meshes follow the DST dof counts through the empirical
+    % dofs*Hmax^2 ~ 22 of this geometry, and FD is carried two resolutions
+    % further, as on the L-shape, its answer lying beyond the sweep.
+    cfgs(end+1) = struct( ...
+        'name', 'isosceles_triangle', 'pretty', 'right isosceles triangle', ...
+        'box', [0 pi 0 pi], ...
+        'phi', @(x, y) indicator_isosceles_triangle(x, y, 0, pi, 0), ...
+        'gd', [2; 3; 0; pi; pi; 0; 0; pi], 'ns', char('T1')', 'sf', 'T1', ...
+        'M_ref', [], 'exact_fun', @exact_isosceles_triangle, ...
+        'M_grid_dst', [46 56 66 76 86 96 106 116 126 141], ...
+        'M_grid_fd',  [46 56 66 76 86 96 106 116 126 141 155 174], ...
+        'Hmax_fem', [0.1425 0.1168 0.099 0.0861 0.0761 0.0681 0.0617 0.0564 ...
+                     0.0519 0.0464 0.0422 0.0376]);
+end
+
+
+function v = exact_isosceles_triangle(n)
+%EXACT_ISOSCELES_TRIANGLE The first n eigenvalues of the triangle, in closed form.
+%
+%   Right isosceles triangle with legs pi: lambda_{m,n} = m^2 + n^2 with
+%   m > n >= 1, the antisymmetric half of the square's spectrum, ascending with
+%   multiplicity. Enumerated below a bound rather than over a fixed range of
+%   (m, n), which could miss an eigenvalue smaller than one it keeps; the bound
+%   is doubled until it holds enough of the spectrum.
+    bound = 64;
+    while true
+        [m, k] = meshgrid(1:ceil(sqrt(bound)), 1:ceil(sqrt(bound)));
+        v = m.^2 + k.^2;
+        v = sort(v(m > k & v <= bound));
+        if numel(v) >= n
+            v = v(1:n);
+            return;
+        end
+        bound = 2 * bound;
+    end
 end
 
 
 function [reference, ref_dofs] = reference_spectrum(cfg, n, stem)
 %REFERENCE_SPECTRUM The first n eigenvalues everything else is measured against.
 %
-%   The DST run at cfg.M_REF, cached as a CSV of its own. It is the finest run
-%   of the whole computation and the most accurate method on it, and away from
-%   the ground state there is no published value to use instead.
+%   The closed form where the domain has one, and the DST run at cfg.M_REF where
+%   it has not. The DST run is the finest of the whole computation and the most
+%   accurate method on it, and away from the ground state there is no published
+%   value to use instead; but it is a computation, so it carries an error of its
+%   own, which REFERENCE_FLOOR reports. A closed form carries none, and REF_DOFS
+%   comes back 0 to say so.
     csv = sprintf('%s_reference-eigenvalues.csv', stem);
+    if ~isempty(cfg.exact_fun)
+        reference = cfg.exact_fun(n);
+        ref_dofs = 0;
+        fprintf('  reference: closed form, lambda_%d = %.9f\n', n, reference(n));
+        write_reference_csv(csv, cfg, reference, ref_dofs, n);
+        return;
+    end
     if exist(csv, 'file')
         [reference, ref_dofs, ref_M] = read_reference_csv(csv, n);
         % The resolution is part of what the cache holds, not just the values:
@@ -339,7 +405,17 @@ function warm_up(cfg, x_range, y_range)
 end
 
 
-function floor_value = reference_floor(runs)
+function label = reference_label(ref_dofs)
+%REFERENCE_LABEL What the errors are measured against, for the axis label.
+    if ref_dofs == 0
+        label = 'exact';
+    else
+        label = 'DST';
+    end
+end
+
+
+function floor_value = reference_floor(runs, ref_dofs)
 %REFERENCE_FLOOR What the reference itself cannot resolve.
 %
 %   The error of the finest DST run of the sweep. It is measured against the
@@ -347,6 +423,14 @@ function floor_value = reference_floor(runs)
 %   how far the two of them are apart rather than how far either is from the
 %   exact eigenvalues. An error of that size, or a tolerance asked for within an
 %   order of magnitude of it, says nothing.
+%
+%   Against a closed form there is no floor at all: REF_DOFS is 0, every error in
+%   the table is a true error, and NaN comes back so that no floor is drawn in
+%   the figure and none is warned about in the answer table.
+    if ref_dofs == 0
+        floor_value = NaN;
+        return;
+    end
     dst = strcmp({runs.method}, 'DST');
     if ~any(dst)
         floor_value = NaN;
@@ -432,8 +516,12 @@ function report_answer(cfg, n, answer, floor_value, ref_dofs)
     fprintf('\n');
     fprintf('  Degrees of freedom needed for the first %d eigenvalues, %s domain\n', ...
             n, cfg.pretty);
-    fprintf('  (reference: DST at %d dofs; it resolves errors down to %.1e)\n\n', ...
-            ref_dofs, floor_value);
+    if ref_dofs == 0
+        fprintf('  (reference: the closed form; every error below is a true error)\n\n');
+    else
+        fprintf('  (reference: DST at %d dofs; it resolves errors down to %.1e)\n\n', ...
+                ref_dofs, floor_value);
+    end
     fprintf('    %-5s %10s %12s %8s %11s %8s %10s\n', ...
             'meth', 'tolerance', 'dofs', 'per eig', 'from', 'rate', 'dense eig');
     for i = 1:numel(answer)
@@ -586,9 +674,17 @@ function write_reference_csv(csv, cfg, evals, dofs, n)
         error('eigenvalues_dof_requirement:csv', 'Could not open %s for writing.', csv);
     end
     closer = onCleanup(@() fclose(fid)); %#ok<NASGU>
-    fprintf(fid, '# Domain: %s (DST, dense eig full spectrum)\n', cfg.name);
+    if isempty(cfg.M_ref)
+        fprintf(fid, '# Domain: %s (closed form)\n', cfg.name);
+    else
+        fprintf(fid, '# Domain: %s (DST, dense eig full spectrum)\n', cfg.name);
+    end
     fprintf(fid, '# Reference for the DOF requirement of the first %d eigenvalues\n', n);
-    fprintf(fid, '# Resolution M = %d, dofs = %d\n', cfg.M_ref, dofs);
+    if isempty(cfg.M_ref)
+        fprintf(fid, '# Closed form, dofs = %d (no resolution of its own)\n', dofs);
+    else
+        fprintf(fid, '# Resolution M = %d, dofs = %d\n', cfg.M_ref, dofs);
+    end
     fprintf(fid, 'n,lambda_n\n');
     for k = 1:numel(evals)
         fprintf(fid, '%d,%.12g\n', k, evals(k));
@@ -639,7 +735,11 @@ function write_runs_csv(csv, cfg, runs, n, ref_dofs)
     closer = onCleanup(@() fclose(fid)); %#ok<NASGU>
     fprintf(fid, ['# Domain: %s (accuracy of the first %d eigenvalues against ', ...
                   'DOF, dense eig)\n'], cfg.name, n);
-    fprintf(fid, '# Reference: DST at M = %d, dofs = %d\n', cfg.M_ref, ref_dofs);
+    if ref_dofs == 0
+        fprintf(fid, '# Reference: the closed form, dofs = 0\n');
+    else
+        fprintf(fid, '# Reference: DST at M = %d, dofs = %d\n', cfg.M_ref, ref_dofs);
+    end
     fprintf(fid, ['# max_rel_error = max over k <= %d of ', ...
                   '|lambda_k - lambda_k^ref| / lambda_k^ref\n'], n);
     fprintf(fid, 'method,resolution,dofs,max_rel_error,arg_max,rel_error_at_n,time_s\n');
@@ -690,8 +790,12 @@ function write_answer_csv(csv, cfg, answer, n, ref_dofs, floor_value)
     closer = onCleanup(@() fclose(fid)); %#ok<NASGU>
     fprintf(fid, ['# Domain: %s (degrees of freedom needed for the first %d ', ...
                   'eigenvalues)\n'], cfg.name, n);
-    fprintf(fid, '# Reference: DST at %d dofs, resolving errors down to %.3e\n', ...
-            ref_dofs, floor_value);
+    if ref_dofs == 0
+        fprintf(fid, '# Reference: the closed form, exact\n');
+    else
+        fprintf(fid, '# Reference: DST at %d dofs, resolving errors down to %.3e\n', ...
+                ref_dofs, floor_value);
+    end
     fprintf(fid, ['# source: measured = reached by the sweep, ', ...
                   'fitted = extrapolated along max_rel_error ~ dofs^rate\n']);
     fprintf(fid, ['# time_s: the dense eig of that one run, measured or ', ...
@@ -711,7 +815,7 @@ function write_answer_csv(csv, cfg, answer, n, ref_dofs, floor_value)
 end
 
 
-function plot_requirement(stem, runs, answer, tolerances, n, floor_value)
+function plot_requirement(stem, runs, answer, tolerances, n, floor_value, ref_label)
 %PLOT_REQUIREMENT The largest error over the block against DOF, on log-log axes.
 %
 %   One curve per method, drawn over the runs of the sweep, and continued as a
@@ -795,9 +899,12 @@ function plot_requirement(stem, runs, answer, tolerances, n, floor_value)
     % Room on the right for the timing label of the last marker.
     xlim(ax, [d_lo * 0.8, d_hi * 2.4]);
     xlabel(ax, 'degrees of freedom');
+    % The reference is named on the axis: on a domain with a closed form these
+    % are true errors, and the label has to say so rather than claim a DST run
+    % the computation never made.
     ylabel(ax, sprintf(['$\\max_{k \\leq %d} \\frac{|\\lambda_k - ', ...
-                        '\\lambda_k^{\\mathrm{DST}}|}{\\lambda_k^{\\mathrm{DST}}}$'], n), ...
-           'FontSize', 16);
+                        '\\lambda_k^{\\mathrm{%s}}|}{\\lambda_k^{\\mathrm{%s}}}$'], ...
+                       n, ref_label, ref_label), 'FontSize', 16);
     % No title: the domain is identified by the output file name.
     legend(ax, 'Location', 'southwest', 'FontSize', 10, 'Box', 'off');
     grid(ax, 'on'); box(ax, 'on');

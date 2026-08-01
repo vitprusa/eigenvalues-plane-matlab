@@ -1,0 +1,20 @@
+# Domain: isosceles_triangle (degrees of freedom needed for the first 1000 eigenvalues)
+# Reference: the closed form, exact
+# source: measured = reached by the sweep, fitted = extrapolated along max_rel_error ~ dofs^rate
+# time_s: the dense eig of that one run, measured or extrapolated along time ~ dofs^q
+method,tolerance,dofs,dofs_per_eigenvalue,source,rate,time_s,time_source
+DST,0.08,1540,1.54,measured,,0.1396,measured
+DST,0.04,1540,1.54,measured,,0.1396,measured
+DST,0.02,1540,1.54,measured,,0.1396,measured
+DST,0.01,2850,2.85,measured,,0.5642,measured
+DST,0.001,7875,7.875,measured,,8.2733,measured
+FD,0.08,11935,11.94,measured,,25.0711,measured
+FD,0.04,22450.5,22.45,fitted,-0.8695,134.075,fitted
+FD,0.02,49823.4,49.82,fitted,-0.8695,1172.96,fitted
+FD,0.01,110571,110.6,fitted,-0.8695,10261.7,fitted
+FD,0.001,1.56211e+06,1562,fitted,-0.8695,1.38123e+07,fitted
+FEM,0.08,4706,4.706,measured,,9.9553,measured
+FEM,0.04,8293,8.293,measured,,55.8575,measured
+FEM,0.02,10357,10.36,measured,,108.871,measured
+FEM,0.01,15839,15.84,measured,,411.531,measured
+FEM,0.001,53635.1,53.64,fitted,-1.8159,17255,fitted
