@@ -155,9 +155,10 @@ function cfgs = domain_configs()
     %
     % The reference is taken at M = 163, that is 19845 dofs: a dense matrix of
     % 2.93 GB, whose eig peaks at about twice that and so still fits in memory
-    % here, where M = 183 (25025 dofs, 4.67 GB) would swap. It costs about half
-    % an hour, the general QR path that eig takes on this matrix being some
-    % fourteen times dearer than the symmetric one.
+    % here, where M = 183 (25025 dofs, 4.67 GB) would swap. It costs about two
+    % minutes. It used to cost half an hour, the general QR path that eig took
+    % on this matrix being some fourteen times dearer than the symmetric one;
+    % DST_LAPLACE_SYMMETRISE now puts it on the symmetric path.
     %
     % DST stops at M = 115: it settles early, and its answer is read off the
     % coarse end of the curve. FD is carried two resolutions further, its answer
@@ -225,7 +226,7 @@ function runs = compute_runs(cfg, n, reference, cached, csv, ref_dofs)
 %   rewritten CSV keeps the shape of the old one.
 %
 %   The CSV is rewritten after every run computed, not once at the end: the
-%   sweep takes the better part of an hour, and an interruption anywhere in it
+%   sweep takes about a quarter of an hour, and an interruption anywhere in it
 %   would otherwise cost the whole thing rather than the run it landed on.
 %
 %   A run whose spectrum is shorter than n is reported and dropped. Those are
