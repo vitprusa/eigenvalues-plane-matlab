@@ -171,7 +171,12 @@ experiments/eigenvalues_dof_sweep/ DOF-sweep drivers and plots (compute_*_dof_sw
                                plot_*_dof_sweep.m, load_dof_sweep, run_*_dof_sweep.sh)
 experiments/eigenvalues_dof_requirement/ how many DOF the first n eigenvalues cost
                                (compute_eigenvalues_dof_requirement.m,
-                               run_eigenvalues_dof_requirement.sh)
+                               run_eigenvalues_dof_requirement.sh): the largest
+                               relative error over the whole block against DOF, for
+                               DST/FD/FEM, on the L-shape and the right isosceles
+                               triangle; the answer per tolerance is read off the
+                               sweep where it reaches one and extrapolated along a
+                               fitted power law where it does not
 experiments/grid_visualisation/ DST grid + domain-mask figures (plot_grid_visualisation.m,
                                run_grid_visualisation.sh)
 experiments/eigenvalues_weyl/  Weyl-asymptotics visual check (plot_weyl_asymptotics.m,
@@ -216,12 +221,16 @@ results/eigenvalues_dof_sweep/ L-shaped, rectangle, and isosceles-triangle
                                plot_*_dof_sweep.m draws the figure
 results/eigenvalues_dof_requirement/ DOF needed for the first n eigenvalues, per method:
                                <domain>_dof_requirement_n<n>_reference-eigenvalues.csv
-                               (the DST reference spectrum),
+                               (the reference spectrum: the closed form on the
+                               triangle, a DST run at M_ref on the L-shape, whose own
+                               resolution is then reported as a floor),
                                <domain>_dof_requirement_n<n>.csv (one row per run,
                                with the largest relative error over the block),
                                <domain>_dof_requirement_n<n>_answer.csv (the answer
-                               table) and <domain>_dof_requirement_n<n>.eps; the CSVs
-                               are reused on re-runs, delete them to recompute.
+                               table), <domain>_dof_requirement_n<n>.eps (each marker
+                               labelled with what that run cost) and the
+                               <domain>_dof_requirement_n<n>.tex figure snippet; the
+                               CSVs are reused on re-runs, delete them to recompute.
                                Also richardson_extrapolation.tex, a standalone note
                                (pdflatex) on extrapolating the DST sequence to a
                                reference, validated against the published ground state
