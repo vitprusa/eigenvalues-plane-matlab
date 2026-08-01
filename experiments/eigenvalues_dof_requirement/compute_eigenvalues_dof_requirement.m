@@ -469,10 +469,45 @@ function report_answer(cfg, n, answer, floor_value, ref_dofs)
 end
 
 
+function time_label(ax, x, y, tsec, color, place)
+%TIME_LABEL What one run cost, written beside its marker.
+%
+%   PLACE is the compass direction the label takes from the marker, in the colour
+%   of its own curve. One direction per method rather than one per point, so that
+%   the eye learns where to look once: FD to the north-east, DST and FEM to the
+%   south-west.
+%
+%   Small, and out of the legend: the labels are there to be read off a point
+%   once the eye has found it, not to be scanned as a series.
+    if isnan(tsec)
+        return;
+    end
+    switch place
+        case 'NE'
+            x_text = x * 1.04; y_text = y * 1.18;
+            halign = 'left';   valign = 'bottom';
+        case 'SW'
+            x_text = x * 0.96; y_text = y * 0.85;
+            halign = 'right';  valign = 'top';
+        otherwise
+            error('eigenvalues_dof_requirement:place', ...
+                'Label direction must be "NE" or "SW", got "%s".', place);
+    end
+    text(ax, x_text, y_text, format_time(tsec), ...
+        'Color', color, 'FontSize', 9, 'HandleVisibility', 'off', ...
+        'HorizontalAlignment', halign, 'VerticalAlignment', valign);
+end
+
+
 function s = format_time(tsec)
 %FORMAT_TIME A duration in the unit that reads, to two significant figures.
     if isnan(tsec)
         s = '--';
+    elseif tsec < 1
+        % Two significant figures, not one decimal: the symmetrised eig put the
+        % coarse DST runs below a twentieth of a second, where "0.0 s" is all a
+        % single decimal has left to say.
+        s = sprintf('%.2g s', tsec);
     elseif tsec < 90
         s = sprintf('%.1f s', tsec);
     elseif tsec < 5400
@@ -684,9 +719,19 @@ function plot_requirement(stem, runs, answer, tolerances, n, floor_value)
 %   tolerances are drawn as levels, so the answer is where a curve crosses one.
 %   Colours and markers are those of the convergence figures, so that the
 %   figures of a domain read as one family.
+%
+%   Every marker carries what that run cost, in the units of FORMAT_TIME, which
+%   is what the answer table prints. The accuracy of a method is only half the
+%   question here and the figure would otherwise answer it alone: two methods
+%   reaching a tolerance at the same dof count are not equally cheap, the dense
+%   eig of the same matrix taking DST a fraction of what it takes FD. The label
+%   on an extrapolated marker is extrapolated too, along time ~ dofs^q.
     methods = {'DST', 'FD', 'FEM'};
     colors  = {[0 0.45 0.74], [0.85 0.33 0.10], [0.47 0.67 0.19]};
     markers = {'o', 's', '^'};
+    % The compass direction each method's timing labels take from their markers;
+    % see TIME_LABEL.
+    places  = {'SW', 'NE', 'SW'};
 
     % Render all text with the LaTeX interpreter, as in the other figures.
     fig = figure('Visible', 'off', 'Position', [100 100 950 680], ...
@@ -700,11 +745,14 @@ function plot_requirement(stem, runs, answer, tolerances, n, floor_value)
     d_lo = inf;
     d_hi = 0;
     for mi = 1:numel(methods)
-        [d, e] = curve(runs, methods{mi});
+        [d, e, t] = curve(runs, methods{mi});
         if isempty(d); continue; end
         loglog(ax, d, e, ['-' markers{mi}], 'Color', colors{mi}, 'LineWidth', 2.0, ...
             'MarkerSize', 7, 'MarkerFaceColor', 'w', ...
             'DisplayName', sprintf('\\texttt{%s}', methods{mi}));
+        for j = 1:numel(d)
+            time_label(ax, d(j), e(j), t(j), colors{mi}, places{mi});
+        end
         d_lo = min(d_lo, min(d));
         d_hi = max(d_hi, max(d));
 
@@ -724,6 +772,8 @@ function plot_requirement(stem, runs, answer, tolerances, n, floor_value)
                 loglog(ax, target.dofs, tol_min, markers{mi}, 'Color', colors{mi}, ...
                     'MarkerSize', 9, 'MarkerFaceColor', colors{mi}, ...
                     'HandleVisibility', 'off');
+                time_label(ax, target.dofs, tol_min, target.time, ...
+                           colors{mi}, places{mi});
                 d_hi = max(d_hi, target.dofs);
             end
         end
@@ -742,7 +792,8 @@ function plot_requirement(stem, runs, answer, tolerances, n, floor_value)
 
     hold(ax, 'off');
     set(ax, 'XScale', 'log', 'YScale', 'log');
-    xlim(ax, [d_lo * 0.8, d_hi * 1.6]);
+    % Room on the right for the timing label of the last marker.
+    xlim(ax, [d_lo * 0.8, d_hi * 2.4]);
     xlabel(ax, 'degrees of freedom');
     ylabel(ax, sprintf(['$\\max_{k \\leq %d} \\frac{|\\lambda_k - ', ...
                         '\\lambda_k^{\\mathrm{DST}}|}{\\lambda_k^{\\mathrm{DST}}}$'], n), ...

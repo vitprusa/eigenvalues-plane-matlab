@@ -3,16 +3,16 @@
 # source: measured = reached by the sweep, fitted = extrapolated along max_rel_error ~ dofs^rate
 # time_s: the dense eig of that one run, measured or extrapolated along time ~ dofs^q
 method,tolerance,dofs,dofs_per_eigenvalue,source,rate,time_s,time_source
-DST,0.08,1496,1.496,measured,,0.149711,measured
-DST,0.04,1496,1.496,measured,,0.149711,measured
-DST,0.02,1496,1.496,measured,,0.149711,measured
-DST,0.01,1496,1.496,measured,,0.149711,measured
-DST,0.001,6721,6.721,measured,,5.25682,measured
+DST,0.08,1496,1.496,measured,,0.1497,measured
+DST,0.04,1496,1.496,measured,,0.1497,measured
+DST,0.02,1496,1.496,measured,,0.1497,measured
+DST,0.01,1496,1.496,measured,,0.1497,measured
+DST,0.001,6721,6.721,measured,,5.2568,measured
 FD,0.08,12033,12.03,measured,,26.4669,measured
-FD,0.04,22292,22.29,fitted,-0.9337,174.784,fitted
-FD,0.02,46834.3,46.83,fitted,-0.9337,1667.02,fitted
-FD,0.01,98396.5,98.4,fitted,-0.9337,15899.5,fitted
-FD,0.001,1.15883e+06,1159,fitted,-0.9337,2.85111e+07,fitted
+FD,0.04,22292,22.29,fitted,-0.9337,174.783,fitted
+FD,0.02,46834.3,46.83,fitted,-0.9337,1667.01,fitted
+FD,0.01,98396.5,98.4,fitted,-0.9337,15899.3,fitted
+FD,0.001,1.15883e+06,1159,fitted,-0.9337,2.85104e+07,fitted
 FEM,0.08,5163,5.163,measured,,13.3372,measured
 FEM,0.04,8567,8.567,measured,,61.7513,measured
 FEM,0.02,10509,10.51,measured,,112.39,measured
