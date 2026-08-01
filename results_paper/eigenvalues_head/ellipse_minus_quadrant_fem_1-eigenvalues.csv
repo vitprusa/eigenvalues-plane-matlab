@@ -1,6 +1,6 @@
 # Domain: ellipse_minus_quadrant (FEM, paper eigenvalues-head run, dense eig full spectrum)
 # Resolution Hmax = 0.2, dofs = 492
-# Computation time: 0.0413 s
+# Computation time: 0.0754 s
 n,lambda_n
 1,5.87847440075
 2,11.5493273175

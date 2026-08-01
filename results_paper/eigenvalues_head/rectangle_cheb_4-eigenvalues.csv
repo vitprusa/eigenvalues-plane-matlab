@@ -1,6 +1,6 @@
 # Domain: rectangle (Cheb, paper eigenvalues-head run, dense eig full spectrum)
 # Resolution N = 40, dofs = 1444
-# Computation time: 0.3860 s
+# Computation time: 0.4333 s
 n,lambda_n
 1,1.25
 2,2

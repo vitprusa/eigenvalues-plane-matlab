@@ -1,6 +1,6 @@
 # Domain: isosceles_triangle (DST, paper eigenvalues-head run, dense eig full spectrum)
 # Resolution M = 35, dofs = 595
-# Computation time: 0.0851 s
+# Computation time: 0.0239 s
 n,lambda_n
 1,4.99989564347
 2,9.99925424758
@@ -227,7 +227,7 @@ n,lambda_n
 223,616.512353603
 224,617.092958812
 225,618.9261277
-226,622.997701681
+226,622.99770168
 227,623.613611166
 228,623.757434468
 229,623.890050793

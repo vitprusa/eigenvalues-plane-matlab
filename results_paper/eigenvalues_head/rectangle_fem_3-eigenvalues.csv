@@ -1,6 +1,6 @@
 # Domain: rectangle (FEM, paper eigenvalues-head run, dense eig full spectrum)
 # Resolution Hmax = 0.18, dofs = 2653
-# Computation time: 1.4487 s
+# Computation time: 1.6249 s
 n,lambda_n
 1,1.2500016293
 2,2.00000666438
