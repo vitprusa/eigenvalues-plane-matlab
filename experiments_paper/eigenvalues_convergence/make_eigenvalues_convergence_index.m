@@ -40,9 +40,9 @@ function make_eigenvalues_convergence_index(index, name)
 %     - spectra/<domain>_<method>_<resolution>-eigenvalues.csv   the whole
 %       spectrum of each run, which is the cache the other three are built from.
 %   Vector EPS, not raster: see SAVE_FIGURE.
-%   Against a DST reference the error figure stops the DST curve three runs short
-%   of it and gives it no triangle, for the reasons in PLOT_ERROR_RUNS and CURVE.
-%   The value figure always shows every run of every method.
+%   Against a DST reference the error figure gives the DST curve no triangle, for
+%   the reason in PLOT_ERROR_RUNS. The whole of every curve is drawn either way:
+%   the reference is a run of its own, finer than the sweep, not a member of it.
 %
 %   On the rectangle the DST error is at roundoff -- the domain fills its
 %   bounding box, so the sine basis the operator is built in is the exact
@@ -116,7 +116,7 @@ function make_eigenvalues_convergence_index(index, name)
             legacy = empty_runs();
         end
         [runs, computed, reused] = compute_runs(cfg, index, spectra_dir, legacy);
-        ref = reference_for(cfg, index, runs);
+        ref = reference_for(cfg, index, dst_reference(cfg, index, spectra_dir));
         write_runs_csv(csv, cfg, runs, index, ref);
         fprintf('  Wrote %s (%d run(s) computed, %d from cache)\n', ...
                 csv, computed, reused);
@@ -131,8 +131,9 @@ function cfgs = domain_configs()
 %
 %   Every sweep covers the same band of DOF counts, from about 100 to about
 %   10000, so that the figures of the three domains are read against each other;
-%   the L-shape runs one resolution past it, to about 15000, for the reference it
-%   needs and the others do not.
+%   the L-shape and the four catalogue domains run one resolution past it, to
+%   about 15000. Their reference is a separate run again, at M_REF; see
+%   DST_REFERENCE.
 %
 %   EXACT_FUN, where the spectrum is known in closed form, returns the exact
 %   eigenvalue of the index asked for. It is external to the sweep and available
@@ -146,7 +147,8 @@ function cfgs = domain_configs()
 %   caveats in PLOT_ERROR_RUNS.
     cfgs = struct('name', {}, 'pretty', {}, 'box', {}, 'phi', {}, ...
                   'gd', {}, 'ns', {}, 'sf', {}, 'M_grid', {}, 'Hmax_fem', {}, ...
-                  'exact_fun', {}, 'ref_index', {}, 'ref_value', {}, 'ref_label', {});
+                  'M_ref', {}, 'exact_fun', {}, 'ref_index', {}, 'ref_value', {}, ...
+                  'ref_label', {});
 
     % --- rectangle [0, 2*pi] x [0, pi] ---------------------------------------
     % Box [0,2pi]x[0,pi], so h = 2*pi/(M+1) and M+1 must be even for the top edge
@@ -175,7 +177,7 @@ function cfgs = domain_configs()
         'M_grid',   [15 21 31 41 51 61 71 81 91 105 119 133 147], ...
         'Hmax_fem', [0.85 0.61 0.42 0.32 0.26 0.22 0.188 0.165 0.147 0.127 ...
                      0.1125 0.100 0.0914], ...
-        'exact_fun', @exact_rectangle, ...
+        'M_ref', [], 'exact_fun', @exact_rectangle, ...
         'ref_index', [], 'ref_value', [], 'ref_label', '');
 
     % --- right isosceles triangle, legs pi -----------------------------------
@@ -199,7 +201,7 @@ function cfgs = domain_configs()
         'M_grid',   [15 21 31 41 51 61 71 81 91 105 119 133 147], ...
         'Hmax_fem', [0.43 0.30 0.21 0.16 0.13 0.109 0.094 0.082 0.073 0.063 ...
                      0.056 0.050 0.0456], ...
-        'exact_fun', @exact_isosceles_triangle, ...
+        'M_ref', [], 'exact_fun', @exact_isosceles_triangle, ...
         'ref_index', [], 'ref_value', [], 'ref_label', '');
 
     % --- L-shaped domain ----------------------------------------------------
@@ -230,8 +232,67 @@ function cfgs = domain_configs()
         'M_grid',   [13 17 31 41 49 55 63 69 75 81 93 105 115 141], ...
         'Hmax_fem', [0.33 0.25 0.135 0.10 0.085 0.0755 0.066 0.060 0.055 0.051 ...
                      0.0446 0.0395 0.036 0.030], ...
-        'exact_fun', [], ...
+        'M_ref', 163, 'exact_fun', [], ...
         'ref_index', 1, 'ref_value', 9.6397238440219, 'ref_label', 'MPS');
+
+    % --- the domains with no closed form and no analytic geometry to spell out -
+    % Ellipse minus a quadrant, H, and the two GWW isospectral drums. Their box
+    % and indicator come from DOMAIN_CATALOG_DST and their decsg geometry from
+    % DOMAIN_CATALOG_FEM, as in MAKE_EIGENVALUES_HEAD_PAPER_TABLES, rather than
+    % being written out again here.
+    %
+    % Like the L-shape they have no closed-form spectrum, so the ground state is
+    % measured against the published MPS value of Betcke & Trefethen kept in
+    % data/, and every other index against the finest DST run of the sweep. That
+    % is why each sweep carries a fourteenth resolution past the band the other
+    % domains stop at: the run that stands in for a reference has to sit well
+    % ahead of the runs measured against it.
+    %
+    % The M values keep the domain edges on grid lines, which is a different
+    % condition on each: the grid spacing is the width of the bounding box over
+    % M+1, and an edge at distance d from its left needs d/h whole. They sweep
+    % the same band of DOF counts as the other domains, from about 100 to about
+    % 10500, and one run beyond.
+    %
+    % The Hmax values target those same DOF counts through the empirical
+    % dofs*Hmax^2 of each geometry -- 21.4 for the ellipse, 31 for H, 62.5 for
+    % the drums -- which the finer meshes obey to within a few per cent. The
+    % coarsest two or three of each run a little under it and are set from a
+    % measured mesh rather than from the constant.
+    %
+    % Columns: catalog name for the two lookups, output name (file names and the
+    % -name filter; H is H_shaped there, as in results_paper/eigenvalues_head/),
+    % caption name, DST/FD resolutions, FEM mesh sizes, published lambda_1, and
+    % the resolution of the reference run (see DST_REFERENCE).
+    extra = { ...
+        'ellipse_minus_quadrant', 'ellipse_minus_quadrant', 'ellipse-minus-quadrant', ...
+            [19 27 43 59 71 83 95 107 119 135 151 171 191 223], ...
+            [0.40 0.30 0.190 0.143 0.119 0.1025 0.0897 0.0797 0.072 0.0635 ...
+             0.057 0.0504 0.0452 0.0387], 5.868746216295, 259; ...
+        'H', 'H_shaped', 'H-shaped', ...
+            [14 17 29 38 47 53 62 68 74 83 92 101 116 137], ...
+            [0.40 0.36 0.21 0.1675 0.128 0.12 0.103 0.094 0.086 0.077 ...
+             0.0678 0.0632 0.055 0.0466], 7.7330888559, 161; ...
+        'gww1', 'gww1', 'GWW1 isospectral drum', ...
+            [17 23 35 47 59 65 77 89 101 113 125 137 155 179], ...
+            [0.71 0.54 0.355 0.262 0.21 0.194 0.1667 0.144 0.1267 0.113 ...
+             0.102 0.093 0.082 0.0712], 2.537943999798, 227; ...
+        'gww2', 'gww2', 'GWW2 isospectral drum', ...
+            [17 23 35 47 59 65 77 89 101 113 125 137 155 179], ...
+            [0.71 0.54 0.355 0.262 0.21 0.194 0.1667 0.144 0.1267 0.113 ...
+             0.102 0.093 0.082 0.0712], 2.537943999798, 227 ...
+    };
+    for i = 1:size(extra, 1)
+        dstc = domain_catalog_dst(extra{i, 1});
+        femc = domain_catalog_fem(extra{i, 1});
+        cfgs(end+1) = struct( ...
+            'name', extra{i, 2}, 'pretty', extra{i, 3}, ...
+            'box', dstc.box, 'phi', dstc.phi, ...
+            'gd', femc.gd, 'ns', femc.ns, 'sf', femc.sf, ...
+            'M_grid', extra{i, 4}, 'Hmax_fem', extra{i, 5}, ...
+            'M_ref', extra{i, 7}, 'exact_fun', [], ...
+            'ref_index', 1, 'ref_value', extra{i, 6}, 'ref_label', 'MPS'); %#ok<AGROW>
+    end
 end
 
 
@@ -624,7 +685,7 @@ function runs = read_runs_csv(csv)
 end
 
 
-function ref = reference_for(cfg, index, runs)
+function ref = reference_for(cfg, index, dst_ref)
 %REFERENCE_FOR The value the figures measure against, and what it is worth.
 %
 %   EXACT, where the domain has a closed-form spectrum: the rectangle and the
@@ -632,18 +693,25 @@ function ref = reference_for(cfg, index, runs)
 %   every run can be measured against it and the error is a true error.
 %
 %   PUBLISHED, when the index asked for is the one the config carries a value
-%   for: the ground state of the L-shape, against the MPS value of Betcke &
-%   Trefethen. Again external to the sweep, and again a true error.
+%   for: the ground state of the L-shape and of the four catalogue domains,
+%   against the MPS values of Betcke & Trefethen. Again external to the sweep,
+%   and again a true error.
 %
-%   Otherwise the finest DST run of the sweep. That is not a true reference, and
-%   what it gives is a difference between two computed numbers rather than a
-%   distance from the exact value, so the DST runs nearest it are held back from
-%   the error figure.
+%   Otherwise DST_REF, a DST run of its own at the finest resolution a dense eig
+%   fits on this machine, computed by DST_REFERENCE. It is not a true reference
+%   -- what it gives is a difference between two computed numbers rather than a
+%   distance from the exact value, and being DST itself it shares whatever error
+%   the DST runs of the sweep have -- but it lies well beyond the sweep, so the
+%   whole of every curve can be drawn against it. That is what it buys over the
+%   finest run of the sweep, which the figures used to fall back on and which
+%   left the three finest DST points measuring themselves.
 %
-%   Either way the error is reported relative to the reference. The eigenvalues
-%   run from 9.6 at the ground state to 919 deep in the spectrum, and an absolute
-%   error carries that scale with it; dividing it out is what lets the figures of
-%   different indices be read against each other.
+%   What is left is a floor rather than an error: the finest DST runs approach
+%   the reference's own resolution and cannot be told from it. The figures do not
+%   mark that floor; the run table names the reference and its dof count.
+%
+%   Either way the error is reported relative to the reference, so that the
+%   figures of different indices can be read against each other.
     if ~isempty(cfg.exact_fun)
         % "exact" reads as a word, not as a method, so it is set upright in the
         % legend where MPS is set in typewriter.
@@ -660,19 +728,71 @@ function ref = reference_for(cfg, index, runs)
         fprintf('  reference: %s, lambda_%d = %.13f\n', ref.label, index, ref.value);
         return;
     end
-    dst = strcmp({runs.method}, 'DST');
-    if ~any(dst)
+    if isnan(dst_ref.value)
         error('eigenvalues_convergence:noReference', ...
-            'No published value for lambda_%d and no DST run to stand in.', index);
+            ['No published value for lambda_%d on %s and no reference run: ', ...
+             'give the domain an M_ref.'], index, cfg.name);
     end
-    dst_runs = runs(dst);
-    [ref_dofs, imax] = max([dst_runs.dofs]);
-    ref = struct('value', dst_runs(imax).lambda, 'label', 'DST', ...
+    % No trimming: the reference is not a member of the sweep.
+    ref = struct('value', dst_ref.value, 'label', 'DST', ...
                  'legend', '\texttt{DST}', ...
-                 'published', false, 'relative', true, 'dst_trim', 3);
+                 'published', false, 'relative', true, 'dst_trim', 0);
     fprintf('  reference: DST at %d dofs, lambda_%d = %.9f\n', ...
-            ref_dofs, index, ref.value);
+            dst_ref.dofs, index, ref.value);
 end
+
+
+function dst_ref = dst_reference(cfg, index, spectra_dir)
+%DST_REFERENCE The DST run the figures measure against where nothing is published.
+%
+%   One run per domain, at cfg.M_ref, which is the finest grid whose dense eig
+%   fits in memory here: about 20000 degrees of freedom, a matrix of 2.9 GB that
+%   eig doubles while it works. Past that it swaps, and the first thousand
+%   eigenvalues would have to come from eigs on the sparse operator instead --
+%   which agrees with the dense answer to 4e-12 and has no memory ceiling, but
+%   costs ten minutes at 30000 degrees of freedom against two at 20000.
+%
+%   It goes through the same spectra cache as the runs of the sweep, so it is
+%   computed once per domain however many indices are asked for, and a domain
+%   that needs no reference -- one with a closed form, or the ground state
+%   against its published value -- never computes it at all.
+    dst_ref = struct('value', NaN, 'dofs', NaN);
+    if ~isempty(cfg.exact_fun) || (~isempty(cfg.ref_index) && index == cfg.ref_index)
+        return;
+    end
+    if isempty(cfg.M_ref)
+        return;
+    end
+
+    resolution = sprintf('M = %d', cfg.M_ref);
+    path = spectrum_path(spectra_dir, cfg, 'DST', resolution);
+    [lambda, dofs, ~, status] = read_spectrum(path, index);
+    if strcmp(status, 'hit')
+        dst_ref = struct('value', lambda, 'dofs', dofs);
+        return;
+    end
+    if strcmp(status, 'short')
+        error('eigenvalues_convergence:referenceShort', ...
+            'The reference run of %s has only %d eigenvalues, lambda_%d was asked for.', ...
+            cfg.name, lambda, index);
+    end
+
+    [x_range, y_range] = bounding_box(cfg.box(1), cfg.box(2), cfg.box(3), cfg.box(4));
+    fprintf('  reference run: DST at M = %d, computing ...\n', cfg.M_ref);
+    t = tic;
+    [evals, dofs] = dst_spectrum(x_range, y_range, cfg.M_ref, cfg.phi);
+    tsec = toc(t);
+    write_spectrum(path, cfg, struct('method', 'DST', 'resolution', resolution), ...
+                   dofs, tsec, evals);
+    fprintf('  reference run: %d dofs, %.1f s\n', dofs, tsec);
+    if numel(evals) < index
+        error('eigenvalues_convergence:referenceShort', ...
+            'The reference run of %s has only %d eigenvalues, lambda_%d was asked for.', ...
+            cfg.name, numel(evals), index);
+    end
+    dst_ref = struct('value', evals(index), 'dofs', dofs);
+end
+
 
 
 function plot_runs(stem, runs, index, ref)
@@ -766,6 +886,8 @@ function plot_error_runs(stem, runs, index, ref)
     % of magnitude above it, the closest being FEM on the rectangle ground state
     % at 1e-7.
     ROUNDOFF_FLOOR = 1e-10;
+    % How many of the finest runs the rate is fitted to; see the fit below.
+    N_FIT = 4;
 
     % Render all text with the LaTeX interpreter, as in the other paper figures.
     fig = figure('Visible', 'off', 'Position', [100 100 950 680], ...
@@ -783,15 +905,16 @@ function plot_error_runs(stem, runs, index, ref)
     % Against a DST reference, DST gets none.
     if ref.published
         triangle = [true, true, true];
-        % FEM keeps a shorter span than the other two. It is the lowest curve and
-        % the steepest, so a triangle drawn over the usual quarter of the range
-        % grows taller than the gap to FD above it and its top edge cuts across
-        % that curve; the height goes with the span, so the span comes in.
-        spans    = {[0.32 0.55], [0.08 0.28], [0.74 0.90]};
+        % The spans are fractions of the drawing window, the finer half of the
+        % curve, so all three triangles live at the end the rates belong to;
+        % they are staggered across it so that no two stack up. FEM keeps the shortest of them: it
+        % is the lowest curve and the steepest, and a taller triangle would grow
+        % past the gap to the curve above it.
+        spans    = {[0.38 0.66], [0.05 0.33], [0.70 0.98]};
         offsets  = [1.13, 1.25, 1.10];
     else
         triangle = [false, true, true];
-        spans    = {[], [0.38 0.61], [0.68 0.91]};
+        spans    = {[], [0.05 0.45], [0.55 0.95]};
         offsets  = [NaN, 2.2, 1.8];
     end
 
@@ -812,16 +935,37 @@ function plot_error_runs(stem, runs, index, ref)
             'MarkerSize', 7, 'MarkerFaceColor', 'w', ...
             'DisplayName', sprintf('\\texttt{%s}', methods{mi}));
         yhi = 0;
-        % The rate is fitted to the part of the curve that is a discretisation
-        % error, which is the part above the floor: on the rectangle, DST at an
-        % index deep enough to feel the edge of the coarsest grid drops from a
-        % real error to roundoff in one step, and a line through the drop
-        % describes neither end of it.
-        fit = err > ROUNDOFF_FLOOR;
-        if triangle(mi) && sum(fit) >= 3 && decays(err(fit))
-            % Least-squares algebraic rate: err ~ dofs^p, annotated by the triangle.
+        % The rate is fitted to the finest N_FIT runs of the part of the curve
+        % that is a discretisation error, which is the part above the floor.
+        %
+        % Above the floor, because on the rectangle DST at an index deep enough
+        % to feel the edge of the coarsest grid drops from a real error to
+        % roundoff in one step, and a line through the drop describes neither end
+        % of it.
+        %
+        % The finest runs, because a rate is an asymptotic statement and the
+        % coarse end of a curve is not asymptotic. FD on the GWW drums is the
+        % case that forces it: its coarsest run happens to land within 4e-4 of
+        % the ground state, the curve then rises before it falls, and a line
+        % through the whole of it reported -0.09 -- a description of the hump and
+        % not of the method. The count follows the DOF-requirement family, which
+        % fits its extrapolations the same way.
+        % Two questions, two windows. Whether the curve converges at all is asked
+        % of the whole of it, since the finest few runs of a slow method fall by
+        % a fifth and would fail a test meant to catch curves that do not fall.
+        % At what rate is asked of the finest runs alone.
+        above = find(err > ROUNDOFF_FLOOR);
+        fit   = above(max(1, numel(above) - N_FIT + 1) : end);
+        if triangle(mi) && numel(above) >= 3 && numel(fit) >= 3 && decays(err(above))
+            % Least-squares algebraic rate: err ~ dofs^p, annotated by the
+            % triangle, which is drawn over the runs the rate was fitted to.
             p = polyfit(log(d(fit)), log(err(fit)), 1);
-            yhi = slope_triangle(ax, d(fit), err(fit), p, colors{mi}, ...
+            % Drawn over the finer half of the curve rather than over the four
+            % runs the rate was fitted to: four runs of a sweep span a fifth of a
+            % decade, and three triangles crammed into that are unreadable. The
+            % half is still the end the rate belongs to.
+            draw = above(ceil(numel(above) / 2) : end);
+            yhi = slope_triangle(ax, d(draw), err(draw), p, colors{mi}, ...
                                  spans{mi}, offsets(mi));
         end
         lo = min([lo, err]);

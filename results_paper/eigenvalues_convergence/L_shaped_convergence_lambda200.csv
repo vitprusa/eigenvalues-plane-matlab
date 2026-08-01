@@ -1,5 +1,5 @@
 # Domain: L_shaped (convergence of eigenvalue 200 against DOF, dense eig)
-# Reference (DST): lambda_200 = 919.0475533092276
+# Reference (DST): lambda_200 = 919.0448540122501
 method,resolution,dofs,lambda_200,time_s
 DST,M = 17,208,1115.2652973230952,0.0065
 FD,M = 17,208,600.32940435259138,0.0022

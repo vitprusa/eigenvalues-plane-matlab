@@ -1,5 +1,5 @@
 # Domain: L_shaped (convergence of eigenvalue 1000 against DOF, dense eig)
-# Reference (DST): lambda_1000 = 4363.9680529150546
+# Reference (DST): lambda_1000 = 4363.9878540936352
 method,resolution,dofs,lambda_1000,time_s
 DST,M = 41,1240,4390.2158153497076,0.0806
 FD,M = 41,1240,2593.2769144059571,0.0807

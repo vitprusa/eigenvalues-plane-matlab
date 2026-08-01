@@ -1,0 +1,44 @@
+% Convergence against the degrees of freedom, ellipse-minus-quadrant domain, three indices in
+% one float: a row per eigenvalue, the eigenvalue itself on the left and the
+% relative error on the right.
+%
+% Requires in the preamble:
+%   \usepackage{graphicx}
+%   \usepackage{subfig}
+%   \usepackage{epstopdf}   % the figures are EPS; needed under pdflatex,
+%                           % which then wants -shell-escape. Not needed for
+%                           % latex/dvips, which reads EPS directly.
+%
+% The figures live next to this file, in
+% results_paper/eigenvalues_convergence/. If you \input this snippet
+% from elsewhere, point graphicx at that folder, e.g.
+%   \graphicspath{{results_paper/eigenvalues_convergence/}}
+% and drop the leading path from the \includegraphics arguments below.
+%
+% This snippet holds the same six figures as ellipse_minus_quadrant_convergence_lambda1.tex,
+% _lambda100.tex and _lambda1000.tex, in one float instead of three. Its labels
+% carry "combined", so the two forms can be \input into the same document
+% without clashing -- useful while deciding which of them the article takes.
+
+\begin{figure}[htbp]
+  \centering
+  \subfloat[Eigenvalue $\lambda_1$.\label{fig:convergence_ellipse_minus_quadrant_combined_lambda1_value}]{%
+    \includegraphics[width=0.45\textwidth]{ellipse_minus_quadrant_convergence_lambda1}}
+  \qquad
+  \subfloat[Relative error $\frac{|\lambda_1 - \lambda_1^{\text{MPS}}|}{\lambda_1^{\text{MPS}}}$.\label{fig:convergence_ellipse_minus_quadrant_combined_lambda1_error}]{%
+    \includegraphics[width=0.45\textwidth]{ellipse_minus_quadrant_convergence_lambda1_error}}
+  \\
+  \subfloat[Eigenvalue $\lambda_{100}$.\label{fig:convergence_ellipse_minus_quadrant_combined_lambda100_value}]{%
+    \includegraphics[width=0.45\textwidth]{ellipse_minus_quadrant_convergence_lambda100}}
+  \qquad
+  \subfloat[Relative error $\frac{|\lambda_{100} - \lambda_{100}^{\text{DST}}|}{\lambda_{100}^{\text{DST}}}$.\label{fig:convergence_ellipse_minus_quadrant_combined_lambda100_error}]{%
+    \includegraphics[width=0.45\textwidth]{ellipse_minus_quadrant_convergence_lambda100_error}}
+  \\
+  \subfloat[Eigenvalue $\lambda_{1000}$.\label{fig:convergence_ellipse_minus_quadrant_combined_lambda1000_value}]{%
+    \includegraphics[width=0.45\textwidth]{ellipse_minus_quadrant_convergence_lambda1000}}
+  \qquad
+  \subfloat[Relative error $\frac{|\lambda_{1000} - \lambda_{1000}^{\text{DST}}|}{\lambda_{1000}^{\text{DST}}}$.\label{fig:convergence_ellipse_minus_quadrant_combined_lambda1000_error}]{%
+    \includegraphics[width=0.45\textwidth]{ellipse_minus_quadrant_convergence_lambda1000_error}}
+  \caption{Eigenvalues $\lambda_1$, $\lambda_{100}$ and $\lambda_{1000}$ of Laplace operator, zero Dirichlet boundary conditions, ellipse-minus-quadrant domain \texttt{ellipse\_minus\_quadrant}. Eigenvalues computed by each discretisation \texttt{DST}, \texttt{FD} and \texttt{FEM} with varying degrees of freedom. Reference value for $\lambda_1$ is the value obtained by the method of particular solutions (\texttt{MPS}), reference values for $\lambda_{100}$ and $\lambda_{1000}$ are the values obtained by \texttt{DST} with 19783 degrees of freedom. Resolutions carrying fewer degrees of freedom than the index of the eigenvalue cannot supply it and are left out.}
+  \label{fig:convergence_ellipse_minus_quadrant}
+\end{figure}
