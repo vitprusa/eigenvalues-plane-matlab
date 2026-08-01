@@ -296,6 +296,15 @@ The tests live under `test/`, one self-contained scenario per subdirectory:
   the manufactured one. Being a polynomial rather than a sine mode, it
   carries a genuine discretisation error, so the test refines the grid and
   verifies the (second-order) convergence.
+- `test/laplace_matrix_symmetry/` — the assembled DST Laplace matrix is
+  symmetric in exact arithmetic, each one-dimensional block map being
+  symmetric and scattered onto the same index set in both directions, but
+  the round-off of the FFT leaves it a few units in the last place short of
+  it, and `issymmetric` asks for bit-for-bit equality. The test measures how
+  far short, on every domain of the catalogue at four resolutions each, and
+  what symmetrising with `dst_laplace_symmetrise` is worth: it computes each
+  spectrum both ways, times both, and compares them eigenvalue by
+  eigenvalue. Both spectra of every matrix are cached under `spectra/`.
 
 Each subdirectory has its own `run_tests.sh` that auto-discovers every
 `check_*.m` in that folder, runs each through MATLAB, writes a markdown
