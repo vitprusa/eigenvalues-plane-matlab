@@ -15,3 +15,5 @@ auto/
 *.bbl
 *.blg
 *-eps-converted-to.pdf
+# Built by pdflatex from the tracked richardson_extrapolation.tex
+/results/eigenvalues_dof_requirement/richardson_extrapolation.pdf
