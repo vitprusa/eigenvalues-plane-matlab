@@ -195,14 +195,16 @@ experiments_paper/eigenvalues_head_paper/ self-computing eigenvalue-comparison t
 experiments_paper/eigenvalues_convergence/ convergence test for one eigenvalue
                                (make_eigenvalues_convergence_index.m): lambda_k, any k, with
                                DST/FD/FEM over thirteen resolutions from ~100 to ~10000 dofs
-                               (fourteen, to ~15000, on the L-shape), for the rectangle, the
-                               right isosceles triangle and the L-shape, plotted both as the
+                               (fourteen, to ~15000, on every domain but the rectangle and
+                               the triangle), for all seven domains, plotted both as the
                                eigenvalue itself against DOF and as the error against the
                                reference on log-log axes with a fitted-slope triangle per
-                               method; the reference is the closed-form eigenvalue on the
-                               first two domains, the published MPS ground state on the
-                               L-shape, and its own finest DST run away from it; caches its
-                               run table
+                               method, the rate fitted to the finest four runs; the reference
+                               is the closed-form eigenvalue on the rectangle and the
+                               triangle, the published MPS ground state elsewhere, and away
+                               from the ground state a DST run of its own at M_ref, the
+                               finest grid whose dense eig fits in memory (~20000 dofs, about
+                               100 s); caches every run's whole spectrum
 results/eigenvalues/           per-method spectra CSV, a subdir each (dst, fd, fem,
                                cheb, mps, wolfram)
 results/eigenvalues_head/      generated <domain>_comparison.md tables (from
@@ -250,9 +252,10 @@ results_paper/eigenvalues_convergence/ per domain and eigenvalue index
                                <domain>_convergence_lambda<k>.tex figure snippet, plus the
                                combined <domain>_convergence.tex float holding every index
                                of a domain in one figure; spectra/ holds the whole spectrum
-                               of every run, which is the cache the rest is built from, so
-                               a further index costs a redraw and nothing else -- delete a
-                               domain's spectra to compute it again
+                               of every run of the sweep and of the M_ref reference run,
+                               which is the cache the rest is built from, so a further index
+                               costs a redraw and nothing else -- delete a domain's spectra
+                               to compute it again
 test/mat_batched/              equivalence and timing tests for the builders
 test/laplace_action/           Laplace-operator action on a known function
 test/manufactured_solution/    BVP solve via the method of manufactured solutions
