@@ -217,6 +217,18 @@ experiments_paper/eigenvalues_convergence/ convergence test for one eigenvalue
                                from the ground state a DST run of its own at M_ref, the
                                finest grid whose dense eig fits in memory (~20000 dofs, about
                                100 s); caches every run's whole spectrum
+experiments_paper/eigenvalues_error_distribution/ how one run spends its accuracy
+                               across the block it returns
+                               (make_eigenvalues_error_distribution.m,
+                               run_eigenvalues_error_distribution.sh): the relative error of
+                               each of the first n eigenvalues against its index, for
+                               DST/FD/FEM at one moderate resolution, the three sized to
+                               carry as nearly the same DOF count as the convergence sweep
+                               allows so that the figure compares methods and not
+                               resolutions; the reference is a DST run at M_ref. The DST
+                               series is drawn in two parts, the eigenvalues
+                               pi^2*(m^2+n^2) of the unit squares apart from the rest,
+                               the sine basis carrying those exactly at any resolution
 results/eigenvalues/           per-method spectra CSV, a subdir each (dst, fd, fem,
                                cheb, mps, wolfram)
 results/eigenvalues_head/      generated <domain>_comparison.md tables (from
@@ -273,6 +285,18 @@ results_paper/eigenvalues_convergence/ per domain and eigenvalue index
                                which is the cache the rest is built from, so a further index
                                costs a redraw and nothing else -- delete a domain's spectra
                                to compute it again
+results_paper/eigenvalues_error_distribution/ per domain, block size and DOF level
+                               <domain>_error_distribution_n<n>_dofs<D>.csv (one row per
+                               index: the reference eigenvalue, then each method's
+                               eigenvalue and relative error), two figures of it --
+                               <domain>_error_distribution_n<n>_dofs<D>.eps with a linear
+                               index and ..._log_log.eps with a logarithmic one, the first
+                               for the body of the block and the second for its first few
+                               indices -- each with its .tex snippet, plus
+                               <domain>_error_distribution_n<n>_reference-
+                               eigenvalues.csv, which carries no DOF token and is shared by
+                               every DOF level of a domain; both CSVs are caches, delete
+                               them to recompute
 test/mat_batched/              equivalence and timing tests for the builders
 test/laplace_action/           Laplace-operator action on a known function
 test/manufactured_solution/    BVP solve via the method of manufactured solutions
