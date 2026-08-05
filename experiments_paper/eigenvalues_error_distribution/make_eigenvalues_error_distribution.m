@@ -297,7 +297,7 @@ function report_runs(runs, reference, n)
 %   an average over both describes neither.
     probes = unique([1 10 100 round(n/2) n]);
     probes = probes(probes <= n);
-    square = is_square_mode(reference);
+    square = square_mask(runs, reference);
 
     fprintf('\n    %-22s %8s', 'method', 'dofs');
     for k = probes
@@ -312,18 +312,57 @@ function report_runs(runs, reference, n)
 
     hit = find(strcmp({runs.method}, 'DST'), 1);
     if ~isempty(hit)
-        fprintf('\n    %d of the first %d eigenvalues are pi^2*(m^2+n^2);', ...
-                sum(square), n);
-        fprintf(' DST returns them\n    to a largest relative error of %.1e,', ...
-                max(runs(hit).rel_err(square)));
-        fprintf(' against %.1e over the rest.\n', ...
-                max(runs(hit).rel_err(~square)));
+        n_ref = sum(is_square_mode(reference));
+        fprintf('\n    %d of the first %d eigenvalues are pi^2*(m^2+n^2).', n_ref, n);
+        fprintf(' At the %d indices where\n    the run and the reference sort them alike,', ...
+                sum(square));
+        fprintf(' DST is within %.1e;\n    over the rest of the block it is within %.1e.\n', ...
+                max(runs(hit).rel_err(square)), max(runs(hit).rel_err(~square)));
+        if n_ref > sum(square)
+            fprintf(['    The other %d are drawn with the rest: a neighbouring ', ...
+                     'eigenvalue crosses\n    them in the ordering, so the ', ...
+                     'comparison there pairs unlike eigenvalues.\n'], ...
+                    n_ref - sum(square));
+        end
     end
     fprintf('\n');
 end
 
 
-function tf = is_square_mode(reference)
+function tf = square_mask(runs, reference)
+%SQUARE_MASK The indices where run and reference agree the eigenvalue is exact.
+%
+%   Both lists, not the reference alone. The two are sorted ascending and
+%   compared index by index, and that pairing can go wrong exactly here: a
+%   neighbouring eigenvalue that DST resolves only to about 1e-4 crosses an
+%   exactly represented one in the ordering, and the run's k-th entry is then a
+%   different eigenvalue from the reference's k-th. At 2241 degrees of freedom
+%   this happens at six of the 326 square indices of the first thousand.
+%
+%   Marking those by the reference alone would put a filled marker on an index
+%   whose plotted value is the distance between two unlike eigenvalues -- a
+%   genuine mismatch of order 1e-4, and nothing to do with how well DST returns
+%   the exact ones. Requiring both to agree puts them among the open markers,
+%   where they belong: the filled population is then exactly the set of indices
+%   at which DST returned the eigenvalue the reference has, which is what the
+%   legend claims of it.
+%
+%   Nothing is dropped either way. The six points stay on the figure; what
+%   changes is which population they are counted in.
+%
+%   Degeneracy makes a crossing likelier -- five of the six sit at a double
+%   eigenvalue, where the neighbour has only one gap to beat -- but what drives
+%   it is the size of DST's error on the neighbour, not the degeneracy.
+    hit = find(strcmp({runs.method}, 'DST'), 1);
+    if isempty(hit)
+        tf = false(numel(reference), 1);
+        return;
+    end
+    tf = is_square_mode(reference) & is_square_mode(runs(hit).lambda);
+end
+
+
+function tf = is_square_mode(lambda)
 %IS_SQUARE_MODE Which eigenvalues the sine basis represents exactly.
 %
 %   The L-shape is three unit squares, and the eigenfunctions vanishing on the
@@ -331,24 +370,20 @@ function tf = is_square_mode(reference)
 %   piece, with eigenvalue pi^2*(m^2+n^2) known in closed form. On the bounding
 %   box [-1,1]^2 those are sine modes of even index, so the DST operator carries
 %   them exactly and returns their eigenvalues at any resolution: 326 of the
-%   first thousand here, and DST is accurate on them to about 1e-12 relative to
-%   the closed form itself, not merely in agreement with the reference.
+%   first thousand here, every one of them reproduced at 2241 degrees of freedom
+%   to within 4.3e-12 relative and with the right multiplicity, and that against
+%   the closed form itself rather than merely in agreement with the reference.
 %
 %   They are therefore not a measure of how well DST discretises this domain,
-%   and drawn in one curve with the rest they swamp it -- the error swings twelve
-%   decades between neighbouring indices and the curve fills the axes. The figure
-%   draws them apart.
+%   and drawn in one series with the rest they swamp it -- the error swings
+%   twelve decades between neighbouring indices and fills the axes. The figure
+%   draws them apart; SQUARE_MASK says which indices those are.
 %
 %   Recognised by the eigenvalue rather than tracked through the geometry:
-%   lambda/pi^2 a whole number. The tolerance is loose against the 1e-11 that
-%   the reference actually achieves on them and tight against the spacing of the
-%   spectrum in these units, which is of order a tenth.
-%
-%   Near a degeneracy the test can misclassify one index: the run and the
-%   reference sort two nearly equal eigenvalues the other way round, so a square
-%   mode's index carries a neighbouring eigenvalue's error. Those show up as the
-%   handful of points that sit high among the square modes past k = 10.
-    ratio = reference(:) / pi^2;
+%   lambda/pi^2 a whole number. The tolerance is loose against the 1e-12 that the
+%   computation achieves on them and tight against the spacing of the spectrum in
+%   these units, which is of order a tenth.
+    ratio = lambda(:) / pi^2;
     tf = abs(ratio - round(ratio)) < 1e-6;
 end
 
@@ -523,7 +558,7 @@ function plot_distribution(stem, runs, reference, n, x_scale)
         'name',   {'DST', 'FD', 'FEM'}, ...
         'color',  {[0 0.45 0.74], [0.85 0.33 0.10], [0.47 0.67 0.19]}, ...
         'marker', {'o', 's', '^'});
-    square = is_square_mode(reference);
+    square = square_mask(runs, reference);
 
     % Render all text with the LaTeX interpreter, as in the other paper figures.
     fig = figure('Visible', 'off', 'Position', [100 100 950 680], ...

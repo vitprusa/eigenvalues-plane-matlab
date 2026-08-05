@@ -18,10 +18,20 @@
 % with eigenvalue pi^2*(m^2+n^2) known in closed form; on the bounding box those
 % are sine modes of even index, so the DST operator carries them exactly and
 % returns their eigenvalues at any resolution. There are 326 of them in the first
-% thousand, returned to about 1e-12 relative to the closed form itself. Drawn
-% together with the rest they swamp them, so they are the filled dots and the
-% remaining indices the open circles. FD and FEM have no such subspace and are
-% drawn whole.
+% thousand, every one reproduced at 2241 degrees of freedom to within 4.3e-12
+% relative and with the right multiplicity. Drawn together with the rest they
+% swamp them, so they are the filled dots and the remaining indices the open
+% circles. FD and FEM have no such subspace and are drawn whole.
+%
+% The split is decided on the run and the reference together, not on the
+% reference alone. The two spectra are sorted ascending and compared index by
+% index, and at six of the 326 a neighbouring eigenvalue -- one DST resolves only
+% to about 1e-4 -- crosses the exact one in the ordering, so that the run's k-th
+% entry is a different eigenvalue from the reference's. The value plotted there
+% is a genuine mismatch between unlike eigenvalues and has nothing to do with how
+% well DST returns the exact ones, so those six are drawn as open circles. The
+% filled population is then exactly the set of indices at which DST returned the
+% eigenvalue the reference has.
 %
 % The reference is a DST run at M = 163, 19845 degrees of freedom, the L-shape
 % having no closed-form spectrum and no published values away from the ground
@@ -45,6 +55,6 @@
 \begin{figure}[htbp]
   \centering
   \includegraphics[width=0.85\textwidth]{L_shaped_error_distribution_n1000_dofs2241}
-  \caption{Accuracy of the first 1000 eigenvalues of Laplace operator, zero Dirichlet boundary conditions, L-shaped domain \texttt{L\_shaped}. Relative error $\frac{|\lambda_k - \lambda_k^{\text{DST}}|}{\lambda_k^{\text{DST}}}$ of each eigenvalue against its index $k$, $k = 1, \dots, 1000$, for three discretisations of Laplace operator at comparable numbers of degrees of freedom -- \texttt{DST} and \texttt{FD} 2241, \texttt{FEM} 2257 -- compared with the reference eigenvalues computed by \texttt{DST} with 19845 degrees of freedom; \texttt{FEM} -- finite element method, \texttt{FD} -- finite differences method, \texttt{DST} -- discrete sine transform method. The \texttt{DST} series is split into the eigenvalues $\lambda_k = \pi^2(m^2+n^2)$ of the three unit squares, drawn as filled dots, and the remaining indices, drawn as open circles.}
+  \caption{Accuracy of the first 1000 eigenvalues of Laplace operator, zero Dirichlet boundary conditions, L-shaped domain \texttt{L\_shaped}. Relative error $\frac{|\lambda_k - \lambda_k^{\text{DST}}|}{\lambda_k^{\text{DST}}}$ of each eigenvalue against its index $k$, $k = 1, \dots, 1000$, for three discretisations of Laplace operator at comparable numbers of degrees of freedom -- \texttt{DST} and \texttt{FD} 2241, \texttt{FEM} 2257 -- compared with the reference eigenvalues computed by \texttt{DST} with 19845 degrees of freedom; \texttt{FEM} -- finite element method, \texttt{FD} -- finite differences method, \texttt{DST} -- discrete sine transform method. The \texttt{DST} series is split into the indices at which \texttt{DST} returns the eigenvalue $\lambda_k = \pi^2(m^2+n^2)$ of the three unit squares exactly, drawn as filled dots, and the remaining indices, drawn as open circles.}
   \label{fig:error_distribution_L_shaped}
 \end{figure}
