@@ -173,10 +173,17 @@ experiments/eigenvalues_dof_requirement/ how many DOF the first n eigenvalues co
                                (compute_eigenvalues_dof_requirement.m,
                                run_eigenvalues_dof_requirement.sh): the largest
                                relative error over the whole block against DOF, for
-                               DST/FD/FEM, on the L-shape and the right isosceles
-                               triangle; the answer per tolerance is read off the
-                               sweep where it reaches one and extrapolated along a
-                               fitted power law where it does not
+                               DST/FD/FEM on all seven domains, plus Cheb on the
+                               rectangle (the collocation operator is a Kronecker
+                               sum, so it needs a domain filling a tensor-product
+                               box); each sweep starts just above n dofs, since a
+                               coarser run has no n-th eigenvalue at all, and
+                               reaches ~15000, which is what a dense eig fits here;
+                               the answer per tolerance is read off the sweep where
+                               it reaches one and extrapolated along a fitted power
+                               law where it does not. The reference is the closed
+                               form on the rectangle and the triangle and a DST run
+                               at M_ref (~20000 dofs) elsewhere
 experiments/grid_visualisation/ DST grid + domain-mask figures (plot_grid_visualisation.m,
                                run_grid_visualisation.sh)
 experiments/eigenvalues_weyl/  Weyl-asymptotics visual check (plot_weyl_asymptotics.m,
@@ -222,8 +229,9 @@ results/eigenvalues_dof_sweep/ L-shaped, rectangle, and isosceles-triangle
 results/eigenvalues_dof_requirement/ DOF needed for the first n eigenvalues, per method:
                                <domain>_dof_requirement_n<n>_reference-eigenvalues.csv
                                (the reference spectrum: the closed form on the
-                               triangle, a DST run at M_ref on the L-shape, whose own
-                               resolution is then reported as a floor),
+                               rectangle and the triangle, a DST run at M_ref on the
+                               other five, whose own resolution is then reported as a
+                               floor),
                                <domain>_dof_requirement_n<n>.csv (one row per run,
                                with the largest relative error over the block),
                                <domain>_dof_requirement_n<n>_answer.csv (the answer
