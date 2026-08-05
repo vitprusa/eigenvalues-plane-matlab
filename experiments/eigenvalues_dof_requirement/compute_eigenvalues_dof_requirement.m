@@ -4,7 +4,15 @@ function compute_eigenvalues_dof_requirement(n_eigenvalues, name, tolerances)
 %   compute_eigenvalues_dof_requirement(n) answers, for each of DST, finite
 %   differences and finite elements: how many degrees of freedom are needed so
 %   that the first n eigenvalues of the Dirichlet Laplacian are all computed to
-%   a given relative accuracy. The default is n = 1000 on the L-shaped domain.
+%   a given relative accuracy. The default is n = 1000, over every domain of the
+%   catalogue -- the rectangle, the right isosceles triangle, the L-shape, the
+%   ellipse minus a quadrant, H, and the two GWW isospectral drums.
+%
+%   Chebyshev spectral collocation is a fourth method on the rectangle, and on
+%   the rectangle only: its operator is a Kronecker sum of one-dimensional
+%   differentiation matrices, so it is defined on a domain that fills a
+%   tensor-product box and there is no indicator to cut anything else out of one.
+%   See CHEB_SPECTRUM and DOMAIN_CATALOG_CHEB.
 %
 %   compute_eigenvalues_dof_requirement(n, name) restricts the run to the domain
 %   "name". Pass "" or [] to keep all domains.
@@ -25,16 +33,18 @@ function compute_eigenvalues_dof_requirement(n_eigenvalues, name, tolerances)
 %   does not, E is fitted as a power law E ~ C * dofs^p over the finest runs and
 %   the crossing extrapolated; the answer table says which of the two it is.
 %
-%   The reference is the closed form where the domain has one -- the right
-%   isosceles triangle, whose spectrum is m^2 + n^2 with m > n >= 1 -- and there
-%   every error in the table is a true error.
+%   The reference is the closed form where the domain has one -- the rectangle,
+%   whose spectrum is m^2/4 + n^2, and the right isosceles triangle, whose
+%   spectrum is m^2 + n^2 with m > n >= 1 -- and there every error in the table
+%   is a true error.
 %
 %   Where it has none, it is the DST run at M_REF, finer than every run of the
-%   sweep: nobody has published the first n eigenvalues of the L-shaped domain,
-%   so there is nothing else to measure against. Its own resolution then shows up
-%   as a floor: the difference between it and the finest DST run of the sweep is
-%   reported, and a tolerance within an order of magnitude of that floor is not
-%   resolved by this computation, which the answer table says.
+%   sweep: nobody has published the first n eigenvalues of the L-shape, of the
+%   ellipse minus a quadrant, of H or of the drums, so there is nothing else to
+%   measure against. Its own resolution then shows up as a floor: the difference
+%   between it and the finest DST run of the sweep is reported, and a tolerance
+%   within an order of magnitude of that floor is not resolved by this
+%   computation, which the answer table says.
 %
 %   What binds the floor on the L-shape is the ground state, not the top of the
 %   block. The re-entrant corner carries an r^(2/3) singularity, every method
@@ -64,7 +74,7 @@ function compute_eigenvalues_dof_requirement(n_eigenvalues, name, tolerances)
 %   over as it stands, timing included, and only what is missing is computed.
 %   Delete them to force the whole sweep again.
 %
-%   Requires the PDE Toolbox (FEM).
+%   Requires the PDE Toolbox (FEM) and, for the rectangle, Chebfun (Cheb).
 %
 %   See also MAKE_EIGENVALUES_CONVERGENCE_INDEX, which follows a single
 %   eigenvalue over the same domains and resolutions.
@@ -87,6 +97,7 @@ function compute_eigenvalues_dof_requirement(n_eigenvalues, name, tolerances)
     here         = fileparts(mfilename('fullpath'));
     project_root = fileparts(fileparts(here));
     run(fullfile(project_root, 'startup.m'));
+    addpath(fullfile(project_root, 'experiments'));   % domain_catalog_dst / _fem
 
     out_dir = fullfile(project_root, 'results', 'eigenvalues_dof_requirement');
     if ~exist(out_dir, 'dir')
@@ -149,10 +160,23 @@ function cfgs = domain_configs()
 %   at all and is dropped, so the sweep starts just above n. The fine end is set
 %   by the dense eig, whose matrix is stored in full -- about 15000 degrees of
 %   freedom is what fits.
+%
+%   Every domain of the catalogue is here. The two with a closed form -- the
+%   rectangle and the right isosceles triangle -- carry an EXACT_FUN and no
+%   M_REF; the other five carry the M_REF of the reference run, the same
+%   resolutions MAKE_EIGENVALUES_CONVERGENCE_INDEX uses, each about 20000
+%   degrees of freedom.
+%
+%   N_GRID_CHEB is the Chebyshev sweep, and is empty on every domain but the
+%   rectangle: the collocation operator is a Kronecker sum of one-dimensional
+%   differentiation matrices and so is defined on a tensor-product rectangle
+%   alone (see DOMAIN_CATALOG_CHEB). Its resolution is N points per direction,
+%   dofs = (N-2)^2.
     cfgs = struct('name', {}, 'pretty', {}, 'box', {}, 'phi', {}, ...
                   'gd', {}, 'ns', {}, 'sf', {}, ...
                   'M_ref', {}, 'exact_fun', {}, ...
-                  'M_grid_dst', {}, 'M_grid_fd', {}, 'Hmax_fem', {});
+                  'M_grid_dst', {}, 'M_grid_fd', {}, 'Hmax_fem', {}, ...
+                  'N_grid_cheb', {});
 
     % --- L-shaped domain ----------------------------------------------------
     % Box [-1,1]^2, so h = 2/(M+1) and M+1 must be even for the re-entrant
@@ -183,7 +207,8 @@ function cfgs = domain_configs()
         'M_grid_dst', [37 45 55 65 75 85 95 105 115], ...
         'M_grid_fd',  [37 45 55 65 75 85 95 105 115 127 141], ...
         'Hmax_fem', [0.11 0.10 0.085 0.0755 0.066 0.060 0.055 0.051 0.0446 ...
-                     0.0395 0.036 0.030]);
+                     0.0395 0.036 0.030], ...
+        'N_grid_cheb', []);
 
     % --- right isosceles triangle, legs pi -----------------------------------
     % Box [0,pi]^2 and the hypotenuse y = x runs through grid points whatever M
@@ -209,7 +234,151 @@ function cfgs = domain_configs()
         'M_grid_dst', [46 56 66 76 86 96 106 116 126 141], ...
         'M_grid_fd',  [46 56 66 76 86 96 106 116 126 141 155 174], ...
         'Hmax_fem', [0.1425 0.1168 0.099 0.0861 0.0761 0.0681 0.0617 0.0564 ...
-                     0.0519 0.0464 0.0422 0.0376]);
+                     0.0519 0.0464 0.0422 0.0376], ...
+        'N_grid_cheb', []);
+
+    % --- rectangle [0, 2*pi] x [0, pi] ---------------------------------------
+    % Box [0,2pi]x[0,pi], so h = 2*pi/(M+1) and M+1 must be even for the top edge
+    % y = pi to fall on a grid line. The domain fills its bounding box and carries
+    % M columns of (M-1)/2 interior points, dofs = M*(M-1)/2 exactly, so M = 47 is
+    % the first resolution with more than a thousand of them.
+    %
+    % No reference run: lambda = m^2/4 + n^2 with m, n >= 1, so the reference is
+    % the closed form and every error in the table is a true error. No reference
+    % floor either, as on the triangle.
+    %
+    % This is the control of the set, and the one domain the DST rows do not
+    % measure a discretisation error on: the domain fills its bounding box, so
+    % the sine basis the operator is built in is its exact eigenbasis, and what
+    % DST can get wrong is only which modes the grid carries. That is a real
+    % error while the grid is too coarse to hold every mode the block needs --
+    % the thousandth eigenvalue is about 637, which wants m up to 50 and n up to
+    % 25 -- and roundoff once it is not. The curve therefore falls off a cliff
+    % rather than along a rate, which is why its answers come out measured at the
+    % coarse end and no fit is asked of it.
+    %
+    % The FEM meshes follow the DST dof counts through the empirical
+    % dofs*Hmax^2 ~ 88 of this geometry, and FD is carried two resolutions
+    % further, as elsewhere.
+    %
+    % Chebyshev collocation runs here and nowhere else, the operator being a
+    % Kronecker sum of one-dimensional differentiation matrices. Its N values
+    % sweep the same band of dof counts, dofs = (N-2)^2, from 1024 at N = 34 to
+    % 14400 at N = 122.
+    %
+    % The fine end was measured rather than guessed. The collocation matrix is
+    % not symmetric and is not similar to a symmetric one by a diagonal, so eig
+    % takes the general QR path, the one DST_LAPLACE_SYMMETRISE exists to avoid,
+    % and that is what binds. Timed here: 231 s at 10000 dofs and 680 s at 14400,
+    % a ratio of 2.95 over a dof ratio of 1.44, so the cost is cubic to two
+    % figures and the extrapolation is safe. Against it the symmetric path runs
+    % the 19845-dof DST reference in about two minutes.
+    %
+    % Memory binds next, and only just past the sweep: a run at 19600 dofs holds
+    % 2.9 GB in the matrix alone, and on this machine (16 GB, about 10 of them
+    % free) it had begun to swap after half an hour without finishing. N = 122 is
+    % therefore the last resolution that is comfortably feasible -- eleven
+    % minutes, no paging -- and the whole Chebyshev sweep costs about forty.
+    % See CHEB_SPECTRUM.
+    cfgs(end+1) = struct( ...
+        'name', 'rectangle', 'pretty', 'rectangular', ...
+        'box', [0 2*pi 0 pi], ...
+        'phi', @(x, y) indicator_rectangle(x, y, 0, 2*pi, 0, pi), ...
+        'gd', [3; 4; 0; 2*pi; 2*pi; 0; 0; 0; pi; pi], ...
+        'ns', char('R1')', 'sf', 'R1', ...
+        'M_ref', [], 'exact_fun', @exact_rectangle, ...
+        'M_grid_dst', [47 57 67 77 87 97 109 121 133 147], ...
+        'M_grid_fd',  [47 57 67 77 87 97 109 121 133 147 163 175], ...
+        'Hmax_fem', [0.258 0.235 0.1995 0.1734 0.1534 0.1375 0.1223 0.1101 ...
+                     0.1001 0.0905 0.0817 0.0760], ...
+        'N_grid_cheb', [34 42 52 62 72 82 92 102 112 122]);
+
+    % --- the domains with no closed form and no analytic geometry to spell out -
+    % Ellipse minus a quadrant, H, and the two GWW isospectral drums. Their box
+    % and indicator come from DOMAIN_CATALOG_DST and their decsg geometry from
+    % DOMAIN_CATALOG_FEM, as in MAKE_EIGENVALUES_CONVERGENCE_INDEX, rather than
+    % being written out again here.
+    %
+    % Like the L-shape they have no closed form, so the reference is a DST run of
+    % their own at M_REF -- the same resolutions the convergence sweeps use, each
+    % about 20000 degrees of freedom, which is what a dense eig fits here -- and
+    % REFERENCE_FLOOR reports how far the finest run of the sweep sits from it.
+    %
+    % The M values keep the domain edges on grid lines, which is a different
+    % condition on each: the grid spacing is the width of the bounding box over
+    % M+1, and an edge at distance d from its left needs d/h whole. That makes
+    % M+1 divisible by 4 for the ellipse (box four wide, cut edges at x = 0 and
+    % y = 0), by 3 for H (box three wide, unit squares) and by 6 for the drums
+    % (box six wide, unit squares). Every sweep starts at the first resolution
+    % carrying more than a thousand degrees of freedom and reaches about 10000,
+    % FD two resolutions further to about 15000.
+    %
+    % The Hmax values target the DST dof counts through the empirical
+    % dofs*Hmax^2 of each geometry -- 21.4 for the ellipse, 31 for H, 62.5 for
+    % the drums -- which MAKE_EIGENVALUES_CONVERGENCE_INDEX measured and which
+    % the meshes of this band obey to within a few per cent.
+    %
+    % The two drums are kept separate rather than run once: they are isospectral,
+    % so the pair is a check on the whole computation, and two answer tables that
+    % agree are the point of having both.
+    %
+    % Columns: catalog name for the two lookups, output name (H is H_shaped
+    % there, as in results_paper/eigenvalues_head/), caption name, DST grid, FD
+    % grid, FEM mesh sizes, and the resolution of the reference run.
+    extra = { ...
+        'ellipse_minus_quadrant', 'ellipse_minus_quadrant', 'ellipse-minus-quadrant', ...
+            [59 71 83 95 107 123 139 155 171 187], ...
+            [59 71 83 95 107 123 139 155 171 187 207 223], ...
+            [0.1310 0.1200 0.1027 0.0897 0.0795 0.0692 0.0613 0.0549 0.0498 ...
+             0.0455 0.0411 0.0382], 259; ...
+        'H', 'H_shaped', 'H-shaped', ...
+            [38 47 56 65 74 83 92 101 110 119], ...
+            [38 47 56 65 74 83 92 101 110 119 131 140], ...
+            [0.1540 0.1364 0.1142 0.0982 0.0862 0.0767 0.0692 0.0630 0.0578 ...
+             0.0534 0.0485 0.0453], 161; ...
+        'gww1', 'gww1', 'GWW1 isospectral drum', ...
+            [53 65 77 89 101 113 125 137 149 167], ...
+            [53 65 77 89 101 113 125 137 149 167 185 197], ...
+            [0.2150 0.1979 0.1667 0.1440 0.1267 0.1131 0.1022 0.0932 0.0856 ...
+             0.0763 0.0689 0.0647], 227; ...
+        'gww2', 'gww2', 'GWW2 isospectral drum', ...
+            [53 65 77 89 101 113 125 137 149 167], ...
+            [53 65 77 89 101 113 125 137 149 167 185 197], ...
+            [0.2150 0.1979 0.1667 0.1440 0.1267 0.1131 0.1022 0.0932 0.0856 ...
+             0.0763 0.0689 0.0647], 227 ...
+    };
+    for i = 1:size(extra, 1)
+        dstc = domain_catalog_dst(extra{i, 1});
+        femc = domain_catalog_fem(extra{i, 1});
+        cfgs(end+1) = struct( ...
+            'name', extra{i, 2}, 'pretty', extra{i, 3}, ...
+            'box', dstc.box, 'phi', dstc.phi, ...
+            'gd', femc.gd, 'ns', femc.ns, 'sf', femc.sf, ...
+            'M_ref', extra{i, 7}, 'exact_fun', [], ...
+            'M_grid_dst', extra{i, 4}, 'M_grid_fd', extra{i, 5}, ...
+            'Hmax_fem', extra{i, 6}, 'N_grid_cheb', []); %#ok<AGROW>
+    end
+end
+
+
+function v = exact_rectangle(n)
+%EXACT_RECTANGLE The first n eigenvalues of [0,2pi]x[0,pi], in closed form.
+%
+%   lambda_{m,k} = m^2/4 + k^2 with m, k >= 1, ascending with multiplicity.
+%   Enumerated below a bound rather than over a fixed range of (m, k), which
+%   could miss an eigenvalue smaller than one it keeps; the bound is doubled
+%   until it holds enough of the spectrum.
+    bound = 64;
+    while true
+        [m, k] = meshgrid(1:ceil(2 * sqrt(bound)), 1:ceil(sqrt(bound)));
+        v = m.^2 / 4 + k.^2;
+        v = sort(v(v <= bound));
+        if numel(v) >= n
+            v = v(1:n);
+            return;
+        end
+        bound = 2 * bound;
+    end
 end
 
 
@@ -337,7 +506,9 @@ function plan = build_plan(cfg)
 %BUILD_PLAN Every run of the sweep, in output order, with how to compute it.
 %
 %   The resolution string is the cache key, so it has to be written the same way
-%   here and in the CSV -- hence one place that builds it.
+%   here and in the CSV -- hence one place that builds it. Chebyshev collocation
+%   is planned only where the domain has a sweep for it, which is the rectangle
+%   alone; see DOMAIN_CONFIGS.
     plan = struct('method', {}, 'resolution', {}, 'compute', {});
     for k = 1:numel(cfg.M_grid_dst)
         M = cfg.M_grid_dst(k);
@@ -354,6 +525,35 @@ function plan = build_plan(cfg)
         plan(end+1) = struct('method', 'FEM', 'resolution', sprintf('Hmax = %g', h), ...
             'compute', @(xr, yr) fem_spectrum(cfg, h)); %#ok<AGROW>
     end
+    for k = 1:numel(cfg.N_grid_cheb)
+        N = cfg.N_grid_cheb(k);
+        plan(end+1) = struct('method', 'Cheb', 'resolution', sprintf('N = %d', N), ...
+            'compute', @(xr, yr) cheb_spectrum(cfg, N)); %#ok<AGROW>
+    end
+end
+
+
+function styles = method_styles()
+%METHOD_STYLES The methods of the sweep, in output order, with how they are drawn.
+%
+%   One place that names them, so that the answer table, the figure and the fits
+%   agree on the order and on the colours. Colours and markers are those of the
+%   convergence figures and of the DOF-sweep figures -- DST blue, FD orange, FEM
+%   green, Cheb purple -- so that the figures of a domain read as one family.
+%
+%   PLACE is the compass direction this method's timing labels take from their
+%   markers; see TIME_LABEL. One direction per method rather than one per point,
+%   so that the eye learns where to look once.
+%
+%   Every domain is asked for every method here; those it has no runs for are
+%   skipped where the list is walked, so Cheb costs the six non-rectangular
+%   domains nothing.
+    styles = struct( ...
+        'name',   {'DST', 'FD', 'FEM', 'Cheb'}, ...
+        'color',  {[0 0.45 0.74], [0.85 0.33 0.10], [0.47 0.67 0.19], ...
+                   [0.49 0.18 0.56]}, ...
+        'marker', {'o', 's', '^', 'd'}, ...
+        'place',  {'SW', 'NE', 'SW', 'NE'});
 end
 
 
@@ -381,6 +581,24 @@ function [evals, dofs] = fem_spectrum(cfg, h)
 end
 
 
+function [evals, dofs] = cheb_spectrum(cfg, N)
+%CHEB_SPECTRUM Chebyshev spectral collocation on the bounding box.
+%
+%   The domain has to fill its bounding box for this to be the domain's operator
+%   at all, which is why only the rectangle carries a Chebyshev sweep; the box is
+%   passed rather than the indicator, there being no indicator in the method.
+%
+%   No symmetrisation is possible here: the Chebyshev second-derivative matrix is
+%   not symmetric and is not similar to a symmetric one by a diagonal, so eig
+%   takes the general QR path. That is what sets the fine end of the sweep -- see
+%   DOMAIN_CONFIGS -- rather than the memory the matrix takes, which at these
+%   sizes is a fraction of what the DST reference run holds.
+    [evals, info] = chebfun_laplace_spectrum(cfg.box, N);
+    evals = sort(real(evals(:)), 'ascend');
+    dofs = info.dofs;
+end
+
+
 function warm_up(cfg, x_range, y_range)
 %WARM_UP Discarded runs of each method on this domain, at its cheapest resolution.
 %
@@ -390,7 +608,16 @@ function warm_up(cfg, x_range, y_range)
 %   the top of the timings. Two calls rather than one, because the first
 %   geometry of a session is still decaying on its second call. Skipped when
 %   there is nothing to compute, so that a figure-only pass stays free.
-    fprintf('  warm-up: DST, FD, FEM at the coarsest resolution (discarded)\n');
+%
+%   Chebfun is warmed at a resolution of its own rather than at the coarsest of
+%   the sweep: what has to be paid once is loading the toolbox and reaching
+%   diffmat, and a dozen points do that as well as the sweep's first run does,
+%   without the eig.
+    if isempty(cfg.N_grid_cheb)
+        fprintf('  warm-up: DST, FD, FEM at the coarsest resolution (discarded)\n');
+    else
+        fprintf('  warm-up: DST, FD, FEM, Cheb at the coarsest resolution (discarded)\n');
+    end
     M = cfg.M_grid_dst(1);
     h = cfg.Hmax_fem(1);
     entry = struct('gd', cfg.gd, 'ns', cfg.ns, 'sf', cfg.sf, ...
@@ -401,6 +628,9 @@ function warm_up(cfg, x_range, y_range)
         eig(dst_laplace_symmetrise(L));
         fd_laplace_spectrum(struct('box', cfg.box, 'phi', cfg.phi, 'M', M));
         fem_laplace_spectrum(entry, "eig");
+        if ~isempty(cfg.N_grid_cheb)
+            chebfun_laplace_spectrum(cfg.box, 12);
+        end
     end
 end
 
@@ -461,7 +691,7 @@ function answer = required_dofs(runs, tolerances, n)
 %   run here is a dense eig, whose cost grows as the cube of the dof count and
 %   whose matrix is stored in full, so an extrapolated timing says what the
 %   answer would cost by this route rather than what it need cost by any route.
-    methods = {'DST', 'FD', 'FEM'};
+    methods = {method_styles().name};
     n_fit = 4;
     answer = struct('method', {}, 'tolerance', {}, 'dofs', {}, 'source', {}, ...
                     'rate', {}, 'per_eigenvalue', {}, 'time', {}, 'time_source', {});
@@ -830,12 +1060,11 @@ function plot_requirement(stem, runs, answer, tolerances, n, floor_value, ref_la
 %   reaching a tolerance at the same dof count are not equally cheap, the dense
 %   eig of the same matrix taking DST a fraction of what it takes FD. The label
 %   on an extrapolated marker is extrapolated too, along time ~ dofs^q.
-    methods = {'DST', 'FD', 'FEM'};
-    colors  = {[0 0.45 0.74], [0.85 0.33 0.10], [0.47 0.67 0.19]};
-    markers = {'o', 's', '^'};
-    % The compass direction each method's timing labels take from their markers;
-    % see TIME_LABEL.
-    places  = {'SW', 'NE', 'SW'};
+    styles  = method_styles();
+    methods = {styles.name};
+    colors  = {styles.color};
+    markers = {styles.marker};
+    places  = {styles.place};
 
     % Render all text with the LaTeX interpreter, as in the other figures.
     fig = figure('Visible', 'off', 'Position', [100 100 950 680], ...

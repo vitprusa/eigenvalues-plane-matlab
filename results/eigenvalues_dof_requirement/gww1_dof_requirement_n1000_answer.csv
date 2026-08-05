@@ -1,0 +1,20 @@
+# Domain: gww1 (degrees of freedom needed for the first 1000 eigenvalues)
+# Reference: DST at 19875 dofs, resolving errors down to 3.938e-04
+# source: measured = reached by the sweep, fitted = extrapolated along max_rel_error ~ dofs^rate
+# time_s: the dense eig of that one run, measured or extrapolated along time ~ dofs^q
+method,tolerance,dofs,dofs_per_eigenvalue,source,rate,time_s,time_source
+DST,0.08,1596,1.596,measured,,0.149166,measured
+DST,0.04,1596,1.596,measured,,0.149166,measured
+DST,0.02,1596,1.596,measured,,0.149166,measured
+DST,0.01,3016,3.016,measured,,0.652554,measured
+DST,0.001,8526,8.526,measured,,10.1578,measured
+FD,0.08,10725,10.72,measured,,18.936,measured
+FD,0.04,21409.9,21.41,fitted,-0.9036,150.835,fitted
+FD,0.02,46105.7,46.11,fitted,-0.9036,1504.87,fitted
+FD,0.01,99287.2,99.29,fitted,-0.9036,15013.9,fitted
+FD,0.001,1.26928e+06,1269,fitted,-0.9036,3.12669e+07,fitted
+FEM,0.08,4839,4.839,measured,,12.0893,measured
+FEM,0.04,8451,8.451,measured,,63.9806,measured
+FEM,0.02,10656,10.66,measured,,125.393,measured
+FEM,0.01,15489.5,15.49,fitted,-1.7788,374.864,fitted
+FEM,0.001,56522.9,56.52,fitted,-1.7788,16555.4,fitted

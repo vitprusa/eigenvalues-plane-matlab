@@ -1,0 +1,25 @@
+# Domain: rectangle (degrees of freedom needed for the first 1000 eigenvalues)
+# Reference: the closed form, exact
+# source: measured = reached by the sweep, fitted = extrapolated along max_rel_error ~ dofs^rate
+# time_s: the dense eig of that one run, measured or extrapolated along time ~ dofs^q
+method,tolerance,dofs,dofs_per_eigenvalue,source,rate,time_s,time_source
+DST,0.08,1596,1.596,measured,,0.138202,measured
+DST,0.04,1596,1.596,measured,,0.138202,measured
+DST,0.02,1596,1.596,measured,,0.138202,measured
+DST,0.01,1596,1.596,measured,,0.138202,measured
+DST,0.001,1596,1.596,measured,,0.138202,measured
+FD,0.08,10731,10.73,measured,,20.1459,measured
+FD,0.04,22417.7,22.42,fitted,-0.8730,162.64,fitted
+FD,0.02,49592,49.59,fitted,-0.8730,1648.23,fitted
+FD,0.01,109707,109.7,fitted,-0.8730,16703.5,fitted
+FD,0.001,1.53356e+06,1534,fitted,-0.8730,3.6641e+07,fitted
+FEM,0.08,4671,4.671,measured,,11.07,measured
+FEM,0.04,7377,7.377,measured,,39.8833,measured
+FEM,0.02,10829,10.83,measured,,133.694,measured
+FEM,0.01,15565,15.56,measured,,397.163,measured
+FEM,0.001,53580.9,53.58,fitted,-1.8219,17236.4,fitted
+Cheb,0.08,3600,3.6,measured,,10.6791,measured
+Cheb,0.04,4900,4.9,measured,,25.9402,measured
+Cheb,0.02,6400,6.4,measured,,67.5828,measured
+Cheb,0.01,6400,6.4,measured,,67.5828,measured
+Cheb,0.001,8100,8.1,measured,,121.226,measured
