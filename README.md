@@ -202,8 +202,9 @@ experiments_paper/eigenvalues_head_paper/ self-computing eigenvalue-comparison t
                                (and Cheb for the rectangle) at a few DOF resolutions each (four
                                everywhere, except the three FEM meshes of the non-analytic
                                domains, whose fourth DST/FD grid is sized to ~3000 dofs to
-                               match the finest FEM mesh), times every run, writes new CSVs
-                               and two booktabs LaTeX tables per domain (upright and transposed).
+                               match the finest FEM mesh), times every run, caches the spectra
+                               as CSV under `results_paper/eigenvalues_head/cache/` and writes
+                               two booktabs LaTeX tables per domain (upright and transposed).
                                The digits are set per domain in `domain_configs` as `fmt_mode`
                                and `fmt_n`: `'decimals'` prints `fmt_n` digits after the point,
                                `'significant'` prints `fmt_n` significant digits by varying the
@@ -276,15 +277,17 @@ results_paper/grid_visualisation/ paper grid PNGs (<domain>_grid_M<M>_dofs<DOF>.
 results_paper/eigenvalues_dof_sweep/ paper DOF-sweep PNGs (black-and-white and _colour) plus
                                dof_sweep.tex, dof_sweep_colour.tex, methods_description_table.tex
 results_paper/eigenvalues_indexing/ rectangle match/order tables snippet (rectangle_tables_M9.tex)
-results_paper/eigenvalues_head/ self-computed comparison spectra CSV
-                               (<domain>_<method>_<k>-eigenvalues.csv, with dof + time metadata)
-                               plus, per domain (rectangle, isosceles_triangle, L_shaped,
+results_paper/eigenvalues_head/ per domain (rectangle, isosceles_triangle, L_shaped,
                                ellipse_minus_quadrant, H_shaped, gww1, gww2), two booktabs
                                tables of the same data, both \scriptsize and five
                                significant digits:
                                <domain>_eigenvalues_head.tex (one row per run, eigenvalues
                                across) and <domain>_eigenvalues_head_transposed.tex (one
                                row per eigenvalue, runs across)
+results_paper/eigenvalues_head/cache/ the self-computed comparison spectra
+                               (<domain>_<method>_<k>-eigenvalues.csv, with dof + time
+                               metadata); a run whose CSV is here is read back rather than
+                               recomputed, delete one to compute that run again
 results_paper/eigenvalues_convergence/ per domain and eigenvalue index
                                <domain>_convergence_lambda<k>.csv (method, resolution,
                                dofs, lambda_k, timing), the value figure

@@ -10,10 +10,15 @@ function make_eigenvalues_head_paper_tables(name)
 %   few resolutions of each method, timing every run with tic/toc.
 %
 %   For each domain it writes
-%     - one CSV per (method, resolution) into results_paper/eigenvalues_head/
-%       (a NEW location; the existing results/eigenvalues[_dof_sweep]/ CSVs are
-%       never touched), each carrying the dof count and the measured time in its
-%       metadata header, and
+%     - one CSV per (method, resolution) into
+%       results_paper/eigenvalues_head/cache/ (the existing
+%       results/eigenvalues[_dof_sweep]/ CSVs are never touched), each carrying
+%       the dof count and the measured time in its metadata header. These are
+%       the cached spectra: a run whose CSV is present is read back rather than
+%       recomputed, so a layout-only regeneration costs no computation at all.
+%       Delete a CSV to compute that run again. The LaTeX snippets below sit in
+%       results_paper/eigenvalues_head/ itself, so the cache does not crowd the
+%       files the article \inputs, and
 %     - one LaTeX snippet <domain>_eigenvalues_head.tex holding a booktabs
 %       table: rows are the ground-truth reference plus each method's DOF runs,
 %       columns are DOF, Time (s) and the first eight eigenvalues, and
@@ -55,9 +60,13 @@ function make_eigenvalues_head_paper_tables(name)
     run(fullfile(project_root, 'startup.m'));
     addpath(fullfile(project_root, 'experiments'));   % domain_catalog_dst / _fem
 
-    out_dir = fullfile(project_root, 'results_paper', 'eigenvalues_head');
-    if ~exist(out_dir, 'dir')
-        mkdir(out_dir);
+    % The LaTeX snippets go to OUT_DIR, the cached spectra to CACHE_DIR beneath
+    % it, so that what the article \inputs and what the script may recompute are
+    % not the same listing.
+    out_dir   = fullfile(project_root, 'results_paper', 'eigenvalues_head');
+    cache_dir = fullfile(out_dir, 'cache');
+    if ~exist(cache_dir, 'dir')
+        mkdir(cache_dir);
     end
 
     cfgs = domain_configs(project_root);
@@ -72,7 +81,7 @@ function make_eigenvalues_head_paper_tables(name)
     for i = 1:numel(cfgs)
         cfg = cfgs(i);
         fprintf('=== %s ===\n', cfg.name);
-        rows = compute_domain(cfg, out_dir);
+        rows = compute_domain(cfg, cache_dir);
         tex  = fullfile(out_dir, sprintf('%s_eigenvalues_head.tex', cfg.name));
         write_latex(tex, cfg, rows, NEIG);
         fprintf('Wrote %s\n', tex);
@@ -188,8 +197,8 @@ function cfgs = domain_configs(project_root)
 end
 
 
-function rows = compute_domain(cfg, out_dir)
-%COMPUTE_DOMAIN Compute every method/run for one domain; write CSVs; collect rows.
+function rows = compute_domain(cfg, cache_dir)
+%COMPUTE_DOMAIN Compute every method/run for one domain; cache CSVs; collect rows.
     [x_range, y_range] = bounding_box(cfg.box(1), cfg.box(2), cfg.box(3), cfg.box(4));
 
     rows = struct('method_label', {}, 'group', {}, 'dof', {}, 'time', {}, ...
@@ -227,7 +236,7 @@ function rows = compute_domain(cfg, out_dir)
             otherwise;   nlev = numel(cfg.M_grid);
         end
         for k = 1:nlev
-            csv = fullfile(out_dir, sprintf('%s_%s_%d-eigenvalues.csv', ...
+            csv = fullfile(cache_dir, sprintf('%s_%s_%d-eigenvalues.csv', ...
                            cfg.name, low, k));
             if exist(csv, 'file')
                 % Reuse existing data (e.g. layout-only regeneration): read the

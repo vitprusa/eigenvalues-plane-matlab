@@ -425,7 +425,7 @@ function path = spectrum_path(spectra_dir, cfg, method, resolution)
 %   The resolution goes into the name as it is written everywhere else, with the
 %   spaces and the equals sign taken out: <domain>_<method>_M147, and
 %   <domain>_<method>_Hmax0.0914 for the meshes. One run per file, as in
-%   results_paper/eigenvalues_head/.
+%   results_paper/eigenvalues_head/cache/.
     slug = regexprep(resolution, '\s*=\s*', '');
     path = fullfile(spectra_dir, sprintf('%s_%s_%s-eigenvalues.csv', ...
                                          cfg.name, lower(method), slug));
