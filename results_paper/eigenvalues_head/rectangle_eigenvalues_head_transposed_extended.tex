@@ -1,8 +1,8 @@
 % Eigenvalue comparison for the rectangular domain \texttt{rectangle}: DST, FD, FEM, Cheb,
 % 4 DOF runs each, first 8 eigenvalues, self-computed with timing.
 % Transposed layout: one column per run, one row per eigenvalue.
-% Extended with the eigenvalues $\lambda_{60}$, $\lambda_{80}$, $\lambda_{100}$ and $\lambda_{200}$;
-% the tabular is scaled down if it exceeds the text width.
+% Extended with the eigenvalues $\lambda_{60}$, $\lambda_{80}$, $\lambda_{100}$ and $\lambda_{200}$.
+% The tabular is scaled down if it exceeds the text width.
 %
 % Requires in the preamble:
 %   \usepackage{booktabs}
@@ -31,13 +31,13 @@
     $\lambda_{7}$ & \textbf{6.2500} & 6.2500 & 6.2500 & 6.2500 & 6.2500 & 5.9843 & 6.1482 & 6.1967 & 6.2223 & 6.2531 & 6.2508 & 6.2502 & 6.2501 & 6.2506 & 6.2500 & 6.2500 & 6.2500 \\
     $\lambda_{8}$ & \textbf{7.2500} & 7.2500 & 7.2500 & 7.2500 & 7.2500 & 6.7511 & 7.0573 & 7.1489 & 7.1974 & 7.2546 & 7.2512 & 7.2503 & 7.2501 & 7.6103 & 7.2500 & 7.2500 & 7.2500 \\
     & & & & & & & & & & & & & & & & & \\
-    $\lambda_{60}$ & \textbf{45.0000} & 45.0000 & 45.0000 & 45.0000 & 45.0000 & 27.9035 & 38.1693 & 41.6243 & 43.2204 & 45.9354 & 45.2619 & 45.0697 & 45.0189 & 144.0091 & 45.0000 & 45.0000 & 45.0000 \\
+    $\lambda_{60}$ & \textbf{45.000} & 45.000 & 45.000 & 45.000 & 45.000 & 27.904 & 38.169 & 41.624 & 43.220 & 45.935 & 45.262 & 45.070 & 45.019 & 144.01 & 45.000 & 45.000 & 45.000 \\
     & & & & & & & & & & & & & & & & & \\
-    $\lambda_{80}$ & \textbf{58.0000} & 58.0000 & 58.0000 & 58.0000 & 58.0000 & 35.1088 & 46.9872 & 51.9967 & 54.8147 & 59.9226 & 58.5315 & 58.1474 & 58.0399 & --- & 60.1001 & 57.9981 & 58.0000 \\
+    $\lambda_{80}$ & \textbf{58.000} & 58.000 & 58.000 & 58.000 & 58.000 & 35.109 & 46.987 & 51.997 & 54.815 & 59.923 & 58.532 & 58.147 & 58.040 & --- & 60.100 & 57.998 & 58.000 \\
     & & & & & & & & & & & & & & & & & \\
-    $\lambda_{100}$ & \textbf{72.0000} & 85.0000 & 72.0000 & 72.0000 & 72.0000 & 47.0907 & 54.6960 & 62.4306 & 66.6353 & 75.5330 & 73.0341 & 72.2799 & 72.0777 & --- & 79.8587 & 72.0000 & 72.0000 \\
+    $\lambda_{100}$ & \textbf{72.000} & 85.000 & 72.000 & 72.000 & 72.000 & 47.091 & 54.696 & 62.431 & 66.635 & 75.533 & 73.034 & 72.280 & 72.078 & --- & 79.859 & 72.000 & 72.000 \\
     & & & & & & & & & & & & & & & & & \\
-    $\lambda_{200}$ & \textbf{137.0000} & --- & 137.0000 & 137.0000 & 137.0000 & --- & 82.2903 & 104.3124 & 119.6977 & 160.0711 & 143.4497 & 138.8005 & 137.5200 & --- & 216.6505 & 146.6333 & 137.0000 \\
+    $\lambda_{200}$ & \textbf{137.00} & --- & 137.00 & 137.00 & 137.00 & --- & 82.290 & 104.31 & 119.70 & 160.07 & 143.45 & 138.80 & 137.52 & --- & 216.65 & 146.63 & 137.00 \\
     \bottomrule
   \end{tabular}}}
   \caption{Analytical/numerical eigenvalues of Laplace operator on the rectangular domain \texttt{rectangle}. Numerical eigenvalues computed by each discretisation \texttt{DST}, \texttt{FD}, \texttt{FEM} and \texttt{Cheb} with varying degrees of freedom (DOF); compared with the analytic eigenvalues (exact).}

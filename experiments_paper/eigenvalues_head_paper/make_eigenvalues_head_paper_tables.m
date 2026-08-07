@@ -24,9 +24,10 @@ function make_eigenvalues_head_paper_tables(name)
 %       config carries EXTRA_INDICES: the transposed table with a few deeper
 %       eigenvalues appended, each on an empty row of its own (see
 %       WRITE_LATEX_TRANSPOSED).
-%   All are \scriptsize and print four decimals, so that the tables of a domain
-%   match; an extended one wider than the text width is scaled down to it with
-%   \resizebox.
+%   All are \scriptsize and carry the same digits, so that the tables of a
+%   domain match; the digits are set per domain by FMT_MODE and FMT_N (see
+%   DOMAIN_CONFIGS and CELL_STR). A transposed one wider than the text width is
+%   scaled down to it with \resizebox.
 %
 %   The ground truth is the analytic spectrum where a closed form is known
 %   (rectangle, isosceles triangle) or the MPS reference (all other domains);
@@ -93,6 +94,12 @@ function cfgs = domain_configs(project_root)
 %
 %   EXTRA_INDICES holds the deeper eigenvalue indices of the extended transposed
 %   table, empty for a domain that is not to get one.
+%
+%   FMT_MODE and FMT_N set how many digits the eigenvalue cells carry, per
+%   domain: 'decimals' prints FMT_N digits after the point, 'significant'
+%   prints FMT_N significant digits by varying the decimals with the magnitude.
+%   Every domain is on five significant digits; the convention itself is the
+%   line project's experiments_paper/eigenvalues_head, which uses six.
     mps = fullfile(project_root, 'results', 'eigenvalues', 'mps', ...
                    'L_shaped_eigenvalues_MPS.csv');
 
@@ -104,7 +111,8 @@ function cfgs = domain_configs(project_root)
     cfgs = struct('name', {}, 'pretty', {}, 'box', {}, 'phi', {}, ...
                   'gd', {}, 'ns', {}, 'sf', {}, 'M_grid', {}, 'Hmax_fem', {}, ...
                   'has_cheb', {}, 'N_cheb', {}, 'truth_kind', {}, ...
-                  'analytic_fun', {}, 'mps_path', {}, 'extra_indices', {});
+                  'analytic_fun', {}, 'mps_path', {}, 'extra_indices', {}, ...
+                  'fmt_mode', {}, 'fmt_n', {});
 
     % --- rectangle [0, 2*pi] x [0, pi] --------------------------------------
     cfgs(end+1) = struct( ...
@@ -116,7 +124,7 @@ function cfgs = domain_configs(project_root)
         'has_cheb', true, 'N_cheb', [10 20 30 40], ...
         'truth_kind', 'analytic', ...
         'analytic_fun', @() analytic_rectangle(), 'mps_path', '', ...
-        'extra_indices', EXTRA);
+        'extra_indices', EXTRA, 'fmt_mode', 'significant', 'fmt_n', 5);
 
     % --- right isosceles triangle, legs pi ----------------------------------
     cfgs(end+1) = struct( ...
@@ -128,7 +136,7 @@ function cfgs = domain_configs(project_root)
         'has_cheb', false, 'N_cheb', [], ...
         'truth_kind', 'analytic', ...
         'analytic_fun', @() analytic_isosceles(), 'mps_path', '', ...
-        'extra_indices', EXTRA);
+        'extra_indices', EXTRA, 'fmt_mode', 'significant', 'fmt_n', 5);
 
     % --- L-shaped domain ----------------------------------------------------
     cfgs(end+1) = struct( ...
@@ -140,7 +148,7 @@ function cfgs = domain_configs(project_root)
         'M_grid', [15 25 35 49], 'Hmax_fem', [0.20 0.13 0.09 0.06], ...
         'has_cheb', false, 'N_cheb', [], ...
         'truth_kind', 'mps', 'analytic_fun', [], 'mps_path', mps, ...
-        'extra_indices', EXTRA);
+        'extra_indices', EXTRA, 'fmt_mode', 'significant', 'fmt_n', 5);
 
     % --- Non-analytic domains: ellipse-minus-quadrant, H, GWW1, GWW2 ---------
     % No closed-form spectrum and no Cheb (non-rectangular), so the table
@@ -174,7 +182,8 @@ function cfgs = domain_configs(project_root)
             'has_cheb', false, 'N_cheb', [], ...
             'truth_kind', 'mps', 'analytic_fun', [], ...
             'mps_path', fullfile(project_root, 'data', extra{i, 6}), ...
-            'extra_indices', EXTRA); %#ok<AGROW>
+            'extra_indices', EXTRA, ...
+            'fmt_mode', 'significant', 'fmt_n', 5); %#ok<AGROW>
     end
 end
 
@@ -479,18 +488,11 @@ function write_latex(tex, cfg, rows, NEIG)
             end
             fprintf(fid, '    %s & %s & %s', firstcell, row.dof, row.time);
             for i = 1:NEIG
-                if i <= numel(row.eigs)
-                    s = sprintf('%.4f', row.eigs(i));
-                    if row.bold
-                        s = sprintf('\\textbf{%s}', s);
-                    end
-                else
-                    % Not available (e.g. the published MPS references list
-                    % fewer than NEIG eigenvalues); same marker as the DOF and
-                    % Time cells of the reference row.
-                    s = '---';
-                end
-                fprintf(fid, ' & %s', s);
+                % CELL_STR marks a value the row does not hold -- e.g. a
+                % published MPS reference listing fewer than NEIG eigenvalues --
+                % with "---", the marker the DOF and Time cells of the reference
+                % row use.
+                fprintf(fid, ' & %s', cell_str(row, i, cfg));
             end
             fprintf(fid, ' \\\\\n');
         end
@@ -560,14 +562,15 @@ function write_latex_transposed(tex, cfg, rows, NEIG, extras)
 %   so that a single eigenvalue can be read across all discretisations. The
 %   method name spans its DOF runs as a \multicolumn group head, the DOF and
 %   timing become the two leading body rows, and the reference column stays
-%   bold. Four decimals and \scriptsize, as in WRITE_LATEX, which is also what
-%   keeps the thirteen to seventeen numeric columns inside the text width.
+%   bold. The digits of CELL_STR and \scriptsize, as in WRITE_LATEX, which is
+%   also what keeps the thirteen to seventeen numeric columns inside the text
+%   width.
 %
 %   EXTRAS are eigenvalue indices past the leading NEIG, each written on a row
 %   of its own after an empty row, so that the jump in the index is visible. Pass
-%   [] for the plain table; a non-empty EXTRAS also wraps the tabular in
-%   \resizebox, drops the timing sentence from the caption and marks the \label
-%   as extended, every layout being \input into one document.
+%   [] for the plain table; a non-empty EXTRAS also drops the timing sentence
+%   from the caption and marks the \label as extended, every layout being \input
+%   into one document. Both wrap the tabular in \resizebox.
     fid = fopen(tex, 'w');
     if fid == -1
         error('head_paper:tex', 'Could not open %s for writing.', tex);
@@ -594,16 +597,13 @@ function write_latex_transposed(tex, cfg, rows, NEIG, extras)
         '%% Transposed layout: one column per run, one row per eigenvalue.\n'], ...
         t.lev_note, NEIG);
     if ~isempty(extras)
-        fprintf(fid, ['%% Extended with the eigenvalues %s;\n', ...
-            '%% the tabular is scaled down if it exceeds the text width.\n'], ...
-            index_list(extras));
+        fprintf(fid, '%% Extended with the eigenvalues %s.\n', index_list(extras));
     end
+    fprintf(fid, '%% The tabular is scaled down if it exceeds the text width.\n');
     fprintf(fid, '%%\n%% Requires in the preamble:\n');
     fprintf(fid, ['%%   \\usepackage{booktabs}\n', ...
                   '%%   \\usepackage{amsmath}\n%%   \\usepackage{listings}\n']);
-    if ~isempty(extras)
-        fprintf(fid, '%%   \\usepackage{graphicx}          %% \\resizebox\n');
-    end
+    fprintf(fid, '%%   \\usepackage{graphicx}          %% \\resizebox\n');
     fprintf(fid, '\n');
 
     % \scriptsize throughout, as in WRITE_LATEX. Measured with pdflatex against
@@ -613,29 +613,38 @@ function write_latex_transposed(tex, cfg, rows, NEIG, extras)
     % inside the text width, so every table takes it and they stay uniform. A
     % narrower page (a plain article \textwidth of 345pt, say) fits none of them.
     %
-    % The extended tables are the ones that overrun, their deeper eigenvalues
-    % running into three figures before the decimal point: a column being as wide
-    % as its widest cell, those rows alone set every column width. Four decimals
-    % throughout is deliberate -- the table is not to print a different number of
-    % digits for the deeper eigenvalues -- and at four decimals no setting of
-    % size and separation fits the widest of them, the rectangle: 105pt over at
-    % \scriptsize/3pt, 63pt at \tiny/3pt, 33pt at \scriptsize/1pt. They therefore
-    % keep the family's \scriptsize and 3pt, like every other table here, and buy
-    % the fit by scaling the tabular with \resizebox.
+    % Significant digits (CELL_STR) make every numeric cell the same width --
+    % FMT_N digits and a point, whatever the magnitude -- so the deeper
+    % eigenvalues no longer set the column width and a domain's plain and
+    % extended tables come out exactly as wide as each other. FMT_N is therefore
+    % what decides whether anything is scaled at all. Measured at \scriptsize/3pt
+    % against a \textwidth of 537.75pt, the widest table being the rectangle's,
+    % the only domain with Cheb and five columns wider than the rest:
+    %
+    %   fmt_n = 5   525.73pt   fits, 12.02pt to spare -- what every domain is on
+    %   fmt_n = 6   589.52pt   overruns by 51.77pt, both layouts alike
+    %
+    % For reference, under the four decimals this family printed before the
+    % significant-digit convention the deeper eigenvalues -- three figures before
+    % the point -- were the widest cells and the extended tables alone overran,
+    % the rectangle by 105pt (63pt at \tiny/3pt, 33pt at \scriptsize/1pt: no
+    % setting of size and separation fitted it).
+    %
+    % Nothing is scaled at fmt_n = 5: the other domains are 412.95pt (isosceles),
+    % 408.43pt (L) and 380.24pt (the four non-analytic ones). \resizebox is kept
+    % on both layouts regardless, as the guard that makes a rise in FMT_N, or a
+    % further run added to a domain, overflow nothing.
     %
     % Scaled DOWN only: \width is the natural width of the tabular, so a table
     % that already fits is passed through at its own size rather than blown up to
-    % fill the text width. The domains without Cheb are five columns narrower
-    % than the rectangle and several of them need no scaling at all.
+    % fill the text width.
     fprintf(fid, '\\begin{table}[htbp]\n  \\centering\n');
     % The size and \tabcolsep changes scope to the tabular (grouped) so that the
     % caption keeps the normal body size.
     fprintf(fid, '  {\\scriptsize\n  \\setlength{\\tabcolsep}{3pt}\n');
-    if ~isempty(extras)
-        % Trailing %% so that the line break adds no space before the tabular.
-        fprintf(fid, ['  \\resizebox{\\ifdim\\width>\\textwidth\\textwidth', ...
-                      '\\else\\width\\fi}{!}{%%\n']);
-    end
+    % Trailing %% so that the line break adds no space before the tabular.
+    fprintf(fid, ['  \\resizebox{\\ifdim\\width>\\textwidth\\textwidth', ...
+                  '\\else\\width\\fi}{!}{%%\n']);
     fprintf(fid, '  \\begin{tabular}{%s}\n    \\toprule\n', colspec);
 
     % Group head: method name spanning its DOF runs, underlined by \cmidrule.
@@ -661,20 +670,16 @@ function write_latex_transposed(tex, cfg, rows, NEIG, extras)
     fprintf(fid, ' \\\\\n    \\midrule\n');
 
     for i = 1:NEIG
-        write_eig_row(fid, rows, i, 4);
+        write_eig_row(fid, rows, i, cfg);
     end
     % The deeper eigenvalues, each after an empty row: the index jumps from one
     % to the next, and a rule would read as a new block of the same sequence.
     for i = extras(:)'
         fprintf(fid, '   %s \\\\\n', repmat(' &', 1, ncol));
-        write_eig_row(fid, rows, i, 4);
+        write_eig_row(fid, rows, i, cfg);
     end
 
-    if isempty(extras)
-        fprintf(fid, '    \\bottomrule\n  \\end{tabular}}\n');
-    else
-        fprintf(fid, '    \\bottomrule\n  \\end{tabular}}}\n');   % tabular, \resizebox, size group
-    end
+    fprintf(fid, '    \\bottomrule\n  \\end{tabular}}}\n');   % tabular, \resizebox, size group
     % The extended table stops after the comparison clause: the timing sentence
     % is carried by the two tables it shares its numbers with, and the deeper
     % eigenvalue indices are read off the rows themselves.
@@ -701,27 +706,89 @@ function write_latex_transposed(tex, cfg, rows, NEIG, extras)
 end
 
 
-function write_eig_row(fid, rows, i, ndec)
+function write_eig_row(fid, rows, i, cfg)
 %WRITE_EIG_ROW One eigenvalue row of the transposed table: index, then each run.
 %
-%   NDEC decimals per cell. A run holding fewer than i eigenvalues -- a grid
-%   coarser than the index asked for, or a published MPS reference shorter than
-%   the table -- gets "---", the marker the DOF and Time cells of the reference
-%   column use.
+%   The digits are CELL_STR's, set by the domain's FMT_MODE and FMT_N.
     fprintf(fid, '    $\\lambda_{%d}$', i);
     for j = 1:numel(rows)
-        row = rows(j);
-        if i <= numel(row.eigs)
-            s = sprintf('%.*f', ndec, row.eigs(i));
-            if row.bold
-                s = sprintf('\\textbf{%s}', s);
-            end
-        else
-            s = '---';
-        end
-        fprintf(fid, ' & %s', s);
+        fprintf(fid, ' & %s', cell_str(rows(j), i, cfg));
     end
     fprintf(fid, ' \\\\\n');
+end
+
+
+function s = cell_str(row, i, cfg)
+%CELL_STR One eigenvalue cell, bold for the reference row.
+%
+%   In 'decimals' mode a cell carries FMT_N digits after the point.
+%
+%   In 'significant' mode it carries FMT_N significant digits, the decimals
+%   varying with the magnitude, while fixed notation can show exactly that many
+%   -- which it can while the value has at most FMT_N digits before the point
+%   and no long run of leading zeros after it. Outside that range fixed notation
+%   turns ugly in one of two ways, and the cell is written in scientific
+%   notation to SCI_DIGITS significant digits instead:
+%
+%     too large  a value of 1.2e9 has no room for a decimal and prints every one
+%               of its ten integer digits, four more than were asked for
+%     too small  a value of 1e-11 needs sixteen decimals before its sixth
+%               significant digit appears
+%
+%   Either way the cell would be far wider than an ordinary one, and a column is
+%   as wide as its widest cell. Neither escape fires on the Dirichlet-Laplacian
+%   spectra of these domains, whose eigenvalues run from about 1 to a few
+%   hundred; they are the convention's, carried over from the line project's
+%   experiments_paper/eigenvalues_head, and would catch a discretisation that
+%   had broken down at the top of its own spectrum. The test is applied per
+%   cell, not per row, so a single run falling out of range does not change the
+%   notation of the rest of its row.
+%
+%   A row holding fewer than i eigenvalues -- a grid coarser than the index
+%   asked for, or a published MPS reference shorter than the table -- gets
+%   "---", the marker the DOF and Time cells of the reference use.
+    MAX_DECIMALS = 8;
+    SCI_DIGITS = 2;
+
+    if i > numel(row.eigs)
+        s = '---';
+        return;
+    end
+    v = row.eigs(i);
+
+    if strcmp(cfg.fmt_mode, 'decimals')
+        s = bold_fixed(sprintf('%.*f', cfg.fmt_n, v), row.bold);
+        return;
+    end
+    if ~strcmp(cfg.fmt_mode, 'significant')
+        error('head_paper:fmt', 'unknown fmt_mode %s', cfg.fmt_mode);
+    end
+
+    if v == 0
+        s = bold_fixed(sprintf('%.*f', cfg.fmt_n - 1, v), row.bold);
+        return;
+    end
+
+    e = floor(log10(abs(v)));
+    ndec = cfg.fmt_n - 1 - e;
+    if ndec >= 0 && ndec <= MAX_DECIMALS
+        s = bold_fixed(sprintf('%.*f', ndec, v), row.bold);
+        return;
+    end
+
+    s = sprintf('%.*f \\times 10^{%d}', SCI_DIGITS - 1, v / 10^e, e);
+    if row.bold
+        s = sprintf('\\mathbf{%s}', s);
+    end
+    s = sprintf('$%s$', s);
+end
+
+
+function s = bold_fixed(s, bold)
+%BOLD_FIXED A fixed-notation cell, bold for the reference row.
+    if bold
+        s = sprintf('\\textbf{%s}', s);
+    end
 end
 
 

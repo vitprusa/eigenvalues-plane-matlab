@@ -203,7 +203,18 @@ experiments_paper/eigenvalues_head_paper/ self-computing eigenvalue-comparison t
                                everywhere, except the three FEM meshes of the non-analytic
                                domains, whose fourth DST/FD grid is sized to ~3000 dofs to
                                match the finest FEM mesh), times every run, writes new CSVs
-                               and two booktabs LaTeX tables per domain (upright and transposed)
+                               and two booktabs LaTeX tables per domain (upright and transposed).
+                               The digits are set per domain in `domain_configs` as `fmt_mode`
+                               and `fmt_n`: `'decimals'` prints `fmt_n` digits after the point,
+                               `'significant'` prints `fmt_n` significant digits by varying the
+                               decimals with the magnitude, and every domain is on five
+                               significant digits. Fixed notation is used while it can show
+                               exactly that many digits; a cell too large (no room for a
+                               decimal) or too small (a long run of leading zeros) for that
+                               falls back to scientific notation at two significant digits,
+                               per cell rather than per row, so that one wild value cannot
+                               widen a whole column. Neither fallback fires on the present
+                               spectra
 experiments_paper/eigenvalues_convergence/ convergence test for one eigenvalue
                                (make_eigenvalues_convergence_index.m): lambda_k, any k, with
                                DST/FD/FEM over thirteen resolutions from ~100 to ~10000 dofs
@@ -269,7 +280,8 @@ results_paper/eigenvalues_head/ self-computed comparison spectra CSV
                                (<domain>_<method>_<k>-eigenvalues.csv, with dof + time metadata)
                                plus, per domain (rectangle, isosceles_triangle, L_shaped,
                                ellipse_minus_quadrant, H_shaped, gww1, gww2), two booktabs
-                               tables of the same data, both \scriptsize and four decimals:
+                               tables of the same data, both \scriptsize and five
+                               significant digits:
                                <domain>_eigenvalues_head.tex (one row per run, eigenvalues
                                across) and <domain>_eigenvalues_head_transposed.tex (one
                                row per eigenvalue, runs across)

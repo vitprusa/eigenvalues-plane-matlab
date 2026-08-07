@@ -1,16 +1,19 @@
 % Eigenvalue comparison for the GWW1 isospectral drum domain \texttt{gww1}: DST, FD, FEM,
 % 4 DOF runs each (FEM: 3), first 8 eigenvalues, self-computed with timing.
 % Transposed layout: one column per run, one row per eigenvalue.
+% The tabular is scaled down if it exceeds the text width.
 %
 % Requires in the preamble:
 %   \usepackage{booktabs}
 %   \usepackage{amsmath}
 %   \usepackage{listings}
+%   \usepackage{graphicx}          % \resizebox
 
 \begin{table}[htbp]
   \centering
   {\scriptsize
   \setlength{\tabcolsep}{3pt}
+  \resizebox{\ifdim\width>\textwidth\textwidth\else\width\fi}{!}{%
   \begin{tabular}{lrrrrrrrrrrrr}
     \toprule
     & \multicolumn{1}{c}{\texttt{MPS}} & \multicolumn{4}{c}{\texttt{DST}} & \multicolumn{4}{c}{\texttt{FD}} & \multicolumn{3}{c}{\texttt{FEM}} \\
@@ -24,10 +27,10 @@
     $\lambda_{4}$ & --- & 6.5345 & 6.5405 & 6.5409 & 6.5397 & 6.3738 & 6.4671 & 6.4990 & 6.5275 & 6.5429 & 6.5395 & 6.5385 \\
     $\lambda_{5}$ & --- & 7.3106 & 7.2869 & 7.2752 & 7.2602 & 7.1188 & 7.1991 & 7.2249 & 7.2451 & 7.2609 & 7.2547 & 7.2518 \\
     $\lambda_{6}$ & --- & 9.2254 & 9.2231 & 9.2200 & 9.2145 & 8.9141 & 9.0816 & 9.1394 & 9.1911 & 9.2198 & 9.2133 & 9.2112 \\
-    $\lambda_{7}$ & --- & 10.6205 & 10.6157 & 10.6112 & 10.6039 & 10.1195 & 10.3895 & 10.4829 & 10.5668 & 10.6113 & 10.6023 & 10.5995 \\
-    $\lambda_{8}$ & --- & 11.5167 & 11.5368 & 11.5410 & 11.5425 & 11.0024 & 11.3021 & 11.4074 & 11.5039 & 11.5549 & 11.5448 & 11.5425 \\
+    $\lambda_{7}$ & --- & 10.621 & 10.616 & 10.611 & 10.604 & 10.120 & 10.389 & 10.483 & 10.567 & 10.611 & 10.602 & 10.600 \\
+    $\lambda_{8}$ & --- & 11.517 & 11.537 & 11.541 & 11.543 & 11.002 & 11.302 & 11.407 & 11.504 & 11.555 & 11.545 & 11.542 \\
     \bottomrule
-  \end{tabular}}
+  \end{tabular}}}
   \caption{Analytical/numerical eigenvalues of Laplace operator on the GWW1 isospectral drum domain \texttt{gww1}. Numerical eigenvalues computed by each discretisation \texttt{DST}, \texttt{FD} and \texttt{FEM} with varying degrees of freedom (DOF); compared with the reference eigenvalues from the method of particular solutions (\texttt{MPS}). Timing shows the time for the matrix assembly and full spectrum computation using \texttt{MATLAB}'s \lstinline{eig} function with the default settings.}
   \label{tab:eigenvalues_head_gww1_transposed}
 \end{table}

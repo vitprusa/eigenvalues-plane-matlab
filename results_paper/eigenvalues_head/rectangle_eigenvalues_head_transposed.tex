@@ -1,16 +1,19 @@
 % Eigenvalue comparison for the rectangular domain \texttt{rectangle}: DST, FD, FEM, Cheb,
 % 4 DOF runs each, first 8 eigenvalues, self-computed with timing.
 % Transposed layout: one column per run, one row per eigenvalue.
+% The tabular is scaled down if it exceeds the text width.
 %
 % Requires in the preamble:
 %   \usepackage{booktabs}
 %   \usepackage{amsmath}
 %   \usepackage{listings}
+%   \usepackage{graphicx}          % \resizebox
 
 \begin{table}[htbp]
   \centering
   {\scriptsize
   \setlength{\tabcolsep}{3pt}
+  \resizebox{\ifdim\width>\textwidth\textwidth\else\width\fi}{!}{%
   \begin{tabular}{lrrrrrrrrrrrrrrrrr}
     \toprule
     & \multicolumn{1}{c}{Analytic} & \multicolumn{4}{c}{\texttt{DST}} & \multicolumn{4}{c}{\texttt{FD}} & \multicolumn{4}{c}{\texttt{FEM}} & \multicolumn{4}{c}{\texttt{Cheb}} \\
@@ -27,7 +30,7 @@
     $\lambda_{7}$ & \textbf{6.2500} & 6.2500 & 6.2500 & 6.2500 & 6.2500 & 5.9843 & 6.1482 & 6.1967 & 6.2223 & 6.2531 & 6.2508 & 6.2502 & 6.2501 & 6.2506 & 6.2500 & 6.2500 & 6.2500 \\
     $\lambda_{8}$ & \textbf{7.2500} & 7.2500 & 7.2500 & 7.2500 & 7.2500 & 6.7511 & 7.0573 & 7.1489 & 7.1974 & 7.2546 & 7.2512 & 7.2503 & 7.2501 & 7.6103 & 7.2500 & 7.2500 & 7.2500 \\
     \bottomrule
-  \end{tabular}}
+  \end{tabular}}}
   \caption{Analytical/numerical eigenvalues of Laplace operator on the rectangular domain \texttt{rectangle}. Numerical eigenvalues computed by each discretisation \texttt{DST}, \texttt{FD}, \texttt{FEM} and \texttt{Cheb} with varying degrees of freedom (DOF); compared with the analytic eigenvalues (exact). Timing shows the time for the matrix assembly and full spectrum computation using \texttt{MATLAB}'s \lstinline{eig} function with the default settings.}
   \label{tab:eigenvalues_head_rectangle_transposed}
 \end{table}
