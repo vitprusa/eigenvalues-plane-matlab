@@ -1,6 +1,5 @@
 #!/usr/bin/env bash
-# Regenerate the colour paper DOF-sweep figures (no titles; method by colour,
-# DOF level by line style, thicker lines) from the existing CSVs in
+# Regenerate the paper DOF-sweep figures (no titles) from the existing CSVs in
 # results/eigenvalues_dof_sweep/, writing PNGs into
 # results_paper/eigenvalues_dof_sweep/. No recompute: the CSVs must already be
 # present (run the compute_* scripts in experiments/eigenvalues_dof_sweep first
@@ -15,6 +14,6 @@ if ! command -v matlab >/dev/null 2>&1; then
 fi
 
 matlab -batch "addpath('${script_dir}'); \
-	plot_rectangle_dof_sweep_paper_colour(); \
-	plot_isosceles_triangle_dof_sweep_paper_colour(); \
-	plot_L_shaped_dof_sweep_paper_colour()"
+	plot_rectangle_dof_sweep(); \
+	plot_isosceles_triangle_dof_sweep(); \
+	plot_L_shaped_dof_sweep()"

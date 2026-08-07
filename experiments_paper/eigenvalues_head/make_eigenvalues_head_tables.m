@@ -1,4 +1,4 @@
-function make_eigenvalues_head_paper_tables(name)
+function make_eigenvalues_head_tables(name)
 %MAKE_EIGENVALUES_HEAD_PAPER_TABLES Paper eigenvalue-comparison tables (self-computed).
 %
 %   Paper (article) counterpart of
@@ -73,7 +73,7 @@ function make_eigenvalues_head_paper_tables(name)
     if nargin >= 1 && ~isempty(name)
         cfgs = cfgs(strcmp({cfgs.name}, name));
         if isempty(cfgs)
-            error('head_paper:unknownDomain', ...
+            error('eigenvalues_head:unknownDomain', ...
                 ['Unknown domain "%s" (known: rectangle, isosceles_triangle, ', ...
                  'L_shaped, ellipse_minus_quadrant, H_shaped, gww1, gww2).'], name);
         end
@@ -247,7 +247,7 @@ function rows = compute_domain(cfg, cache_dir)
                 try
                     [evals, dofs, resstr, tsec] = run_one(low, k, cfg, x_range, y_range);
                 catch ME
-                    warning('head_paper:run', '%s %s DOF#%d failed: %s', ...
+                    warning('eigenvalues_head:run', '%s %s DOF#%d failed: %s', ...
                             cfg.name, disp_m, k, ME.message);
                     continue;
                 end
@@ -336,7 +336,7 @@ function [evals, dofs, resstr] = compute_one(low, k, cfg, x_range, y_range)
             [evals, info] = chebfun_laplace_spectrum(cfg.box, N);
             dofs = info.dofs;
         otherwise
-            error('head_paper:method', 'unknown method %s', low);
+            error('eigenvalues_head:method', 'unknown method %s', low);
     end
     evals = sort(real(evals(:)), 'ascend');
 end
@@ -352,7 +352,7 @@ function [evals, dofs, tsec] = read_head_csv(path)
 %READ_HEAD_CSV Read a paper-head CSV back: eigenvalues, dof count, measured time.
     fid = fopen(path, 'r');
     if fid == -1
-        error('head_paper:csvread', 'Could not open %s.', path);
+        error('eigenvalues_head:csvread', 'Could not open %s.', path);
     end
     closer = onCleanup(@() fclose(fid));
     dofs = NaN; tsec = NaN; evals = [];
@@ -397,7 +397,7 @@ function v = read_two_col(path)
 %READ_TWO_COL Second column of a "# ... / n,lambda_n / i,value" CSV.
     fid = fopen(path, 'r');
     if fid == -1
-        error('head_paper:mps', 'Could not open reference CSV %s.', path);
+        error('eigenvalues_head:mps', 'Could not open reference CSV %s.', path);
     end
     closer = onCleanup(@() fclose(fid));
     v = [];
@@ -420,7 +420,7 @@ function write_head_csv(csv, name, method, resstr, dofs, tsec, evals)
 %WRITE_HEAD_CSV One spectrum CSV with dof/time metadata, then n,lambda_n rows.
     fid = fopen(csv, 'w');
     if fid == -1
-        error('head_paper:csv', 'Could not open %s for writing.', csv);
+        error('eigenvalues_head:csv', 'Could not open %s for writing.', csv);
     end
     fprintf(fid, '# Domain: %s (%s, paper eigenvalues-head run, dense eig full spectrum)\n', ...
             name, method);
@@ -438,7 +438,7 @@ function write_latex(tex, cfg, rows, NEIG)
 %WRITE_LATEX Transposed booktabs table for one domain.
     fid = fopen(tex, 'w');
     if fid == -1
-        error('head_paper:tex', 'Could not open %s for writing.', tex);
+        error('eigenvalues_head:tex', 'Could not open %s for writing.', tex);
     end
     closer = onCleanup(@() fclose(fid));
 
@@ -582,7 +582,7 @@ function write_latex_transposed(tex, cfg, rows, NEIG, extras)
 %   into one document. Both wrap the tabular in \resizebox.
     fid = fopen(tex, 'w');
     if fid == -1
-        error('head_paper:tex', 'Could not open %s for writing.', tex);
+        error('eigenvalues_head:tex', 'Could not open %s for writing.', tex);
     end
     closer = onCleanup(@() fclose(fid));
 
@@ -770,7 +770,7 @@ function s = cell_str(row, i, cfg)
         return;
     end
     if ~strcmp(cfg.fmt_mode, 'significant')
-        error('head_paper:fmt', 'unknown fmt_mode %s', cfg.fmt_mode);
+        error('eigenvalues_head:fmt', 'unknown fmt_mode %s', cfg.fmt_mode);
     end
 
     if v == 0

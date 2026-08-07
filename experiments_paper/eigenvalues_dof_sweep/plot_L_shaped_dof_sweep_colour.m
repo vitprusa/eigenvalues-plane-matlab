@@ -1,4 +1,4 @@
-function plot_L_shaped_dof_sweep_paper_colour()
+function plot_L_shaped_dof_sweep_colour()
 %PLOT_L_SHAPED_DOF_SWEEP_PAPER_COLOUR Colour paper variant of the L-shaped DOF sweep.
 %
 %   Colour counterpart of PLOT_L_SHAPED_DOF_SWEEP_PAPER: same figure with no main

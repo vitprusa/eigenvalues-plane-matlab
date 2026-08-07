@@ -16,4 +16,4 @@ if ! command -v matlab >/dev/null 2>&1; then
 	exit 1
 fi
 
-matlab -batch "addpath('${script_dir}'); make_eigenvalues_head_paper_tables('${name}')"
+matlab -batch "addpath('${script_dir}'); make_eigenvalues_head_tables('${name}')"

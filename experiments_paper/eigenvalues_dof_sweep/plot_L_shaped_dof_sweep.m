@@ -1,4 +1,4 @@
-function plot_L_shaped_dof_sweep_paper()
+function plot_L_shaped_dof_sweep()
 %PLOT_L_SHAPED_DOF_SWEEP_PAPER Paper variant of the L-shaped DOF-sweep plot.
 %
 %   Paper version of PLOT_L_SHAPED_DOF_SWEEP: same figure with no main title,

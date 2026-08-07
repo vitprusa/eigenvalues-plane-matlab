@@ -1,4 +1,4 @@
-function plot_isosceles_triangle_dof_sweep_paper_colour()
+function plot_isosceles_triangle_dof_sweep_colour()
 %PLOT_ISOSCELES_TRIANGLE_DOF_SWEEP_PAPER_COLOUR Colour paper variant of the triangle DOF sweep.
 %
 %   Colour counterpart of PLOT_ISOSCELES_TRIANGLE_DOF_SWEEP_PAPER: same figure

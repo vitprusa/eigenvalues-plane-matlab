@@ -191,14 +191,14 @@ experiments/eigenvalues_weyl/  Weyl-asymptotics visual check (plot_weyl_asymptot
 experiments_paper/             article (paper) variants of the figure/table experiments:
                                same computation, but no plot titles, catalog domain/method
                                names in the labels, and output to results_paper/
-experiments_paper/grid_visualisation_paper/ paper grid + domain-mask figures
+experiments_paper/grid_visualisation/ paper grid + domain-mask figures
                                (M and DOF encoded in the file name, no title)
-experiments_paper/eigenvalues_dof_sweep_paper/ paper DOF-sweep plots, black-and-white
+experiments_paper/eigenvalues_dof_sweep/ paper DOF-sweep plots, black-and-white
                                (marker per DOF level) and colour variants, no title
-experiments_paper/eigenvalues_indexing_paper/ rectangle eigenvalue match/order tables
-                               as a booktabs LaTeX snippet (eigenvalues_rectangle_tables_paper.m)
-experiments_paper/eigenvalues_head_paper/ self-computing eigenvalue-comparison tables
-                               (make_eigenvalues_head_paper_tables.m): recomputes DST/FD/FEM
+experiments_paper/eigenvalues_indexing/ rectangle eigenvalue match/order tables
+                               as a booktabs LaTeX snippet (eigenvalues_rectangle_tables.m)
+experiments_paper/eigenvalues_head/ self-computing eigenvalue-comparison tables
+                               (make_eigenvalues_head_tables.m): recomputes DST/FD/FEM
                                (and Cheb for the rectangle) at a few DOF resolutions each (four
                                everywhere, except the three FEM meshes of the non-analytic
                                domains, whose fourth DST/FD grid is sized to ~3000 dofs to

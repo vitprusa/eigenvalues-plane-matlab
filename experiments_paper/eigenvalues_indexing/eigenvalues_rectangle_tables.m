@@ -1,9 +1,9 @@
-function eigenvalues_rectangle_tables_paper(M, margin)
+function eigenvalues_rectangle_tables(M, margin)
 %EIGENVALUES_RECTANGLE_TABLES_PAPER LaTeX snippet with the rectangle match and order tables.
 %
-%   eigenvalues_rectangle_tables_paper()        uses M = 9 and a default margin.
-%   eigenvalues_rectangle_tables_paper(M)       uses resolution M.
-%   eigenvalues_rectangle_tables_paper(M, margin) extends the analytic (m, n)
+%   eigenvalues_rectangle_tables()        uses M = 9 and a default margin.
+%   eigenvalues_rectangle_tables(M)       uses resolution M.
+%   eigenvalues_rectangle_tables(M, margin) extends the analytic (m, n)
 %                                         table margin indices past the resolved
 %                                         modes in each direction.
 %
@@ -38,7 +38,7 @@ function eigenvalues_rectangle_tables_paper(M, margin)
         margin = 5;     % table reaches Mx+margin = 14 rows, My+margin = 9 cols
     end
 
-    % This file lives in experiments_paper/eigenvalues_indexing_paper/; put the
+    % This file lives in experiments_paper/eigenvalues_indexing/; put the
     % project sources on the path.
     script_dir      = fileparts(mfilename('fullpath'));
     experiments_dir = fileparts(script_dir);
@@ -62,7 +62,7 @@ function eigenvalues_rectangle_tables_paper(M, margin)
     Mx = numel(info.x_vec) - 2;
     My = numel(info.y_vec) - 2;
     if Mx * My ~= info.dofs
-        error('eigenvalues_rectangle_tables_paper:misaligned', ...
+        error('eigenvalues_rectangle_tables:misaligned', ...
             ['Grid does not cleanly resolve the rectangle (Mx*My = %d, ', ...
              'dofs = %d). Pick M so both edges land on grid lines ', ...
              '(M odd for the 2:1 rectangle).'], Mx * My, info.dofs);
@@ -103,7 +103,7 @@ function eigenvalues_rectangle_tables_paper(M, margin)
     rank_tab = eigenvalue_positions(lambda_tab, Lx, Ly);
 
     if n_unmatched > 0
-        warning('eigenvalues_rectangle_tables_paper:unmatched', ...
+        warning('eigenvalues_rectangle_tables:unmatched', ...
             ['%d computed eigenvalues did not match any (m, n) cell; ', ...
              'increase margin so the lattice covers all resolved modes.'], ...
             n_unmatched);
@@ -156,7 +156,7 @@ function write_latex(tex_file, lambda_tab, rank_tab, matched, mm, nn, meta)
 %WRITE_LATEX Write both tables (values and ordering) as one subfig LaTeX snippet.
     fid = fopen(tex_file, 'w');
     if fid == -1
-        error('eigenvalues_rectangle_tables_paper:cannotOpen', ...
+        error('eigenvalues_rectangle_tables:cannotOpen', ...
             'Could not open %s for writing.', tex_file);
     end
     closer = onCleanup(@() fclose(fid));

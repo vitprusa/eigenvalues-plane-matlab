@@ -1,14 +1,14 @@
-function plot_rectangle_dof_sweep_paper()
-%PLOT_RECTANGLE_DOF_SWEEP_PAPER Paper variant of the rectangle DOF-sweep plot.
+function plot_rectangle_dof_sweep_colour()
+%PLOT_RECTANGLE_DOF_SWEEP_PAPER_COLOUR Colour paper variant of the rectangle DOF sweep.
 %
-%   Paper version of PLOT_RECTANGLE_DOF_SWEEP: same figure with no main title,
-%   drawn in black and white. The method is encoded by line style (DST dotted,
-%   FD dash-dot, FEM dashed, Cheb solid) and the DOF level by a marker symbol
-%   (circle, square, triangle, diamond, down-triangle for the successive DOFs),
-%   with a few markers placed along each curve; the analytic ground truth is a
-%   thick solid black line with no marker. Reads the existing CSVs from
-%   results/eigenvalues_dof_sweep/ (produced by COMPUTE_RECTANGLE_DOF_SWEEP) and
-%   writes rectangle_dof_sweep.eps into results_paper/eigenvalues_dof_sweep/. The
+%   Colour counterpart of PLOT_RECTANGLE_DOF_SWEEP_PAPER: same figure with no
+%   main title, but the method is encoded by colour (DST blue, FD orange, FEM
+%   green, Cheb purple) and the DOF level by line style (a per-cycle width bump
+%   keeps the fifth DOF distinct from the first); lines are drawn thicker than in
+%   the black-and-white variant. The analytic ground truth is a thick solid
+%   black line. Reads the existing CSVs from results/eigenvalues_dof_sweep/
+%   (produced by COMPUTE_RECTANGLE_DOF_SWEEP) and writes
+%   rectangle_dof_sweep_colour.eps into results_paper/eigenvalues_dof_sweep/. The
 %   domain name is carried by the file name in place of the removed title.
 
     paper_dir       = fileparts(mfilename('fullpath'));
@@ -34,10 +34,11 @@ function plot_rectangle_dof_sweep_paper()
     analytic = read_eigs_csv(fullfile(data_dir, 'rectangle_analytic-eigenvalues.csv'));
     analytic = analytic(1:min(maxdof, numel(analytic)));
 
-    % Black and white: method -> line style, DOF level -> marker symbol.
-    mstyle  = struct('dst', ':', 'fd', '-.', 'fem', '--', 'cheb', '-');
-    markers = {'o', 's', '^', 'd', 'v'};
-    labels  = struct('dst', 'DST', 'fd', 'FD', 'fem', 'FEM', 'cheb', 'Cheb');
+    % Colour: method -> colour, DOF level -> line style.
+    colors = struct('dst', [0 0.45 0.74], 'fd', [0.85 0.33 0.10], ...
+                    'fem', [0.47 0.67 0.19], 'cheb', [0.49 0.18 0.56]);
+    labels = struct('dst', 'DST', 'fd', 'FD', 'fem', 'FEM', 'cheb', 'Cheb');
+    styles = {':', '-.', '--', '-'};
 
     % Render all text (labels, legend, tick labels) with the LaTeX
     % interpreter, i.e. in the standard LaTeX Computer Modern font.
@@ -47,7 +48,7 @@ function plot_rectangle_dof_sweep_paper()
         'defaultLegendInterpreter',        'latex');
 
     main = axes(fig);
-    draw_all(main, results, methods, analytic, mstyle, markers, labels, [], true);
+    draw_all(main, results, methods, analytic, colors, labels, styles, [], true);
     xlabel(main, 'eigenvalue index $k$');
     ylabel(main, '$\lambda_k$');
     % No title: the domain is identified by the output file name.
@@ -61,13 +62,13 @@ function plot_rectangle_dof_sweep_paper()
     % Inset (lower-right, with a gap from the main axes): zoom to indices
     % n <= 600, with y clipped to the low (physical) eigenvalues.
     inset = axes(fig, 'Position', [0.58 0.15 0.304 0.304], 'Color', 'w');
-    draw_all(inset, results, methods, analytic, mstyle, markers, labels, 600);
+    draw_all(inset, results, methods, analytic, colors, labels, styles, 600);
     grid(inset, 'on'); box(inset, 'on');
     ylim(inset, [0, 2 * analytic(min(600, numel(analytic)))]);
     title(inset, 'indices $k \leq 600$', 'FontSize', 8);
     set(inset, 'FontSize', 7);
 
-    eps_file = fullfile(out_dir, 'rectangle_dof_sweep.eps');
+    eps_file = fullfile(out_dir, 'rectangle_dof_sweep_colour.eps');
     try
         exportgraphics(fig, eps_file, 'ContentType', 'vector');
     catch
@@ -77,7 +78,7 @@ function plot_rectangle_dof_sweep_paper()
 end
 
 
-function draw_all(ax, results, methods, analytic, mstyle, markers, labels, nmax, pad_legend)
+function draw_all(ax, results, methods, analytic, colors, labels, styles, nmax, pad_legend)
     if nargin < 9
         pad_legend = false;
     end
@@ -94,12 +95,9 @@ function draw_all(ax, results, methods, analytic, mstyle, markers, labels, nmax,
             else
                 idx = 1:min(nmax, numel(r.evals));
             end
-            % Method -> line style; DOF level -> marker symbol, drawn at a few
-            % staggered points along the curve so the lines stay clean.
-            mk = markers{mod(k - 1, numel(markers)) + 1};
-            plot(ax, idx, r.evals(idx), mstyle.(m), 'Color', 'k', 'LineWidth', 1.1, ...
-                'Marker', mk, 'MarkerSize', 5, 'MarkerEdgeColor', 'k', ...
-                'MarkerFaceColor', 'none', 'MarkerIndices', marker_idx(numel(idx), k), ...
+            si = mod(k - 1, numel(styles)) + 1;               % cycle the 4 line styles
+            lw = 2.0 + 1.0 * floor((k - 1) / numel(styles));  % thicker on each extra cycle
+            plot(ax, idx, r.evals(idx), styles{si}, 'Color', colors.(m), 'LineWidth', lw, ...
                 'DisplayName', sprintf('%s (DOF = %d)', labels.(m), r.dofs));
         end
         % Pad this method's legend column to maxcount with invisible blank rows,
@@ -110,30 +108,15 @@ function draw_all(ax, results, methods, analytic, mstyle, markers, labels, nmax,
             end
         end
     end
-    % Analytic ground truth (solid black, thicker, no marker).
+    % Analytic ground truth (black, thicker).
     if isempty(nmax)
         idx = 1:numel(analytic);
     else
         idx = 1:min(nmax, numel(analytic));
     end
-    plot(ax, idx, analytic(idx), 'k-', 'LineWidth', 1.8, 'DisplayName', 'analytic (exact)');
+    plot(ax, idx, analytic(idx), 'k-', 'LineWidth', 2.6, 'DisplayName', 'analytic (exact)');
     hold(ax, 'off');
     if ~isempty(nmax)
         xlim(ax, [0 nmax]);
     end
-end
-
-
-function mi = marker_idx(n, k)
-    % A handful of marker positions along a curve of length n, staggered by the
-    % DOF index k so markers of overlapping curves do not all land together.
-    nm = 3;
-    if n <= 1
-        mi = 1;
-        return;
-    end
-    p = round(linspace(1, n, nm + 2));
-    p = p(2:end-1);                       % drop the two endpoints
-    shift = round((k - 1) / 5 * n / (nm + 1));
-    mi = unique(min(n, max(1, p + shift)));
 end

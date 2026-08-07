@@ -1,4 +1,4 @@
-function plot_isosceles_triangle_dof_sweep_paper()
+function plot_isosceles_triangle_dof_sweep()
 %PLOT_ISOSCELES_TRIANGLE_DOF_SWEEP_PAPER Paper variant of the triangle DOF-sweep plot.
 %
 %   Paper version of PLOT_ISOSCELES_TRIANGLE_DOF_SWEEP: same figure with no main

@@ -1,12 +1,12 @@
-function plot_grid_visualisation_paper(name)
+function plot_grid_visualisation(name)
 %PLOT_GRID_VISUALISATION_PAPER Paper-ready DST grid and domain mask per domain.
 %
-%   plot_grid_visualisation_paper() draws one figure per domain in
+%   plot_grid_visualisation() draws one figure per domain in
 %   DOMAIN_CATALOG_DST, using the SAME bounding box, grid spacing, and mask as
 %   the DST "full" spectrum (resolution M_full), and writes a EPS into
 %   results_paper/grid_visualisation/.
 %
-%   plot_grid_visualisation_paper(name) restricts the run to the single domain
+%   plot_grid_visualisation(name) restricts the run to the single domain
 %   "name" (e.g. "L_shaped"). Pass "" or [] to keep all domains.
 %
 %   This is the paper variant of PLOT_GRID_VISUALISATION. It draws the exact
