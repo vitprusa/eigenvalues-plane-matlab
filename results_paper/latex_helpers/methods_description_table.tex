@@ -10,10 +10,10 @@
     \toprule
     Discretisation method & Description \\
     \midrule
+    \texttt{DST} & Discrete sine transform method as described in this work, see Algorithm~\ref{alg:dst-plane-spectrum}. \\
     \texttt{FEM} & Finite element method. Conforming Galerkin discretisation with quadratic ($P_2$) triangular Lagrange elements on an unstructured mesh as implemented with the \texttt{MATLAB} \texttt{PDE Toolbox}, see~\cite{matlab:r2026a,matlab:pde-toolbox:r2026a}, \lstinline{assembleFEMatrices} function; constrained degrees of freedom removed via the null space basis technique. \\
     \texttt{Cheb} & Chebyshev spectral collocation method. Second-derivative differentiation matrices at Chebyshev points in each direction (interior points only, for homogeneous Dirichlet conditions) as implemented in \texttt{chebfun} library, see \cite{driscoll.ta.hale.n.ea:chebfun}, \lstinline{diffmat} function, combined into the two-dimensional Laplacian by a Kronecker sum. (Rectangular domain only.) \\
     \texttt{FD} & Finite difference method. Standard second-order five-point Laplacian stencil on a uniform grid, own implementation. \\
-    \texttt{DST} & Discrete sine transform method as described in this work. \\
     \bottomrule
   \end{tabular}
   \caption{Discretisation  of the Laplace operator with zero Dirichlet boundary conditions.}
