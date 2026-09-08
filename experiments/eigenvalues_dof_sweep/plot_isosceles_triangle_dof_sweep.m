@@ -45,7 +45,7 @@ function plot_isosceles_triangle_dof_sweep()
     ylabel(main, '$\lambda_k$');
     title(main, 'Right isosceles triangle (legs $\pi$) --- eigenvalue DOF sweep');
     % One column per method (DST, FD, FEM) plus a column for the analytic.
-    legend(main, 'Location', 'northwest', 'NumColumns', numel(methods) + 1, 'FontSize', 7, 'Box', 'off');
+    legend(main, 'Location', 'northwest', 'NumColumns', numel(methods) + 1, 'FontSize', 10.5, 'Box', 'off');
     grid(main, 'on'); box(main, 'on');
     % Clip y to the physical band; the spurious high modes (FEM) run off the top.
     ylim(main, [0, 1.5 * analytic(end)]);
