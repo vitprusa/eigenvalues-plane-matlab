@@ -92,7 +92,7 @@ function plot_one(c, out_dir)
         'DisplayName', 'grid point');
     hmask = plot(ax, X(mask), Y(mask), 'o', 'MarkerEdgeColor', 'k', ...
         'MarkerFaceColor', 'k', 'MarkerSize', 4, 'LineStyle', 'none', ...
-        'DisplayName', 'masked grid point (DOF)');
+        'DisplayName', 'masked grid point ($\mathtt{DOF}$)');
 
     hold(ax, 'off');
     axis(ax, 'equal');
