@@ -105,7 +105,7 @@ function draw_all(ax, results, methods, analytic, colors, labels, styles, nmax, 
     else
         idx = 1:min(nmax, numel(analytic));
     end
-    plot(ax, idx, analytic(idx), 'k-', 'LineWidth', 1.8, 'DisplayName', 'analytic (exact)');
+    plot(ax, idx, analytic(idx), 'k-', 'LineWidth', 1.8, 'DisplayName', 'analytic/exact');
     % Pad the analytic legend column to maxcount as well, so the column-major
     % legend has exactly maxcount rows and every method (plus analytic) keeps
     % its own column regardless of the method count.

@@ -15,8 +15,11 @@ function plot_rectangle_dof_sweep()
     project_root    = fileparts(fileparts(paper_dir));
     experiments_dir = fullfile(project_root, 'experiments');
     orig_dir        = fullfile(experiments_dir, 'eigenvalues_dof_sweep');
-    addpath(orig_dir);          % load_dof_sweep
-    addpath(experiments_dir);   % read_eigs_csv
+    % Appended, not prepended: experiments/eigenvalues_dof_sweep holds
+    % same-named plot functions, and prepending it would shadow the paper
+    % ones for every call after the first in a batch run.
+    addpath(orig_dir, '-end');          % load_dof_sweep
+    addpath(experiments_dir, '-end');   % read_eigs_csv
     data_dir = fullfile(project_root, 'results', 'eigenvalues_dof_sweep');
     out_dir  = fullfile(project_root, 'results_paper', 'eigenvalues_dof_sweep');
     if ~exist(out_dir, 'dir')
@@ -52,7 +55,7 @@ function plot_rectangle_dof_sweep()
     ylabel(main, '$\lambda_k$');
     % No title: the domain is identified by the output file name.
     % One column per method (DST, FD, FEM, Cheb) plus a column for the analytic.
-    legend(main, 'Location', 'northwest', 'NumColumns', numel(methods) + 1, 'FontSize', 7, 'Box', 'off');
+    legend(main, 'Location', 'northwest', 'NumColumns', numel(methods) + 1, 'FontSize', 10.5, 'Box', 'off');
     grid(main, 'on'); box(main, 'on');
     % Clip y to the physical band; the spurious high modes (Cheb, FEM) run off
     % the top of the axes.
@@ -116,7 +119,7 @@ function draw_all(ax, results, methods, analytic, mstyle, markers, labels, nmax,
     else
         idx = 1:min(nmax, numel(analytic));
     end
-    plot(ax, idx, analytic(idx), 'k-', 'LineWidth', 1.8, 'DisplayName', 'analytic (exact)');
+    plot(ax, idx, analytic(idx), 'k-', 'LineWidth', 1.8, 'DisplayName', 'analytic/exact');
     hold(ax, 'off');
     if ~isempty(nmax)
         xlim(ax, [0 nmax]);

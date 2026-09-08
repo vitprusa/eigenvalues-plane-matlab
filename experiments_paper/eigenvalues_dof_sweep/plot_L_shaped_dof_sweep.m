@@ -14,8 +14,11 @@ function plot_L_shaped_dof_sweep()
     project_root    = fileparts(fileparts(paper_dir));
     experiments_dir = fullfile(project_root, 'experiments');
     orig_dir        = fullfile(experiments_dir, 'eigenvalues_dof_sweep');
-    addpath(orig_dir);          % load_dof_sweep
-    addpath(experiments_dir);   % read_eigs_csv
+    % Appended, not prepended: experiments/eigenvalues_dof_sweep holds
+    % same-named plot functions, and prepending it would shadow the paper
+    % ones for every call after the first in a batch run.
+    addpath(orig_dir, '-end');          % load_dof_sweep
+    addpath(experiments_dir, '-end');   % read_eigs_csv
     data_dir = fullfile(project_root, 'results', 'eigenvalues_dof_sweep');
     out_dir  = fullfile(project_root, 'results_paper', 'eigenvalues_dof_sweep');
     if ~exist(out_dir, 'dir')
@@ -42,7 +45,7 @@ function plot_L_shaped_dof_sweep()
     xlabel(main, 'eigenvalue index $k$');
     ylabel(main, '$\lambda_k$');
     % No title: the domain is identified by the output file name.
-    legend(main, 'Location', 'southeast', 'NumColumns', 3, 'FontSize', 8, 'Box', 'off');
+    legend(main, 'Location', 'southeast', 'NumColumns', 3, 'FontSize', 12, 'Box', 'off');
     grid(main, 'on'); box(main, 'on');
 
     inset = axes(fig, 'Position', [0.18 0.50 0.384 0.384], 'Color', 'w');
