@@ -1082,7 +1082,7 @@ function plot_requirement(stem, runs, answer, tolerances, n, floor_value, ref_la
         if isempty(d); continue; end
         loglog(ax, d, e, ['-' markers{mi}], 'Color', colors{mi}, 'LineWidth', 2.0, ...
             'MarkerSize', 7, 'MarkerFaceColor', 'w', ...
-            'DisplayName', sprintf('\\texttt{%s}', methods{mi}));
+            'DisplayName', sprintf('$\\mathtt{%s}$', methods{mi}));
         for j = 1:numel(d)
             time_label(ax, d(j), e(j), t(j), colors{mi}, places{mi});
         end
@@ -1132,7 +1132,7 @@ function plot_requirement(stem, runs, answer, tolerances, n, floor_value, ref_la
     % are true errors, and the label has to say so rather than claim a DST run
     % the computation never made.
     ylabel(ax, sprintf(['$\\max_{k \\leq %d} \\frac{|\\lambda_k - ', ...
-                        '\\lambda_k^{\\mathrm{%s}}|}{\\lambda_k^{\\mathrm{%s}}}$'], ...
+                        '\\lambda_k^{\\mathtt{%s}}|}{\\lambda_k^{\\mathtt{%s}}}$'], ...
                        n, ref_label, ref_label), 'FontSize', 16);
     % No title: the domain is identified by the output file name.
     legend(ax, 'Location', 'southwest', 'FontSize', 10, 'Box', 'off');
