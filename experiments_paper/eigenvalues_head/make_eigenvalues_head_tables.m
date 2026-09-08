@@ -463,7 +463,7 @@ function write_latex(tex, cfg, rows, NEIG)
     % size; both layouts use it so that the two tables of a domain match.
     fprintf(fid, '  {\\scriptsize\n  \\begin{tabular}{%s}\n', colspec);
     fprintf(fid, '    \\toprule\n');
-    fprintf(fid, '    Method & DOF & Time (s)');
+    fprintf(fid, '    Method & $\\mathtt{DOF}$ & Time (s)');
     for i = 1:NEIG
         fprintf(fid, ' & $\\lambda_{%d}$', i);
     end
@@ -668,7 +668,7 @@ function write_latex_transposed(tex, cfg, rows, NEIG, extras)
     fprintf(fid, '\n');
 
     % Run metadata, then the eigenvalues.
-    fprintf(fid, '    DOF');
+    fprintf(fid, '    $\\mathtt{DOF}$');
     fprintf(fid, ' & %s', rows.dof);
     fprintf(fid, ' \\\\\n    Time (s)');
     fprintf(fid, ' & %s', rows.time);
