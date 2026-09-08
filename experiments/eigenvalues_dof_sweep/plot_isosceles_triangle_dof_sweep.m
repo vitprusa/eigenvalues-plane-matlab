@@ -89,7 +89,7 @@ function draw_all(ax, results, methods, analytic, colors, labels, styles, nmax, 
             si = mod(k - 1, numel(styles)) + 1;               % cycle the 4 line styles
             lw = 1.2 + 0.9 * floor((k - 1) / numel(styles));  % thicker on each extra cycle
             plot(ax, idx, r.evals(idx), styles{si}, 'Color', colors.(m), 'LineWidth', lw, ...
-                'DisplayName', sprintf('%s (DOF = %d)', labels.(m), r.dofs));
+                'DisplayName', sprintf('$\\mathtt{%s}$ ($\\mathtt{DOF}$ = %d)', labels.(m), r.dofs));
         end
         % Pad this method's legend column to maxcount with invisible blank rows,
         % so the column-major legend keeps one column per method.
