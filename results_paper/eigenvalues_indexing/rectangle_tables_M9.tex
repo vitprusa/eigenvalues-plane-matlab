@@ -11,7 +11,7 @@
 
 \begin{table}
   \centering
-  \subfloat[\label{tab:rectangle_indexing_M9_a} Computed eigenvalues in \textbf{bold}. The computational grid resolves $M_x = 9$ modes in the horizontal direction $x$ and $M_y = 4$ modes in the vertical direction $y$, total number of computed eigenvalues is $M_x \times M_y = \text{DOF}$. Computed eigenvalues match---up to round-off error---the corresponding analytic eigenvalues, which are computed for all pairs $(m, n)$ and are shown in normal weight.]{%
+  \subfloat[\label{tab:rectangle_indexing_M9_a} Computed eigenvalues in \textbf{bold}. The computational grid resolves $M_x = 9$ modes in the horizontal direction $x$ and $M_y = 4$ modes in the vertical direction $y$, total number of computed eigenvalues is $\mathtt{DOF} = M_x M_y$. Computed eigenvalues match---up to round-off error---the corresponding analytic eigenvalues $\lambda_{m,n}^{\mathtt{exact}}$, which are computed for all pairs $(m, n)$ and are shown in normal weight.]{%
     {\scriptsize
     \begin{tabular}{r|rrrrrrrrr}
       \toprule
@@ -58,6 +58,6 @@
       \bottomrule
     \end{tabular}}
   }
-  \caption{Analytical/numerical eigenvalues of Laplace operator on the rectangular domain $[0, 2\pi] \times [0, \pi]$, zero Dirichlet boundary condition. The analytical eigenvalues of the continuous eigenvalue problem are given by the formula~$\lambda_{m,n} = \frac{m^2}{4} + n^2$. (Eigenvalues indexed by~$(m, n)$, rows are indexed by~$m$, columns by~$n$.) Numerical eigenvalues computed using the \texttt{DST} based discretisation, $M = 9$, $\text{DOF} = 36$.}
+  \caption{Analytical/numerical eigenvalues of Laplace operator on the rectangular domain $[0, 2\pi] \times [0, \pi]$, zero Dirichlet boundary condition. The analytical eigenvalues of the continuous eigenvalue problem are given by the formula~$\lambda_{m,n}^{\mathtt{exact}} = \frac{m^2}{4} + n^2$. (Eigenvalues indexed by~$(m, n)$, rows are indexed by~$m$, columns by~$n$.) Numerical eigenvalues computed using the \texttt{DST} based discretisation, $M = 9$, $\mathtt{DOF} = 36$.}
   \label{tab:rectangle_indexing_M9}
 \end{table}
