@@ -1,8 +1,7 @@
 function check_bvp_L_shaped
 %CHECK_BVP_L_SHAPED Method-of-manufactured-solutions BVP test on the L-shape.
 %
-%   Re-implements the original bvp_Lshaped_test script against the
-%   refactored API, using the method of manufactured solutions: a known
+%   Uses the method of manufactured solutions: a known
 %   function u that vanishes on the boundary of the L-shaped domain is
 %   chosen, its exact Laplacian f = laplace u is formed analytically, and
 %   the discrete Dirichlet problem

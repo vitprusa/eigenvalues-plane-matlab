@@ -3,8 +3,8 @@ function [dst_laplace_op, info] = make_dst_laplace_op(x_range, y_range, M, indic
 %
 %   [dst_laplace_op, info] = make_dst_laplace_op(x_range, y_range, M, indicator_function)
 %
-%   Encapsulates the grid/domain set-up that is shared by all the
-%   dst_laplace_grid_eigenvalues_*_test scripts and returns a single
+%   Encapsulates the grid/domain set-up shared by the spectrum runners and
+%   the tests, and returns a single
 %   operator handle, dst_laplace_op, that applies the discrete Laplacian
 %   on the degrees of freedom (interior grid points selected by the
 %   domain mask).

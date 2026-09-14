@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
-# Recompute the paper eigenvalue-comparison spectra (DST, FD, FEM, Cheb) at four
-# DOF resolutions each for the rectangle, isosceles-triangle and L-shaped
-# domains, timing every run, and write the LaTeX tables into
+# Recompute the paper eigenvalue-comparison spectra (DST, FD, FEM, Cheb) at a
+# few DOF resolutions each for the seven domains of make_eigenvalues_head_tables,
+# timing every run, and write the LaTeX tables into
 # results_paper/eigenvalues_head/ and the per-run CSVs into its cache/
 # subdirectory. Generates its own data; does not touch the existing results/
 # CSVs. A run whose cached CSV is present is read back rather than recomputed --

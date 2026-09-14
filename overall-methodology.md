@@ -1,9 +1,9 @@
 # Overall methodology: launcher → catalog → runner → driver → writer
 
-Each eigenvalue-computation technique (DST, FEM, Chebfun, MPS, Wolfram) is
+Each eigenvalue-computation technique (DST, FD, FEM, Chebfun, MPS, Wolfram) is
 organised into the same five-part pipeline. Source code lives under `src/` and
-`experiments/`; generated CSVs land in `results/<technique>/` and are
-gitignored.
+`experiments/`; generated CSVs land in `results/eigenvalues/<technique>/` and
+are tracked, so the results are available without rerunning anything.
 
 ## The five roles
 
@@ -13,7 +13,8 @@ gitignored.
    `name` filter that errors on an unknown domain. Each row holds the domain
    `name` plus whatever that technique needs to build the problem (DST: `box`,
    `phi`, `M_full`, `M_partial`; FEM: `decsg` geometry `gd/ns/sf`, `Hmax_eig`,
-   `Hmax_solvepdeeig`; Chebfun: `box`). Adding a domain = one new row, no new
+   `Hmax_solvepdeeig`; FD: `box`, `phi`, `M`; Chebfun: `box`). Adding a domain
+   = one new row, no new
    files.
 
 2. **Runner** (`src/<technique>/..._spectrum.m`)
@@ -26,14 +27,15 @@ gitignored.
 
 3. **Driver** (`experiments/compute_spectrum_<technique>.m`)
    Orchestrates a run: resolves the project root, runs `startup.m` to set the
-   path, adds `experiments/` (for the catalog), creates `results/<technique>/`,
+   path, adds `experiments/` (for the catalog), creates
+   `results/eigenvalues/<technique>/`,
    loops over `catalog(name)` x any sweep (modes, N, ...), calls the runner,
    and calls the writer for each result. Exposes a `(name, ...)` signature so a
    single domain or subset can be computed interactively.
 
 4. **Writer** (`src/<technique>/write_*_csv.m`, or inline in the driver)
    Writes one CSV per result with a leading block of `#`-prefixed metadata
-   lines (domain, timestamp, resolution, dofs, method) followed by an
+   lines (domain, resolution, dofs, computation time, method) followed by an
    `n,lambda_n` table via `writetable(..., 'WriteMode', 'append')`. Keeps the
    output self-describing and uniform across techniques.
 
@@ -50,16 +52,16 @@ run_<technique>.sh                   (launcher, shell)
   --> compute_spectrum_<technique>   (driver: sets path + loops)
         |-- domain_catalog_<technique>(name)      (catalog -> entries)
         |-- <technique>_laplace_spectrum(entry,.) (runner -> evals, info)
-        \-- write_<technique>_csv(file, evals, .) (writer -> results/<t>/*.csv)
+        \-- write_<technique>_csv(file, evals, .) (writer -> results/eigenvalues/<t>/*.csv)
 ```
 
 ## Conventions
 
-- **Naming:** drivers `compute_spectrum_{dst,mps,wolfram,cheb,fem_eig,fem_solvepdeeig}`;
-  catalogs `domain_catalog_{dst,cheb,fem}`; launchers `run_<same>.sh`.
-- **Output:** `results/<technique>/<domain>_<variant>-eigenvalues.csv`, where
-  variant is the mode (`full`/`partial`), Chebyshev order (`N`), FEM workflow,
-  etc.; CSVs are gitignored and regenerated via the launchers.
+- **Naming:** drivers `compute_spectrum_{dst,mps,wolfram,cheb,fem_eig,fem_solvepdeeig,fd}`;
+  catalogs `domain_catalog_{dst,cheb,fem,fd}`; launchers `run_<same>.sh`.
+- **Output:** `results/eigenvalues/<technique>/<domain>_<variant>-eigenvalues.csv`,
+  where variant is the mode (`full`/`partial`), Chebyshev order (`N`), FEM
+  workflow, etc.; CSVs are tracked and regenerated via the launchers.
 - **Two-resolution pattern:** techniques with a cheap and an expensive solve
   store two resolutions per catalog row (DST `M_full`/`M_partial`, FEM
   `Hmax_eig`/`Hmax_solvepdeeig`).
@@ -74,6 +76,7 @@ run_<technique>.sh                   (launcher, shell)
 | DST | `domain_catalog_dst` | `dst_laplace_spectrum` | `compute_spectrum_dst` | `run_dst.sh` |
 | Chebfun | `domain_catalog_cheb` | `chebfun_laplace_spectrum` | `compute_spectrum_cheb` | `run_cheb.sh` |
 | FEM | `domain_catalog_fem` | `fem_laplace_spectrum` | `compute_spectrum_fem_eig`, `compute_spectrum_fem_solvepdeeig` | `run_fem_eig.sh`, `run_fem_solvepdeeig.sh` |
+| FD | `domain_catalog_fd` | `fd_laplace_spectrum` | `compute_spectrum_fd` | `run_fd.sh` |
 | MPS | — (single domain) | `Ldrum_modified` (script) | `compute_spectrum_mps` | `run_mps.sh` |
 | Wolfram | `wolframRegions` (in core `.wls`) | `reportEigenvalues` | `compute_spectrum_wolfram.wls` | `run_wolfram.sh` |
 

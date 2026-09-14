@@ -64,4 +64,4 @@ The grid resolves $M_x = 9$ modes in $x$ and $M_y = 4$ modes in $y$. Each row is
 
 Listed positions 1..53; 36 resolved (matched), 17 unresolved (`--`). Computed eigenvalues: 36 total, 0 unmatched.
 
-First unmatched eigenvalue: position 33, mode $(m, n) = (1, 5)$, $\lambda^\* = 25.2500$. The closed form of UNMATCHED_ASYMPTOTICS.md predicts position 33 (**PASS**).
+First unmatched eigenvalue: position 33, mode $(m, n) = (1, 5)$, $\lambda^\* = 25.2500$. The closed form predicts position 33 (**PASS**).

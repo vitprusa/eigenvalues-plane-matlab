@@ -19,9 +19,6 @@ function plot_weyl_asymptotics(name)
 %   fraction of the bounding box with phi > 0, times the box area), so it is
 %   the continuous geometric area, independent of the DST resolution.
 %
-%   This is the refactored, catalog-driven counterpart of the asymptotic
-%   blocks in the old dst_laplace_grid_eigenvalues_*_test scripts.
-%
 %   See also DOMAIN_CATALOG_DST, MAKE_DST_LAPLACE_MAT_BATCHED.
 
     if nargin < 1

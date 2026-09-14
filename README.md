@@ -50,12 +50,13 @@ folders on the path:
 startup
 ```
 
-### Discrete sine transform --- minimal working example
+### Discrete sine transform -- minimal working example
 
 For a quick, self-contained demonstration on a single domain, the root
 scripts `dst_laplace_full_spectrum.m` (full spectrum via `eig`) and
 `dst_laplace_partial_spectrum.m` (leading eigenvalues via `eigs`) assemble
-and solve the zero Dirichlet Laplace operator eigenvalue problem one domain inline; edit the bounding box, resolution `M`, and
+and solve the zero Dirichlet Laplace operator eigenvalue problem on one
+domain inline; edit the bounding box, resolution `M`, and
 indicator `phi` at the top of each.
 
 ### Discrete sine transform -- driver script
@@ -89,8 +90,7 @@ function. To add or change a domain, edit a single row of
 full/partial resolutions `M`); the number of eigenvalues `k` and the `eigs`
 parameters (`subspace_dim`, `tolerance`, `max_iterations`) are set in
 `compute_spectrum_dst`. From a shell, `experiments/run_dst.sh` runs the DST
-experiments headless. 
-
+experiments headless.
 
 ### Other methods
 

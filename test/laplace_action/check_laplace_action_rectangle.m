@@ -1,8 +1,7 @@
 function check_laplace_action_rectangle
 %CHECK_LAPLACE_ACTION_RECTANGLE Test the DST Laplace action on a known function.
 %
-%   Re-implements the original dst_laplace_grid_test script against the
-%   refactored API: it applies the masked DST Laplace operator
+%   Applies the masked DST Laplace operator
 %   (MAKE_DST_LAPLACE_OP) on the rectangle [0,pi] x [0,pi] to the analytic
 %   function
 %

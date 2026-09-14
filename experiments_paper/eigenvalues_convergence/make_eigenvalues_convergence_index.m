@@ -7,8 +7,8 @@ function make_eigenvalues_convergence_index(index, name)
 %   plots it against the degrees of freedom actually used by each discretisation.
 %
 %   make_eigenvalues_convergence_index(index, name) restricts the run to the
-%   single domain "name" -- rectangle, isosceles_triangle or L_shaped. Pass ""
-%   or [] to keep all three.
+%   single domain "name"; see DOMAIN_CONFIGS for the seven it knows. Pass "" or
+%   [] to keep them all.
 %
 %   Any index may be asked for, the ground state included, and what changes with
 %   the domain and the index is the reference. The rectangle and the right
@@ -35,8 +35,8 @@ function make_eigenvalues_convergence_index(index, name)
 %       level where there is one. No title: the domain is carried by the file
 %       name, as elsewhere in experiments_paper, and
 %     - <domain>_convergence_lambda<index>_error.eps   the same runs as a
-%       relative error against DOF on log-log axes, in the manner of
-%       MAKE_EIGENVALUES_CONVERGENCE and with the same slope triangles, and
+%       relative error against DOF on log-log axes, with a fitted-slope
+%       triangle per method, and
 %     - spectra/<domain>_<method>_<resolution>-eigenvalues.csv   the whole
 %       spectrum of each run, which is the cache the other three are built from.
 %   Vector EPS, not raster: see SAVE_FIGURE.
@@ -68,7 +68,10 @@ function make_eigenvalues_convergence_index(index, name)
 %
 %   Requires the PDE Toolbox (FEM).
 %
-%   See also MAKE_EIGENVALUES_CONVERGENCE.
+%   See also COMPUTE_EIGENVALUES_DOF_REQUIREMENT, which reduces a whole block of
+%   eigenvalues to its largest error over the same sweeps, and
+%   MAKE_EIGENVALUES_ERROR_DISTRIBUTION, which follows one resolution across
+%   indices where this follows one index across resolutions.
 
     if nargin < 1 || isempty(index)
         error('eigenvalues_convergence:index', ...
@@ -130,7 +133,7 @@ function cfgs = domain_configs()
 %DOMAIN_CONFIGS Geometry and resolution sweeps per domain.
 %
 %   Every sweep covers the same band of DOF counts, from about 100 to about
-%   10000, so that the figures of the three domains are read against each other;
+%   10000, so that the figures of the seven domains are read against each other;
 %   the L-shape and the four catalogue domains run one resolution past it, to
 %   about 15000. Their reference is a separate run again, at M_REF; see
 %   DST_REFERENCE.
@@ -506,8 +509,8 @@ function write_spectrum(path, cfg, p, dofs, tsec, evals)
 %
 %   Every eigenvalue the run resolved, not a head of the spectrum: what the dense
 %   eig produced is what is kept, and no index can then be asked for that the
-%   cache has to go back to the solver for. It costs a few megabytes over the
-%   three domains, against a quarter of an hour of eig per domain.
+%   cache has to go back to the solver for. It costs a few megabytes per
+%   domain, against a quarter of an hour of eig per domain.
 %
 %   Seventeen significant digits, and the header repeats the count the rows carry
 %   so that READ_SPECTRUM can tell a complete file from an interrupted one.
@@ -802,8 +805,8 @@ function plot_runs(stem, runs, index, ref)
 %   settle on a common level and how soon. Where that level is known -- the
 %   ground state, see REFERENCE_FOR -- it is drawn as a horizontal line, and the
 %   curves are read against it rather than against each other. Colours and
-%   markers are those of MAKE_EIGENVALUES_CONVERGENCE, so that the figures of a
-%   domain read as one family.
+%   markers are those of the DOF-requirement and error-distribution figures, so
+%   that the figures of a domain read as one family.
     methods = {'DST', 'FD', 'FEM'};
     colors  = {[0 0.45 0.74], [0.85 0.33 0.10], [0.47 0.67 0.19]};
     markers = {'o', 's', '^'};
@@ -898,8 +901,8 @@ function plot_error_runs(stem, runs, index, ref)
 
     % Each triangle sits above its own curve, staggered so that no two stack up.
     % With the published reference all three curves are power laws and all three
-    % get one, in the placement MAKE_EIGENVALUES_CONVERGENCE settled on for this
-    % data: FD takes the coarse left end where its gap to DST is still wide, DST
+    % get one, in the placement settled on for this data: FD takes the coarse
+    % left end where its gap to DST is still wide, DST
     % the middle, FEM the fine right end where it has pulled away from FD.
     % Against a DST reference, DST gets none.
     if ref.published
