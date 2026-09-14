@@ -145,9 +145,11 @@ sharing the signature `(x_range, y_range, M, indicator_function)`:
 `global_mask`, and `dofs`.
 
 Supporting routines: `dst_laplace_grid` (Laplacian of a full grid),
-`dst_d2_slice` / `dst_d2_chunk` (1-D DST second derivative), and
+`dst_d2_slice` / `dst_d2_chunk` (1-D DST second derivative),
 `vals_vec_to_vals_grid` / `vals_grid_to_vals_vec` (scatter/gather between the
-degrees-of-freedom vector and the masked grid). `dst_laplace_spectrum`
+degrees-of-freedom vector and the masked grid), and `dst_laplace_symmetrise`
+(the assembled matrix averaged with its transpose, `(L + L')/2`, so that `eig`
+takes the symmetric path; pass it in place of `L`). `dst_laplace_spectrum`
 (assemble → solve → CSV via `write_eigs_csv`) is the end-to-end runner for a
 single domain, driven over the catalog by `compute_spectrum_dst`.
 
@@ -183,10 +185,13 @@ by hand.
 ## Repository layout
 
 ```
-.                              startup.m + dst_laplace_full/partial_spectrum demo scripts
+.                              startup.m + dst_laplace_full/partial_spectrum demo scripts,
+                               overall-methodology.md (the launcher -> catalog -> runner ->
+                               driver -> writer pipeline shared by the spectrum experiments)
 data/                          published reference eigenvalues (Betcke & Trefethen, SIAM
                                Review 47(3):469-491, 2005) as <domain>.csv, used as the
-                               ground truth where no closed form is known
+                               ground truth where no closed form is known; decagon.csv is
+                               the reference for a domain not in the catalog
 src/dst/                       DST Laplace operator/matrix builders + spectrum runner
 src/domains/                   bounding box and domain indicator functions
 src/fd/                        finite-difference spectrum runner (fd_laplace_spectrum)
@@ -199,6 +204,12 @@ experiments/eigenvalues_head/  make_eigenvalues_head_comparison_tables.py (per-d
                                comparison tables)
 experiments/eigenvalues_dof_sweep/ DOF-sweep drivers and plots (compute_*_dof_sweep.m,
                                plot_*_dof_sweep.m, load_dof_sweep, run_*_dof_sweep.sh)
+experiments/eigenvalues_indexing/ which analytic modes of the rectangle a DST grid resolves:
+                               eigenvalues_rectangle_match.m (the computed spectrum
+                               matched onto the (m, n) lattice), eigenvalues_rectangle_order.m
+                               (the position of each lattice mode in the ordered spectrum)
+                               and eigenvalues_rectangle_match_column.m (the same match as
+                               one ordered column), each writing a markdown table
 experiments/eigenvalues_dof_requirement/ how many DOF the first n eigenvalues cost
                                (compute_eigenvalues_dof_requirement.m,
                                run_eigenvalues_dof_requirement.sh): the largest
@@ -275,6 +286,8 @@ results/eigenvalues/           per-method spectra CSV, a subdir each (dst, fd, f
                                cheb, mps, wolfram)
 results/eigenvalues_head/      generated <domain>_comparison.md tables (from
                                experiments/eigenvalues_head/make_eigenvalues_head_comparison_tables.py)
+results/eigenvalues_indexing/  rectangle_match_M<M>.md, rectangle_order_M<M>.md and
+                               rectangle_match_column_M<M>.md (from experiments/eigenvalues_indexing/)
 results/eigenvalues_dof_sweep/ L-shaped, rectangle, and isosceles-triangle
                                DOF-sweep spectra CSV + plots;
                                experiments/eigenvalues_dof_sweep/compute_*_dof_sweep.m
@@ -430,7 +443,7 @@ the spectrum runner (`src/dst/dst_laplace_spectrum.m`) and CSV writer
 (`src/dst/write_eigs_csv.m`), and the driver
 (`experiments/compute_spectrum_dst.m`) — together with the testing scripts, the
 batched versions of the core builders, and the documentation strings, were
-written by Claude Code (Claude Opus 4.8).
+written by Claude Code (Claude Opus 4.8, Claude Opus 5 and Claude Fable 5.1).
 
 ## License
 
