@@ -303,7 +303,7 @@ results/eigenvalues_dof_requirement/ DOF needed for the first n eigenvalues, per
                                with the largest relative error over the block),
                                <domain>_dof_requirement_n<n>_answer.csv (the answer
                                table), <domain>_dof_requirement_n<n>.eps (each marker
-                               labelled with what that run cost) and the
+                               labelled with what that run cost) and the hand-written
                                <domain>_dof_requirement_n<n>.tex figure snippet; the
                                CSVs are reused on re-runs, delete them to recompute.
                                Also richardson_extrapolation.tex, a standalone note
@@ -313,13 +313,16 @@ results/grid_visualisation/    per-domain <domain>_grid.eps showing the DST grid
                                domain mask (from experiments/grid_visualisation/)
 results/eigenvalues_weyl/      per-domain <domain>_weyl.eps checking lambda_n/n -> 4*pi/A
                                plus weyl_areas.md (from experiments/eigenvalues_weyl/)
-results_paper/                 article (paper) figures and LaTeX table/figure snippets
-                               produced by experiments_paper/
+results_paper/                 article (paper) figures and LaTeX table snippets produced
+                               by experiments_paper/, plus the figure snippets (.tex
+                               floats that \includegraphics the figures), which are
+                               written by hand and kept next to the figures; no script
+                               regenerates them
 results_paper/grid_visualisation/ paper grid EPS figures (<domain>_grid_M<M>_dofs<DOF>.eps) plus
-                               domains.tex
+                               the hand-written domains.tex figure snippet
 results_paper/eigenvalues_dof_sweep/ paper DOF-sweep EPS figures, <domain>_dof_sweep.eps
                                (black-and-white) and <domain>_dof_sweep_colour.eps, each
-                               with its .tex figure snippet
+                               with its hand-written .tex figure snippet
 results_paper/latex_helpers/   hand-written LaTeX snippets: methods_description_table.tex
                                describing the four discretisations of src/ and
                                domains_description_table.tex describing the domains of
@@ -340,7 +343,7 @@ results_paper/eigenvalues_convergence/ per domain and eigenvalue index
                                <domain>_convergence_lambda<k>.csv (method, resolution,
                                dofs, lambda_k, timing), the value figure
                                <domain>_convergence_lambda<k>.eps, the error figure
-                               <domain>_convergence_lambda<k>_error.eps and the
+                               <domain>_convergence_lambda<k>_error.eps and the hand-written
                                <domain>_convergence_lambda<k>.tex figure snippet, plus the
                                combined <domain>_convergence.tex float holding every index
                                of a domain in one figure; spectra/ holds the whole spectrum
@@ -355,7 +358,7 @@ results_paper/eigenvalues_error_distribution/ per domain, block size and DOF lev
                                <domain>_error_distribution_n<n>_dofs<D>.eps with a linear
                                index and ..._log_log.eps with a logarithmic one, the first
                                for the body of the block and the second for its first few
-                               indices -- each with its .tex snippet, plus
+                               indices -- each with its hand-written .tex snippet, plus
                                <domain>_error_distribution_n<n>_reference-
                                eigenvalues.csv, which carries no DOF token and is shared by
                                every DOF level of a domain; both CSVs are caches, delete
@@ -380,8 +383,9 @@ available without rerunning anything: the per-method spectra `*.csv` under
 `results/`, the article (paper) figures and LaTeX table/figure snippets under
 `results_paper/`, and the test reports under `test/`. They can be regenerated
 with the experiments drivers (or `experiments/run_wolfram.sh` for the reference
-spectra), the `experiments_paper/` runners for the paper figures and snippets,
-and the `test/*/run_tests.sh` harnesses; MATLAB autosave files (`*.asv`), editor
+spectra), the `experiments_paper/` runners for the paper figures and table
+snippets, and the `test/*/run_tests.sh` harnesses; the figure snippets are
+hand-written and are not regenerated. MATLAB autosave files (`*.asv`), editor
 backups (`*~`), and LaTeX build artifacts (`auto/`, `*.log`, `*.aux`, ...) are
 ignored.
 
