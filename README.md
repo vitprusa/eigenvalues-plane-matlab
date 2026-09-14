@@ -304,8 +304,9 @@ results_paper/                 article (paper) figures and LaTeX table/figure sn
                                produced by experiments_paper/
 results_paper/grid_visualisation/ paper grid EPS figures (<domain>_grid_M<M>_dofs<DOF>.eps) plus
                                domains.tex
-results_paper/eigenvalues_dof_sweep/ paper DOF-sweep EPS figures (black-and-white and _colour) plus
-                               dof_sweep.tex, dof_sweep_colour.tex
+results_paper/eigenvalues_dof_sweep/ paper DOF-sweep EPS figures, <domain>_dof_sweep.eps
+                               (black-and-white) and <domain>_dof_sweep_colour.eps, each
+                               with its .tex figure snippet
 results_paper/latex_helpers/   hand-written LaTeX snippets: methods_description_table.tex
                                describing the four discretisations of src/ and
                                domains_description_table.tex describing the domains of
