@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Run the Weyl-asymptotics visual check for every DST-catalog domain: compute
-# the full spectrum at M_full, the domain area, and write one PNG per domain
+# the full spectrum at M_full, the domain area, and write one EPS per domain
 # plus the summary weyl_areas.md into results/eigenvalues_weyl/.
 #
 # Optional first argument restricts the run to a single domain, e.g.
