@@ -22,6 +22,10 @@ points selected by an **indicator function** (a mask). Each masked grid line
 splits into contiguous interior blocks, and the DST is applied to each block
 with zero Dirichlet conditions at its ends.
 
+> **Note.** The domain selected by the indicator function must be fully
+> embedded in the rectangular bounding box. This is *not* checked in the
+> code — it is the user's responsibility.
+
 The repository also contains finite-difference (FD), finite-element (FEM),
 and Chebyshev (Chebfun) implementations under `src/`, used to cross-check the
 DST results.
@@ -46,7 +50,15 @@ folders on the path:
 startup
 ```
 
-### Discrete sine transform
+### Discrete sine transform --- minimal working example
+
+For a quick, self-contained demonstration on a single domain, the root
+scripts `dst_laplace_full_spectrum.m` (full spectrum via `eig`) and
+`dst_laplace_partial_spectrum.m` (leading eigenvalues via `eigs`) assemble
+and solve the zero Dirichlet Laplace operator eigenvalue problem one domain inline; edit the bounding box, resolution `M`, and
+indicator `phi` at the top of each.
+
+### Discrete sine transform -- driver script
 
 For DST-based computation run the experiment driver:
 
@@ -69,7 +81,7 @@ spectrum to compute (default is both, `["full" "partial"]`):
 Each (domain, mode) pair produces one CSV; the two `M` values come from the
 catalog row.
 
-It computes the eigenvalues for every domain in `domain_catalog_dst` and writes
+The driver `compute_spectrum_dst` computes the eigenvalues for every domain in `domain_catalog_dst` and writes
 one CSV per (domain, mode) into `results/eigenvalues/dst/`, each carrying a header that
 records the bounding box, resolution, grid spacing, dofs, and indicator
 function. To add or change a domain, edit a single row of
@@ -79,17 +91,6 @@ parameters (`subspace_dim`, `tolerance`, `max_iterations`) are set in
 `compute_spectrum_dst`. From a shell, `experiments/run_dst.sh` runs the DST
 experiments headless. 
 
-#### Minimal working example
-
-For a quick, self-contained demonstration on a single domain, the root
-scripts `dst_laplace_full_spectrum.m` (full spectrum via `eig`) and
-`dst_laplace_partial_spectrum.m` (leading eigenvalues via `eigs`) assemble
-and solve one domain inline; edit the bounding box, resolution `M`, and
-indicator `phi` at the top of each.
-
-> **Note.** The domain selected by the indicator function must be fully
-> embedded in the rectangular bounding box. This is *not* checked in the
-> code — it is the user's responsibility.
 
 ### Other methods
 
@@ -163,7 +164,7 @@ The domains are described for the paper in
 
 ## LaTeX helpers (`results_paper/latex_helpers`)
 
-Snippets written by hand rather than by an experiment, kept next to the
+LaTeX snippets written by hand, kept next to the
 generated ones so the article can `\input` them the same way:
 
 | file | content |
@@ -173,9 +174,7 @@ generated ones so the article can `\input` them the same way:
 
 The methods table carries the labels the figures and the comparison tables use
 (`FEM`, `Cheb`, `FD`, `DST`), and cites MATLAB, the PDE Toolbox and Chebfun. Its
-label is `tab:methods_description`, distinct from the
-`tab:methods_description_line` of the companion table of the line project, since
-both snippets end up in the same document. The domains table
+label is `tab:methods_description`. The domains table
 (`tab:domains_description`) names the domains by their catalog identifiers of
 `experiments/domain_catalog_dst.m`, which are also the names in the grid figure
 files. Nothing regenerates either: keep them in step with `src/` and the catalog
