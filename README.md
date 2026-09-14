@@ -296,15 +296,15 @@ results/eigenvalues_dof_requirement/ DOF needed for the first n eigenvalues, per
                                Also richardson_extrapolation.tex, a standalone note
                                (pdflatex) on extrapolating the DST sequence to a
                                reference, validated against the published ground state
-results/grid_visualisation/    per-domain <domain>_grid.png showing the DST grid and
+results/grid_visualisation/    per-domain <domain>_grid.eps showing the DST grid and
                                domain mask (from experiments/grid_visualisation/)
-results/eigenvalues_weyl/      per-domain <domain>_weyl.png checking lambda_n/n -> 4*pi/A
+results/eigenvalues_weyl/      per-domain <domain>_weyl.eps checking lambda_n/n -> 4*pi/A
                                plus weyl_areas.md (from experiments/eigenvalues_weyl/)
 results_paper/                 article (paper) figures and LaTeX table/figure snippets
                                produced by experiments_paper/
-results_paper/grid_visualisation/ paper grid PNGs (<domain>_grid_M<M>_dofs<DOF>.png) plus
+results_paper/grid_visualisation/ paper grid EPS figures (<domain>_grid_M<M>_dofs<DOF>.eps) plus
                                domains.tex
-results_paper/eigenvalues_dof_sweep/ paper DOF-sweep PNGs (black-and-white and _colour) plus
+results_paper/eigenvalues_dof_sweep/ paper DOF-sweep EPS figures (black-and-white and _colour) plus
                                dof_sweep.tex, dof_sweep_colour.tex
 results_paper/latex_helpers/   hand-written LaTeX snippets: methods_description_table.tex
                                describing the four discretisations of src/ and
