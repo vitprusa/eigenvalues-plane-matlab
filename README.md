@@ -79,6 +79,8 @@ parameters (`subspace_dim`, `tolerance`, `max_iterations`) are set in
 `compute_spectrum_dst`. From a shell, `experiments/run_dst.sh` runs the DST
 experiments headless. 
 
+#### Minimal working example
+
 For a quick, self-contained demonstration on a single domain, the root
 scripts `dst_laplace_full_spectrum.m` (full spectrum via `eig`) and
 `dst_laplace_partial_spectrum.m` (leading eigenvalues via `eigs`) assemble
