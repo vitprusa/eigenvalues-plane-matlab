@@ -117,9 +117,9 @@ function eigenvalues_rectangle_match_column(M, margin)
 
     % --- 4. First-unmatched index: observed vs closed form --------------
     % The first '--' row is the smallest analytic eigenvalue with no DST
-    % counterpart. Its position has the closed form derived in
-    % UNMATCHED_ASYMPTOTICS.md; recompute it independently and check the two
-    % agree, so the table doubles as a test of the formula.
+    % counterpart. Its position has a closed form (see FIRST_UNMATCHED_INDEX);
+    % recompute it independently and check the two agree, so the table doubles
+    % as a test of the formula.
     [idx_pred, ms, ns, lstar] = first_unmatched_index(Mx, My, Lx, Ly);
     idx_obs = find(~matched, 1);     % position of first '--' in the window
 
@@ -204,8 +204,8 @@ function [idx, ms, ns, lstar] = first_unmatched_index(Mx, My, Lx, Ly)
 %   unresolved mode (m > Mx or n > My). That minimum is attained by stepping
 %   one index past either resolution limit -- (1, My+1) or (Mx+1, 1) -- and its
 %   position in the magnitude-ordered spectrum is one past the count of strictly
-%   smaller eigenvalues (every one of which is resolved, hence matched). See
-%   UNMATCHED_ASYMPTOTICS.md for the derivation and the 2:1-rectangle reduction
+%   smaller eigenvalues (every one of which is resolved, hence matched). For
+%   the 2:1 rectangle this reduces to
 %   idx = 1 + sum_{n=1}^{My} floor(sqrt((M+1)^2 - 4 n^2)).
     cand   = [1, My + 1; Mx + 1, 1];
     cval   = (cand(:, 1) * pi / Lx).^2 + (cand(:, 2) * pi / Ly).^2;
@@ -316,8 +316,8 @@ function write_markdown(md_file, seq, matched, matched_val, meta)
 
     if isequal(meta.idx_obs, meta.idx_pred), tag = 'PASS'; else, tag = 'FAIL'; end
     fprintf(fid, ['\nFirst unmatched eigenvalue: position %d, mode ', ...
-        '$(m, n) = (%d, %d)$, $\\lambda^\\* = %.4f$. The closed form of ', ...
-        'UNMATCHED_ASYMPTOTICS.md predicts position %d (**%s**).\n'], ...
+        '$(m, n) = (%d, %d)$, $\\lambda^\\* = %.4f$. The closed form ', ...
+        'predicts position %d (**%s**).\n'], ...
         meta.idx_obs, meta.ms, meta.ns, meta.lstar, meta.idx_pred, tag);
 end
 
