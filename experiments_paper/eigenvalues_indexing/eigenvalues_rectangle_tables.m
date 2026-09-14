@@ -1,5 +1,5 @@
 function eigenvalues_rectangle_tables(M, margin)
-%EIGENVALUES_RECTANGLE_TABLES_PAPER LaTeX snippet with the rectangle match and order tables.
+%EIGENVALUES_RECTANGLE_TABLES LaTeX snippet with the rectangle match and order tables.
 %
 %   eigenvalues_rectangle_tables()        uses M = 9 and a default margin.
 %   eigenvalues_rectangle_tables(M)       uses resolution M.

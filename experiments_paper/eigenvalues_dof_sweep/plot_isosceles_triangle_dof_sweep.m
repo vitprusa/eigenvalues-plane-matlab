@@ -1,5 +1,5 @@
 function plot_isosceles_triangle_dof_sweep()
-%PLOT_ISOSCELES_TRIANGLE_DOF_SWEEP_PAPER Paper variant of the triangle DOF-sweep plot.
+%PLOT_ISOSCELES_TRIANGLE_DOF_SWEEP Paper variant of the triangle DOF-sweep plot.
 %
 %   Paper version of PLOT_ISOSCELES_TRIANGLE_DOF_SWEEP: same figure with no main
 %   title, drawn in black and white. The method is encoded by line style (DST

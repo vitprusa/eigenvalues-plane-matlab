@@ -1,5 +1,5 @@
 function plot_grid_visualisation(name)
-%PLOT_GRID_VISUALISATION_PAPER Paper-ready DST grid and domain mask per domain.
+%PLOT_GRID_VISUALISATION Paper-ready DST grid and domain mask per domain.
 %
 %   plot_grid_visualisation() draws one figure per domain in
 %   DOMAIN_CATALOG_DST, using the SAME bounding box, grid spacing, and mask as

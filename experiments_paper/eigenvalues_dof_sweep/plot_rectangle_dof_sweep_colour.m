@@ -1,7 +1,7 @@
 function plot_rectangle_dof_sweep_colour()
-%PLOT_RECTANGLE_DOF_SWEEP_PAPER_COLOUR Colour paper variant of the rectangle DOF sweep.
+%PLOT_RECTANGLE_DOF_SWEEP_COLOUR Colour paper variant of the rectangle DOF sweep.
 %
-%   Colour counterpart of PLOT_RECTANGLE_DOF_SWEEP_PAPER: same figure with no
+%   Colour counterpart of PLOT_RECTANGLE_DOF_SWEEP: same figure with no
 %   main title, but the method is encoded by colour (DST blue, FD orange, FEM
 %   green, Cheb purple) and the DOF level by line style (a per-cycle width bump
 %   keeps the fifth DOF distinct from the first); lines are drawn thicker than in

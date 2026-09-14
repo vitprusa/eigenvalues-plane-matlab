@@ -1,5 +1,5 @@
 function make_eigenvalues_head_tables(name)
-%MAKE_EIGENVALUES_HEAD_PAPER_TABLES Paper eigenvalue-comparison tables (self-computed).
+%MAKE_EIGENVALUES_HEAD_TABLES Paper eigenvalue-comparison tables (self-computed).
 %
 %   Paper (article) counterpart of
 %   experiments/eigenvalues_head/make_eigenvalues_head_comparison_tables.py.

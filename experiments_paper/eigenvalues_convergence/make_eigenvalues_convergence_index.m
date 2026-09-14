@@ -238,7 +238,7 @@ function cfgs = domain_configs()
     % --- the domains with no closed form and no analytic geometry to spell out -
     % Ellipse minus a quadrant, H, and the two GWW isospectral drums. Their box
     % and indicator come from DOMAIN_CATALOG_DST and their decsg geometry from
-    % DOMAIN_CATALOG_FEM, as in MAKE_EIGENVALUES_HEAD_PAPER_TABLES, rather than
+    % DOMAIN_CATALOG_FEM, as in MAKE_EIGENVALUES_HEAD_TABLES, rather than
     % being written out again here.
     %
     % Like the L-shape they have no closed-form spectrum, so the ground state is

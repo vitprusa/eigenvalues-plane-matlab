@@ -1,5 +1,5 @@
 function plot_rectangle_dof_sweep()
-%PLOT_RECTANGLE_DOF_SWEEP_PAPER Paper variant of the rectangle DOF-sweep plot.
+%PLOT_RECTANGLE_DOF_SWEEP Paper variant of the rectangle DOF-sweep plot.
 %
 %   Paper version of PLOT_RECTANGLE_DOF_SWEEP: same figure with no main title,
 %   drawn in black and white. The method is encoded by line style (DST dotted,
