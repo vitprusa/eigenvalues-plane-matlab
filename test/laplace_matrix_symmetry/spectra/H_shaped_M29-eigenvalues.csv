@@ -1,4 +1,4 @@
-# Domain: H (DST Laplace matrix, dense eig, general and symmetrised)
+# Domain: H_shaped (DST Laplace matrix, dense eig, general and symmetrised)
 # Resolution M = 29, dofs = 621
 # Asymmetry: relative 1.4464427877340039e-16, largest entry 8.5265128291212022e-14
 # Pattern symmetric: 1, issymmetric: 0

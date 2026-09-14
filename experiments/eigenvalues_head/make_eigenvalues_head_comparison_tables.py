@@ -26,19 +26,19 @@ NEIG = 8          # eigenvalues shown per table
 CHEB_N = 40       # Chebyshev order used for the Cheb column
 
 DOMAINS = ["square", "rectangle", "isosceles_triangle", "small_rectangle",
-           "L_shaped", "ellipse_minus_quadrant", "H", "gww1", "gww2"]
+           "L_shaped", "ellipse_minus_quadrant", "H_shaped", "gww1", "gww2"]
 
 PRETTY = {
     "square": "square", "rectangle": "rectangle",
     "isosceles_triangle": "isosceles triangle", "small_rectangle": "small rectangle",
     "L_shaped": "L-shaped", "ellipse_minus_quadrant": "ellipse-minus-quadrant",
-    "H": "H-shaped", "gww1": "GWW1 isospectral drum", "gww2": "GWW2 isospectral drum",
+    "H_shaped": "H-shaped", "gww1": "GWW1 isospectral drum", "gww2": "GWW2 isospectral drum",
 }
 
 # Domains Wolfram computed at the SAME size (its triangle is a different size).
 WOLFRAM_FILE = {
     "rectangle": "rectangle", "L_shaped": "L-shaped",
-    "ellipse_minus_quadrant": "ellipse-minus-quadrant", "H": "H-shaped",
+    "ellipse_minus_quadrant": "ellipse-minus-quadrant", "H_shaped": "H-shaped",
 }
 
 CHEB_DOMAINS = {"square", "rectangle", "small_rectangle"}

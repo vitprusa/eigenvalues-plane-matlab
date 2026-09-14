@@ -1,8 +1,8 @@
-# Domain: H (partial spectrum)
+# Domain: H_shaped (partial spectrum)
 # Bounding box [a, b] x [c, d] = [-1, 2] x [-2, 1]
 # Resolution M = 200, grid spacing h = 0.0149254, dofs = 30888
 # Computation time: 25.613 s
-# Indicator function phi = @(x,y)indicator_H(x,y)
+# Indicator function phi = @(x,y)indicator_H_shaped(x,y)
 # eigs: k = 10, tolerance = 1e-10, subspace_dim = 100, max_iterations = 300
 n,lambda_n
 1,7.74550750109457

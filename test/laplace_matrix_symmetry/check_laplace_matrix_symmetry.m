@@ -92,7 +92,7 @@ function plan = resolution_plan()
         'small_rectangle',        [31 59 91 119]; ...  % M+1 divisible by 4 (pi/2, pi/4)
         'L_shaped',               [29 59 89 119]; ...  % M+1 even (corner at the origin)
         'ellipse_minus_quadrant', [31 59 91 119]; ...  % M+1 divisible by 4 (x = 0, y = 0)
-        'H',                      [29 59 89 119]; ...  % M+1 divisible by 3 (unit columns)
+        'H_shaped',               [29 59 89 119]; ...  % M+1 divisible by 3 (unit columns)
         'gww1',                   [29 59 89 119]; ...  % M+1 divisible by 6 (unit features)
         'gww2',                   [29 59 89 119]  ...  % M+1 divisible by 6
     };

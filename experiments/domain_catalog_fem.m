@@ -34,7 +34,7 @@ function cases = domain_catalog_fem(name)
     % Ellipse (semi-axes 2, 1) minus the lower-right quadrant.
     cases(end+1) = make_case('ellipse_minus_quadrant', [ellipse_gd(0, 0, 2, 1), rect_gd(0, 2, -1, 0)], char('E1', 'R1')', 'E1-R1', 0.10, 0.06);
     % H: left, centre, right unit-square columns.
-    cases(end+1) = make_case('H', [rect_gd(-1, 0, -2, 1), rect_gd(0, 1, -1, 0), rect_gd(1, 2, -2, 1)], char('R1', 'R2', 'R3')', 'R1+R2+R3', 0.08, 0.05);
+    cases(end+1) = make_case('H_shaped', [rect_gd(-1, 0, -2, 1), rect_gd(0, 1, -1, 0), rect_gd(1, 2, -2, 1)], char('R1', 'R2', 'R3')', 'R1+R2+R3', 0.08, 0.05);
     % GWW1 isospectral drum (two triangles + a rectangle).
     cases(end+1) = make_case('gww1', [tri_gd(-3, 1, -1, -1, -1, 3), rect_gd(-1, 3, -1, 1), tri_gd(1, -1, 1, -3, 3, -1)], char('TL', 'R1', 'TR')', 'TL+R1+TR', 0.15, 0.10);
     % GWW2 isospectral drum (a rectangle + two triangles).

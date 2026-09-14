@@ -24,9 +24,9 @@ computation time (`tic`/`toc` around each per-domain solve; Wolfram is not timed
 
 | Column | File |
 |--------|------|
-| DST full | `results/eigenvalues/dst/H_full-eigenvalues.csv` |
-| DST partial | `results/eigenvalues/dst/H_partial-eigenvalues.csv` |
-| FD | `results/eigenvalues/fd/H_fd-eigenvalues.csv` |
-| FEM eig | `results/eigenvalues/fem/H_fem_eig-eigenvalues.csv` |
-| FEM solvepdeeig | `results/eigenvalues/fem/H_fem_solvepdeeig-eigenvalues.csv` |
+| DST full | `results/eigenvalues/dst/H_shaped_full-eigenvalues.csv` |
+| DST partial | `results/eigenvalues/dst/H_shaped_partial-eigenvalues.csv` |
+| FD | `results/eigenvalues/fd/H_shaped_fd-eigenvalues.csv` |
+| FEM eig | `results/eigenvalues/fem/H_shaped_fem_eig-eigenvalues.csv` |
+| FEM solvepdeeig | `results/eigenvalues/fem/H_shaped_fem_solvepdeeig-eigenvalues.csv` |
 | Wolfram | `results/eigenvalues/wolfram/H-shaped-eigenvalues.csv` |

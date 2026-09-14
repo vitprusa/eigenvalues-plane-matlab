@@ -6,14 +6,14 @@
 
 | Test | Status | Duration |
 |------|--------|----------|
-| `check_laplace_matrix_symmetry` | ✅ PASS | 5.9s |
+| `check_laplace_matrix_symmetry` | ✅ PASS | 5.8s |
 
 ## Details
 
 ### `check_laplace_matrix_symmetry`
 
 - Status: **✅ PASS**
-- Duration: 5.9s
+- Duration: 5.8s
 
 ```
   square                   M =  30  cached
@@ -22,7 +22,7 @@
   small_rectangle          M =  31  cached
   L_shaped                 M =  29  cached
   ellipse_minus_quadrant   M =  31  cached
-  H                        M =  29  cached
+  H_shaped                 M =  29  cached
   gww1                     M =  29  cached
   gww2                     M =  29  cached
   square                   M =  60  cached
@@ -31,7 +31,7 @@
   small_rectangle          M =  59  cached
   L_shaped                 M =  59  cached
   ellipse_minus_quadrant   M =  59  cached
-  H                        M =  59  cached
+  H_shaped                 M =  59  cached
   gww1                     M =  59  cached
   gww2                     M =  59  cached
   square                   M =  90  cached
@@ -40,7 +40,7 @@
   small_rectangle          M =  91  cached
   L_shaped                 M =  89  cached
   ellipse_minus_quadrant   M =  91  cached
-  H                        M =  89  cached
+  H_shaped                 M =  89  cached
   gww1                     M =  89  cached
   gww2                     M =  89  cached
   square                   M = 120  cached
@@ -49,7 +49,7 @@
   small_rectangle          M = 119  cached
   L_shaped                 M = 119  cached
   ellipse_minus_quadrant   M = 119  cached
-  H                        M = 119  cached
+  H_shaped                 M = 119  cached
   gww1                     M = 119  cached
   gww2                     M = 119  cached
 
@@ -78,10 +78,10 @@ ellipse_minus_quadrant     31    280   1.196e-16  7.105e-14  0.000e+00     0.02s
 ellipse_minus_quadrant     59   1024   1.636e-16  2.383e-13  0.000e+00     0.43s     0.04s   7.731e-11
 ellipse_minus_quadrant     91   2443   1.882e-16  9.375e-13  0.000e+00     3.12s     0.35s   5.421e-10
 ellipse_minus_quadrant    119   4177   2.017e-16  1.245e-12  0.000e+00    18.50s     1.35s   1.177e-09
-H                          29    621   1.446e-16  8.527e-14  0.000e+00     0.11s     0.01s   2.319e-11
-H                          59   2641   1.513e-16  3.997e-13  0.000e+00     4.13s     0.41s   3.274e-10
-H                          89   6061   1.875e-16  7.105e-13  1.364e-12    58.89s     4.06s   1.772e-09
-H                         119  10881   1.685e-16  1.251e-12  0.000e+00   301.35s    20.45s   5.082e-09
+H_shaped                   29    621   1.446e-16  8.527e-14  0.000e+00     0.11s     0.01s   2.319e-11
+H_shaped                   59   2641   1.513e-16  3.997e-13  0.000e+00     4.13s     0.41s   3.274e-10
+H_shaped                   89   6061   1.875e-16  7.105e-13  1.364e-12    58.89s     4.06s   1.772e-09
+H_shaped                  119  10881   1.685e-16  1.251e-12  0.000e+00   301.35s    20.45s   5.082e-09
 gww1                       29    306   1.384e-16  2.842e-14  0.000e+00     0.02s     0.00s   5.059e-12
 gww1                       59   1311   1.940e-16  1.772e-13  0.000e+00     0.37s     0.07s   3.729e-11
 gww1                       89   3016   2.243e-16  3.988e-13  0.000e+00     6.77s     0.58s   2.569e-10

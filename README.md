@@ -356,7 +356,7 @@ test/laplace_matrix_symmetry/  symmetry of the assembled DST Laplace matrix on
 ```
 
 The domains (square, rectangle, ellipse minus a quadrant, isosceles triangle,
-small rectangle, H, L-shaped, and the GWW1/GWW2 isospectral drums) are defined
+small rectangle, H-shaped, L-shaped, and the GWW1/GWW2 isospectral drums) are defined
 as rows of `experiments/domain_catalog_dst.m`. `compute_spectrum_dst` runs the
 `dst_laplace_spectrum` runner over the catalog and writes the results to
 `results/eigenvalues/dst/`; the source tree holds no generated per-domain scripts.

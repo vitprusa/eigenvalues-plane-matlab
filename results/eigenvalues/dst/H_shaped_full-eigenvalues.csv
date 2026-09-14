@@ -1,8 +1,8 @@
-# Domain: H (full spectrum)
+# Domain: H_shaped (full spectrum)
 # Bounding box [a, b] x [c, d] = [-1, 2] x [-2, 1]
 # Resolution M = 50, grid spacing h = 0.0588235, dofs = 1888
 # Computation time: 0.212 s
-# Indicator function phi = @(x,y)indicator_H(x,y)
+# Indicator function phi = @(x,y)indicator_H_shaped(x,y)
 n,lambda_n
 1,7.81056218169692
 2,8.62412707211821

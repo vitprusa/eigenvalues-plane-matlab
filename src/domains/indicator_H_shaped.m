@@ -1,7 +1,7 @@
-function res = indicator_H(x, y)
-%INDICATOR_H Indicator function for the letter H composed of seven unit squares.
+function res = indicator_H_shaped(x, y)
+%INDICATOR_H_SHAPED Indicator function for the letter H composed of seven unit squares.
 %
-%   res = indicator_H(x, y)
+%   res = indicator_H_shaped(x, y)
 %
 %   The letter H is composed of seven 1x1 squares:
 %     - left column:  3 squares at x in (-1, 0), y in (-2, 1)
