@@ -1,5 +1,7 @@
 # Discrete sine transform (DST) based discretisation of Laplace operator on generic two dimensional domains
 
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.22796409.svg)](https://doi.org/10.5281/zenodo.22796409)
+
 Discrete sine transform (DST) based method for the discretisation of the Dirichlet Laplacian operator on generic two dimensional domains and subsequent **computation of the eigenvalues**; comparison against the standard alternatives for eigenvalues computation.
 
 ## Overview
@@ -476,6 +478,7 @@ and, if you want to refer to the software itself, this repository
   year         = {2026},
   version      = {1.0.1},
   howpublished = {\url{https://github.com/vitprusa/eigenvalues-plane-matlab}},
+  doi          = {10.5281/zenodo.22796409},
   license      = {BSD-3-Clause}
 }
 ```
