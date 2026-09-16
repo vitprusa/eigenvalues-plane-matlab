@@ -454,6 +454,50 @@ the spectrum runner (`src/dst/dst_laplace_spectrum.m`) and CSV writer
 batched versions of the core builders, and the documentation strings, were
 written by Claude Code (Claude Opus 4.8, Claude Opus 5 and Claude Fable 5.1).
 
+## How to cite
+
+If you use this code, please cite the accompanying paper
+
+```bibtex
+@unpublished{KrenekPrusaTozziVejvoda2026,
+  author = {K{\v{r}}enek, Oliver and Pr{\r{u}}{\v{s}}a, V{\'i}t and Tozzi, Rebecca and Vejvoda, Martin},
+  title  = {Uniform approximation of spectra of linear second order differential operators via discrete sine transform based discretisation},
+  year   = {2026},
+  note   = {Unpublished manuscript. Charles University, Prague, and Universit{\`a} degli Studi di Firenze, Firenze}
+}
+```
+
+and, if you want to refer to the software itself, this repository
+
+```bibtex
+@misc{eigenvalues-plane-matlab,
+  author       = {K{\v{r}}enek, Oliver and Pr{\r{u}}{\v{s}}a, V{\'i}t and Tozzi, Rebecca and Vejvoda, Martin},
+  title        = {eigenvalues-plane-matlab: Discrete sine transform based discretisation of the {D}irichlet {L}aplacian on two-dimensional domains},
+  year         = {2026},
+  version      = {1.0.0},
+  howpublished = {\url{https://github.com/vitprusa/eigenvalues-plane-matlab}},
+  license      = {BSD-3-Clause}
+}
+```
+
+The DST based discretisation itself is introduced and analysed in
+
+```bibtex
+@article{FusiKrenekPrusaRodriguezTozziVejvoda2026,
+  author  = {Fusi, Lorenzo and K{\v{r}}enek, Oliver and Pr{\r{u}}{\v{s}}a, V{\'i}t and Rodriguez, Casey and Tozzi, Rebecca and Vejvoda, Martin},
+  title   = {Discrete versus continuous---Linear lattice models and their exact continuous counterparts},
+  journal = {International Journal of Engineering Science},
+  volume  = {224},
+  pages   = {104530},
+  year    = {2026},
+  doi     = {10.1016/j.ijengsci.2026.104530}
+}
+```
+
+The same metadata is available in machine-readable form in `CITATION.cff`, and
+GitHub offers it through the "Cite this repository" button on the repository
+page.
+
 ## License
 
 The whole software is distributed under the BSD 3-Clause License.
