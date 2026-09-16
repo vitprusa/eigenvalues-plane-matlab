@@ -32,7 +32,7 @@ DST results.
 
 The method is thoroughly discussed in manuscript
 
-> Oliver Křenek, Vít Průša, Rebecca Tozzi, and Martin Vejvoda. "Uniform Approximation of Spectra of Linear Second Order Differential Operators via Discrete Sine Transform Based Discretisation." Unpublished manuscript, 2026. Charles University, Prague, and Università degli Studi di Firenze.
+> Oliver Křenek, Vít Průša, Rebecca Tozzi, and Martin Vejvoda. "Uniform Approximation of Spectra of Linear Second Order Differential Operators via Discrete Sine Transform Based Discretisation." Unpublished manuscript, 2026. Charles University, Prague, and Università degli Studi di Firenze, Firenze.
 
 ## Requirements
 
