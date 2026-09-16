@@ -1,10 +1,10 @@
 # Discrete sine transform (DST) based discretisation of Laplace operator
 
-Discrete sine transform (DST) based method for the discretisation of the Dirichlet Laplacian operator on generic two-dimensional domains.
+Discrete sine transform (DST) based method for the discretisation of the Dirichlet Laplacian operator on generic two-dimensional domains and subsequent **computation of the eigenvalues**; comparison against the standard alternatives for eigenvalues computation.
 
 ## Overview
 
-The core idea is to discretise the Laplace operator with homogeneous
+The core idea is to discretise the Laplace operator with zero 
 Dirichlet boundary conditions using the **discrete sine transform (DST)**,
 which diagonalises the 1-D second-derivative operator on an interval. See
 
@@ -12,9 +12,8 @@ which diagonalises the 1-D second-derivative operator on an interval. See
 
 for reference and thorough discussion.
 
-
 The 2-D Laplacian is obtained by applying the DST-based second derivative along
-every grid row and column and summing the contributions.
+every horizontal/vertical grid slice and summing the contributions.
 
 An arbitrary domain is handled by embedding it in a rectangular **bounding
 box**, sampling the box on a uniform grid, and keeping only the interior grid
@@ -33,6 +32,8 @@ DST results.
 The method is thoroughly discussed in manuscript
 
 > Oliver Křenek, Vít Průša, Rebecca Tozzi, and Martin Vejvoda. "Uniform Approximation of Spectra of Linear Second Order Differential Operators via Discrete Sine Transform Based Discretisation." Unpublished manuscript, 2026. Charles University, Prague, and Università degli Studi di Firenze, Firenze.
+
+and it should provide a **uniform approximation** of the spectrum of the Laplace operator on the continuous level.
 
 ## Requirements
 
