@@ -474,7 +474,7 @@ and, if you want to refer to the software itself, this repository
   author       = {K{\v{r}}enek, Oliver and Pr{\r{u}}{\v{s}}a, V{\'i}t and Tozzi, Rebecca and Vejvoda, Martin},
   title        = {eigenvalues-plane-matlab: Discrete sine transform based discretisation of the {D}irichlet {L}aplacian on two-dimensional domains},
   year         = {2026},
-  version      = {1.0.0},
+  version      = {1.0.1},
   howpublished = {\url{https://github.com/vitprusa/eigenvalues-plane-matlab}},
   license      = {BSD-3-Clause}
 }
