@@ -1,6 +1,6 @@
-# Discrete sine transform (DST) based discretisation of Laplace operator
+# Discrete sine transform (DST) based discretisation of Laplace operator on generic two dimensional domains
 
-Discrete sine transform (DST) based method for the discretisation of the Dirichlet Laplacian operator on generic two-dimensional domains and subsequent **computation of the eigenvalues**; comparison against the standard alternatives for eigenvalues computation.
+Discrete sine transform (DST) based method for the discretisation of the Dirichlet Laplacian operator on generic two dimensional domains and subsequent **computation of the eigenvalues**; comparison against the standard alternatives for eigenvalues computation.
 
 ## Overview
 
