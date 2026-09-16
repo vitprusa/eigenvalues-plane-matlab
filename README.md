@@ -8,7 +8,7 @@ The core idea is to discretise the Laplace operator with homogeneous
 Dirichlet boundary conditions using the **discrete sine transform (DST)**,
 which diagonalises the 1-D second-derivative operator on an interval. See
 
-> Fusi, Lorenzo, Oliver Křenek, Vít Průša, Casey Rodriguez, Rebecca Tozzi, and Martin Vejvoda. "Discrete versus continuous—Linear lattice models and their exact continuous counterparts." International Journal of Engineering Science 224 (2026): 104530, [10.1016/j.ijengsci.2026.104530](https://doi.org/10.1016/j.ijengsci.2026.104530)
+> Lorenzo Fusi, Oliver Křenek, Vít Průša, Casey Rodriguez, Rebecca Tozzi, and Martin Vejvoda. "Discrete versus continuous—Linear lattice models and their exact continuous counterparts." International Journal of Engineering Science 224 (2026): 104530, [10.1016/j.ijengsci.2026.104530](https://doi.org/10.1016/j.ijengsci.2026.104530)
 
 for reference and thorough discussion.
 
@@ -18,8 +18,8 @@ every grid row and column and summing the contributions.
 
 An arbitrary domain is handled by embedding it in a rectangular **bounding
 box**, sampling the box on a uniform grid, and keeping only the interior grid
-points selected by an **indicator function** (a mask). Each masked grid line
-splits into contiguous interior blocks, and the DST is applied to each block
+points selected by an **indicator function** (a mask). Each masked grid slice
+splits into contiguous interior chunks, and the DST is applied to each chunk
 with zero Dirichlet conditions at its ends.
 
 > **Note.** The domain selected by the indicator function must be fully
@@ -29,6 +29,10 @@ with zero Dirichlet conditions at its ends.
 The repository also contains finite-difference (FD), finite-element (FEM),
 and Chebyshev (Chebfun) implementations under `src/`, used to cross-check the
 DST results.
+
+The method is thoroughly discussed in manuscript
+
+> Oliver Křenek, Vít Průša, Rebecca Tozzi, and Martin Vejvoda. "Uniform Approximation of Spectra of Linear Second Order Differential Operators via Discrete Sine Transform Based Discretisation." Unpublished manuscript, 2026. Charles University, Prague, and Università degli Studi di Firenze.
 
 ## Requirements
 
