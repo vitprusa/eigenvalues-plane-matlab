@@ -56,7 +56,7 @@ keywords:
   - spectral methods
   - MATLAB
 preferred-citation:
-  type: unpublished
+  type: article
   title: >-
     Uniform approximation of spectra of linear second order differential
     operators via discrete sine transform based discretisation
@@ -70,9 +70,9 @@ preferred-citation:
     - family-names: Vejvoda
       given-names: Martin
   year: 2026
-  notes: >-
-    Unpublished manuscript. Charles University, Prague, and Università degli
-    Studi di Firenze, Firenze.
+  doi: 10.48550/arXiv.2609.25796
+  url: https://arxiv.org/abs/2609.25796
+  notes: Preprint, arXiv:2609.25796 [math.NA].
 references:
   - type: article
     title: >-

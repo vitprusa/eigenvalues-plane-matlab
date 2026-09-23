@@ -33,7 +33,7 @@ DST results.
 
 The method is thoroughly discussed in manuscript
 
-> Oliver Křenek, Vít Průša, Rebecca Tozzi, and Martin Vejvoda. "Uniform Approximation of Spectra of Linear Second Order Differential Operators via Discrete Sine Transform Based Discretisation." Unpublished manuscript, 2026. Charles University, Prague, and Università degli Studi di Firenze, Firenze.
+> Oliver Křenek, Vít Průša, Rebecca Tozzi, and Martin Vejvoda. "Uniform approximation of spectra of linear second order differential operators via discrete sine transform based discretisation." arXiv:2609.25796 [math.NA], 2026, [10.48550/arXiv.2609.25796](https://doi.org/10.48550/arXiv.2609.25796)
 
 and it should provide a **uniform approximation** of the spectrum of the Laplace operator on the continuous level.
 
@@ -461,11 +461,15 @@ written by Claude Code (Claude Opus 4.8, Claude Opus 5 and Claude Fable 5.1).
 If you use this code, please cite the accompanying paper
 
 ```bibtex
-@unpublished{KrenekPrusaTozziVejvoda2026,
-  author = {K{\v{r}}enek, Oliver and Pr{\r{u}}{\v{s}}a, V{\'i}t and Tozzi, Rebecca and Vejvoda, Martin},
-  title  = {Uniform approximation of spectra of linear second order differential operators via discrete sine transform based discretisation},
-  year   = {2026},
-  note   = {Unpublished manuscript. Charles University, Prague, and Universit{\`a} degli Studi di Firenze, Firenze}
+@misc{KrenekPrusaTozziVejvoda2026,
+  author        = {K{\v{r}}enek, Oliver and Pr{\r{u}}{\v{s}}a, V{\'i}t and Tozzi, Rebecca and Vejvoda, Martin},
+  title         = {Uniform approximation of spectra of linear second order differential operators via discrete sine transform based discretisation},
+  year          = {2026},
+  eprint        = {2609.25796},
+  archivePrefix = {arXiv},
+  primaryClass  = {math.NA},
+  url           = {https://arxiv.org/abs/2609.25796},
+  doi           = {10.48550/arXiv.2609.25796}
 }
 ```
 
